@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, set } from "react-hook-form";
 
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,36 +38,46 @@ const isAlphanumericWithUppercase = (value: string) => {
     return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
 }
 
-const isAgePositiveInteger = (value: number | undefined) => {
-    return value ? /^(100|[1-9][0-9]?)$/.test(value.toString()) : true;
-}
-
-const isPhoneNumber = (value: string | undefined) => {
-    return value ? /^[0-9]{10}$/.test(value) : true;
-}
-
 const formSchema = z.object({
     email: z.string().email(),
-    password: z.string().min(8).refine(isAlphanumericWithUppercase, {
+    newPassword: z.string().min(8).refine(isAlphanumericWithUppercase, {
         message: "Password must be alphanumeric with uppercase",
     }),
+    confirmPassword: z.string().min(8).refine(isAlphanumericWithUppercase, {
+        message: "Password must be alphanumeric with uppercase",
+    }),
+    token: z.string().min(1),
 });
 
-interface SignInFormProps {
+interface RecoverPasswordFormProps {
     className?: string;
 }
 
-export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) => {
+export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (props: RecoverPasswordFormProps) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+    const [eventType, setEventType] = useState<string>("");
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             email: "",
-            password: "",
+            newPassword: "",
+            confirmPassword: "",
         }
     });
+
+    const sendEmail = async () => {
+        //get email from form and send email
+        const email = form.getValues("email");
+
+        if (email === "") {
+            setError("Email is required");
+            return;
+        }
+        console.log(email);
+        setLoading(true);
+    }
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
@@ -82,9 +92,9 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
             >
                 <div className="space-y-3 w-full">
                     <div className="flex justify-center">
-                        <h1>Sign in to use Classroom!</h1>
+                        <h1>Recover your password</h1>
                     </div>
-                    
+
                     <FormField
                         control={form.control}
                         name="email"
@@ -110,7 +120,7 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
 
                     <FormField
                         control={form.control}
-                        name="password"
+                        name="newPassword"
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
@@ -131,21 +141,69 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
                         )}
                     />
 
-                    {error.length > 0 && <em className="text-red-600">{error}</em>}
+                    <FormField
+                        control={form.control}
+                        name="confirmPassword"
+                        render={({ field }) => (
+                            <FormItem>
+                                <div className="flex justify-between items-center">
+                                    <FormLabel className="w-[15%]">
+                                        Confirm Pwd (<text className="text-red-500">*</text>)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type={"password"}
+                                            placeholder="Confirm Password"
+                                            disabled={loading}
+                                        />
+                                    </FormControl>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="token"
+                        render={({ field }) => (
+                            <FormItem>
+                                <div className="flex justify-between items-center">
+                                    <FormLabel className="w-[15%]">
+                                        Token (<text className="text-red-500">*</text>)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type={"string"}
+                                            placeholder="Token"
+                                            disabled={loading}
+                                        />
+                                    </FormControl>
+                                </div>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+
+                    {
+                        error.length > 0 && 
+                        <div className="pt-2">
+                            <em className="text-red-600">{error}</em>
+                        </div>
+                    }
 
                     <div className="pt-6 space-x-2 flex items-center justify-end w-full"
                     >
-                        <Link 
-                            href="/sign-up" 
-                            className={                                
-                                cn(
-                                    buttonVariants({ variant: "outline" }), 
-                                    loading ? "pointer-events-none opacity-50" : ""
-                                )
-                            }
+                        <Button
+                            type="button"
+                            disabled={loading}
+                            onClick={sendEmail}
+                            variant="outline"
                         >
-                            {`Don't have account? Sign up here`}
-                        </Link>
+                            Send Email
+                        </Button>
 
                         <Button
                             type="submit"
@@ -157,12 +215,12 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
 
                     <div className="flex items-center justify-end w-full"
                     >
-                        <Link 
-                            href="/recover-password" 
+                        <Link
+                            href="/sign-in"
                             className={loading ? "pointer-events-none opacity-50" : ""}
                         >
                             <h6>
-                                <em>Recover password here</em>
+                                <em>Back to sign in</em>
                             </h6>
                         </Link>
                     </div>

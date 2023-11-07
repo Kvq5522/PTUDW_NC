@@ -39,7 +39,7 @@ const isAlphanumericWithUppercase = (value: string) => {
 }
 
 const isAgePositiveInteger = (value: number | undefined) => {
-    return value ? /^(100|[1-9][0-9]?)$/.test(value.toString()) : true;
+    return value ? /^(150|[1-9][0-9]?)$/.test(value.toString()) : true;
 }
 
 const isPhoneNumber = (value: string | undefined) => {
@@ -57,7 +57,7 @@ const formSchema = z.object({
     address: z.string().optional(),
     age: z.preprocess((value: any) => parseInt(value, 10),
         z.number().optional().refine(isAgePositiveInteger, {
-            message: "Age must be a positive integer",
+            message: "Age must be a positive integer less than 150",
         }
         )),
     gender: z.string().optional(),
@@ -89,12 +89,12 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
     }
 
     return (
-        <div>
-            <Form {...form}>
-                <form
-                    onSubmit={form.handleSubmit(onSubmit)}
-                    className={cn("p-3 space-y-3 w-full overflow-auto", props.className)}
-                >
+        <Form {...form}>
+            <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className={cn("p-3 overflow-auto", props.className)}
+            >
+                <div className="space-y-4 w-full">
                     <div className="flex justify-center">
                         <h1>Create account for Classroom!</h1>
                     </div>
@@ -244,7 +244,17 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
 
                     <div className="pt-6 space-x-2 flex items-center justify-end w-full"
                     >
-                        <Link href="/sign-in" className={buttonVariants({variant: "outline"})}>Have account? Sign In</Link>
+                        <Link 
+                            href="/sign-in" 
+                            className={
+                                cn(
+                                    buttonVariants({ variant: "outline" }), 
+                                    loading ? "pointer-events-none opacity-50" : ""
+                                )
+                            }
+                        >
+                            Have account? Sign In
+                        </Link>
 
                         <Button
                             type="submit"
@@ -253,8 +263,8 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
                             Sign Up
                         </Button>
                     </div>
-                </form>
-            </Form>
-        </div>
+                </div>
+            </form>
+        </Form>
     )
 };
