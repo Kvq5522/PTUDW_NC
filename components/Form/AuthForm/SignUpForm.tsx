@@ -30,11 +30,10 @@ import { cn } from "@/lib/utils";
 
 import Link from "next/link";
 
-import { Axios as a } from "axios";
 import { toast } from 'react-hot-toast';
+import { AXIOS } from "@/constants/ApiCall";
 
 const isAlphanumericWithUppercase = (value: string) => {
-
     return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
 }
 
@@ -51,6 +50,8 @@ const formSchema = z.object({
     password: z.string().min(8).refine(isAlphanumericWithUppercase, {
         message: "Password must be alphanumeric with uppercase",
     }),
+    first_name: z.string().min(1),
+    last_name: z.string().min(1),
     phone: z.string().optional().refine(isPhoneNumber, {
         message: "Phone number must be with 10 digits",
     }),
@@ -85,7 +86,18 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
 
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         setLoading(true);
-        console.log(values);
+
+        const token = localStorage.getItem("token")??"";
+        
+        const res = await AXIOS.POST("/auth/sign-up", values, token);
+
+        if (res === 200) {
+            toast.success("Sign up successfully!")
+        } else {
+            setError('error')
+        }
+
+        setLoading(false);
     }
 
     return (
@@ -96,7 +108,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
             >
                 <div className="space-y-4 w-full">
                     <div className="flex justify-center">
-                        <h1>Create account for Classroom!</h1>
+                        <h1 className="text-2xl">Create account for Classroom!</h1>
                     </div>
                     <FormField
                         control={form.control}
@@ -104,7 +116,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Email (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>
@@ -127,7 +139,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Password (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>
@@ -147,12 +159,60 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
                     <div className="flex justify-between gap-4">
                         <FormField
                             control={form.control}
+                            name="first_name"
+                            render={({ field }) => (
+                                <FormItem
+                                    className="w-[50%]"
+                                >
+                                    <FormLabel className="truncate">
+                                        First Name (<text className="text-red-500">*</text>)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="First Name"
+                                            disabled={loading}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+
+                        <FormField
+                            control={form.control}
+                            name="last_name"
+                            render={({ field }) => (
+                                <FormItem
+                                    className="w-[50%]"
+                                >
+                                    <FormLabel className="truncate">
+                                        Last Name (<text className="text-red-500">*</text>)
+                                    </FormLabel>
+                                    <FormControl>
+                                        <Input
+                                            {...field}
+                                            type="text"
+                                            placeholder="Last Name"
+                                            disabled={loading}
+                                        />
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    </div>
+
+                    <div className="flex justify-between gap-4">
+                        <FormField
+                            control={form.control}
                             name="phone"
                             render={({ field }) => (
                                 <FormItem
                                     className="w-[50%]"
                                 >
-                                    <FormLabel>Phone number</FormLabel>
+                                    <FormLabel className="truncate">Phone number</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
@@ -173,7 +233,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
                                 <FormItem
                                     className="w-[50%]"
                                 >
-                                    <FormLabel>Address</FormLabel>
+                                    <FormLabel className="truncate">Address</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
@@ -196,7 +256,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
                                 <FormItem
                                     className="w-[50%]"
                                 >
-                                    <FormLabel>Age</FormLabel>
+                                    <FormLabel className="truncate">Age</FormLabel>
                                     <FormControl>
                                         <Input
                                             {...field}
@@ -217,7 +277,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
                                 <FormItem
                                     className="w-[50%]"
                                 >
-                                    <FormLabel>Gender</FormLabel>
+                                    <FormLabel className="truncate">Gender</FormLabel>
                                     <FormControl>
                                         <Select
                                             disabled={loading}
@@ -244,16 +304,16 @@ export const SignUpForm: React.FC<SignUpFormProps> = (props: SignUpFormProps) =>
 
                     <div className="pt-6 space-x-2 flex items-center justify-end w-full"
                     >
-                        <Link 
-                            href="/sign-in" 
+                        <Link
+                            href="/sign-in"
                             className={
                                 cn(
-                                    buttonVariants({ variant: "outline" }), 
+                                    buttonVariants({ variant: "outline" }),
                                     loading ? "pointer-events-none opacity-50" : ""
                                 )
                             }
                         >
-                            Have account? Sign In
+                            Sign In Here
                         </Link>
 
                         <Button

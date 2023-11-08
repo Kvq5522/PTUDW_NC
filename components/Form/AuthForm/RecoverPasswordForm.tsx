@@ -92,7 +92,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (props: R
             >
                 <div className="space-y-3 w-full">
                     <div className="flex justify-center">
-                        <h1>Recover your password</h1>
+                        <h1 className="text-2xl">Recover your password</h1>
                     </div>
 
                     <FormField
@@ -101,7 +101,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (props: R
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Email (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>
@@ -124,7 +124,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (props: R
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Password (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>
@@ -147,7 +147,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (props: R
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Confirm Pwd (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>
@@ -170,7 +170,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (props: R
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Token (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>

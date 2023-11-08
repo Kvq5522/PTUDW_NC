@@ -82,7 +82,7 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
             >
                 <div className="space-y-3 w-full">
                     <div className="flex justify-center">
-                        <h1>Sign in to use Classroom!</h1>
+                        <h1 className="text-2xl">Sign in to use Classroom!</h1>
                     </div>
                     
                     <FormField
@@ -91,7 +91,7 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Email (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>
@@ -114,7 +114,7 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
                         render={({ field }) => (
                             <FormItem>
                                 <div className="flex justify-between items-center">
-                                    <FormLabel className="w-[15%]">
+                                    <FormLabel className="w-[15%] truncate">
                                         Password (<text className="text-red-500">*</text>)
                                     </FormLabel>
                                     <FormControl>
@@ -144,7 +144,7 @@ export const SignInForm: React.FC<SignInFormProps> = (props: SignInFormProps) =>
                                 )
                             }
                         >
-                            {`Don't have account? Sign up here`}
+                            Sign Up Here
                         </Link>
 
                         <Button
