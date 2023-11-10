@@ -37,6 +37,9 @@ const formSchema = z.object({
     message: "Password must be alphanumeric with uppercase",
   }),
   token: z.string().min(1),
+}).refine((data) => data.newPassword === data.confirmPassword, {
+  message: "Passwords must match",
+  path: ["confirmPassword"],
 });
 
 interface RecoverPasswordFormProps {
@@ -48,32 +51,30 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
-  const [eventType, setEventType] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
-      email: "",
-      newPassword: "",
-      confirmPassword: "",
-    },
   });
 
   const sendEmail = async () => {
     //get email from form and send email
     const email = form.getValues("email");
 
+    console.log(email);
+    setLoading(true);
+
     if (email === "") {
       setError("Email is required");
       return;
     }
-    console.log(email);
-    setLoading(true);
+ 
+    setLoading(false);
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     console.log(values);
+    setLoading(false);
   };
 
   return (
