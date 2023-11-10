@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'E-Learning',
   description: 'E-Learning project for Web Dev Adv HCMUS',
 }
-
+  
 export default function RootLayout({
   children,
 }: {

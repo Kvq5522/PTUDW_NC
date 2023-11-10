@@ -1,19 +1,11 @@
-import axios from "axios";
-
-let token = "";
-
-if (typeof window !== "undefined") {
-  token = localStorage.getItem("token") || "";
-}
-
-console.log(typeof window);
+import axios, { AxiosError } from "axios";
 
 const API = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API,
 });
 
 export const AXIOS = {
-  GET: async (uri: string, params: object, token: string) => {
+  GET: async (uri: string, params: object, token?: string) => {
     try {
       const res = await API.get(uri, {
         headers: {
@@ -24,40 +16,46 @@ export const AXIOS = {
         params: params,
       });
 
-      return res;
-    } catch (err) {
-      return err;
+      return res.data;
+    } catch (err: any) {
+      return err.response.data;
     }
   },
 
-  POST: async (uri: string, params: object, token: string) => {
+  POST: async (uri: string, params: object, token?: string) => {
     try {
-      const res = await API.post(uri, {
+      const res = await API.post(uri, params, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        params: params,
       });
 
-      return res;
-    } catch (error) {
-      return error;
+      return res.data;
+    } catch (error: any) {
+      return error.response.data;
     }
   },
 
-  PUT: async (uri: string, params: object, token: string) => {
+  PUT: async (uri: string, params: object, token?: string) => {
     try {
-      const res = await API.put(uri, params);
+      const res = await API.put(uri, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: params,
+      });
 
-      return res;
-    } catch (error) {
-      return error;
+      return res.data;
+    } catch (error: any) {
+      return error.response.data;
     }
   },
 
-  PATCH: async (uri: string, params: object, token: string) => {
+  PATCH: async (uri: string, params: object, token?: string) => {
     try {
       const res = await API.patch(uri, {
         headers: {
@@ -65,16 +63,16 @@ export const AXIOS = {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        params: params,
+        body: params,
       });
 
-      return res;
-    } catch (error) {
-      return error;
+      return res.data;
+    } catch (error: any) {
+      return error.response.data;
     }
   },
 
-  DELETE: async (uri: string, params: object, token: string) => {
+  DELETE: async (uri: string, params: object, token?: string) => {
     try {
       const res = await API.delete(uri, {
         headers: {
@@ -85,9 +83,9 @@ export const AXIOS = {
         params: params,
       });
 
-      return res;
-    } catch (error) {
-      return error;
+      return res.data;
+    } catch (error: any) {
+      return error.response.data;
     }
   },
 };
