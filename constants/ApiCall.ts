@@ -12,6 +12,7 @@ export const AXIOS = {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
+          AccessControlAllowOrigin: "*",
         },
         params: params,
       });
@@ -29,6 +30,7 @@ export const AXIOS = {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
+          AccessControlAllowOrigin: "*",
         },
       });
 
@@ -45,6 +47,7 @@ export const AXIOS = {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
+          AccessControlAllowOrigin: "*",
         },
         body: params,
       });
@@ -62,6 +65,7 @@ export const AXIOS = {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
+          AccessControlAllowOrigin: "*",
         },
         body: params,
       });
@@ -79,6 +83,7 @@ export const AXIOS = {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
+          AccessControlAllowOrigin: "*",
         },
         params: params,
       });
