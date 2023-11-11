@@ -1,0 +1,92 @@
+.main {
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 0 20px;
+}
+
+/* Hero section */
+
+.hero {
+  height: 500px;
+  background-image: url("/images/google-classroom-hero.jpg");
+  background-size: cover;
+  background-position: center;
+  text-align: center;
+  color: white;
+}
+
+.hero h1 {
+  font-size: 4rem;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+/* Content section */
+
+.content {
+  padding: 50px 0;
+}
+
+.title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.description {
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+/* Features section */
+
+.features {
+  padding: 50px 0;
+}
+
+.features h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.features ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features li {
+  margin-bottom: 10px;
+}
+
+/* Testimonials section */
+
+.testimonials {
+  padding: 50px 0;
+}
+
+.testimonials h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.testimonials p {
+  font-size: 1.5rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}

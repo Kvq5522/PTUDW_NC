@@ -2,7 +2,7 @@ import { IconButton } from "@mui/material";
 import { AssignmentIndOutlined, FolderOpenOutlined } from "@mui/icons-material";
 import React from "react";
 // import { useHistory } from "react-router-dom";
-import "@/Screen/classCard.css";
+import "@/Styles/classCard.css";
 
 function ClassCard() {
   //   const history = useHistory();

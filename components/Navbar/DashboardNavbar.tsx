@@ -3,7 +3,7 @@
 import { Avatar, IconButton, MenuItem, Menu } from "@mui/material";
 import { Add, Apps, Menu as MenuIcon } from "@mui/icons-material";
 import React, { useState } from "react";
-import "@/Screen/navbar.css";
+import "@/Styles/navbar.css";
 function Navbar() {
   //   const [user, loading, error] = useAuthState(auth);
   const [anchorEl, setAnchorEl] = useState(null);

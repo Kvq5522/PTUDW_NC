@@ -1,35 +1,17 @@
-"use client";
-import "@/Screen/home.css";
+import React from "react";
+import Image from "next/image";
+import HeroLandingPage from "@/components/Hero-section/HeroLandingPage";
+import ContentLandingPage from "@/components/Content/ContentLandingPage";
+import FeatureLandingPage from "@/components/Feature/FeatureLandingPage";
 
-export default function homePage() {
+const page = () => {
   return (
-    <div className="home">
-      <div className="home__container">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/5/59/Google_Classroom_Logo.png"
-          alt="Google Classroom Image"
-          className="home__image"
-        />
-        <button className="home__login">
-          <a href="/sign-in">Sign-in</a>
-        </button>
-        <button className="home__login">
-          <a href="/sign-up">Sign-up</a>
-        </button>
-      </div>
-    </div>
+    <main>
+      <HeroLandingPage />
+      <ContentLandingPage />
+      <FeatureLandingPage />
+    </main>
   );
-}
+};
 
-// export default function Home() {
-//   return (
-
-//     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-//       Hello world
-
-//       <a href='/sign-in'>Sign-in</a>
-
-//       <a href='/sign-up'>Sign-up</a>
-//     </main>
-//   )
-// }
+export default page;

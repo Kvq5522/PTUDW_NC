@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import "@/Screen/dashboard.css";
-
-import Navbar from "@/components/navBar";
+import "@/Styles/dashboard.css";
+import HeaderLandingPage from "@/components/Header/HeaderLandingPage";
+import Navbar from "@/components/Navbar/DashboardNavbar";
 import ClassCard from "@/components/classCard";
 function Dashboard() {
   return (
