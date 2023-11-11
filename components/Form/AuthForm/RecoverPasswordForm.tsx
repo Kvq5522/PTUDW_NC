@@ -21,8 +21,8 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 import Link from "next/link";
-
-import { toast } from "react-hot-toast";
+import { AXIOS } from "@/constants/ApiCall";
+import toast from "react-hot-toast";
 
 const isAlphanumericWithUppercase = (value: string) => {
   return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
@@ -30,16 +30,16 @@ const isAlphanumericWithUppercase = (value: string) => {
 
 const formSchema = z.object({
   email: z.string().email(),
-  newPassword: z.string().min(8).refine(isAlphanumericWithUppercase, {
+  password: z.string().min(8).refine(isAlphanumericWithUppercase, {
     message: "Password must be alphanumeric with uppercase",
   }),
-  confirmPassword: z.string().min(8).refine(isAlphanumericWithUppercase, {
+  confirm_password: z.string().min(8).refine(isAlphanumericWithUppercase, {
     message: "Password must be alphanumeric with uppercase",
   }),
   token: z.string().min(1),
-}).refine((data) => data.newPassword === data.confirmPassword, {
+}).refine((data) => data.password === data.confirm_password, {
   message: "Passwords must match",
-  path: ["confirmPassword"],
+  path: ["confirm_password"],
 });
 
 interface RecoverPasswordFormProps {
@@ -51,6 +51,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const [timeReload, setTimeReload] = useState<Date>();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,6 +61,11 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
     //get email from form and send email
     const email = form.getValues("email");
 
+    if (timeReload && timeReload > new Date(Date.now())) {
+      setError("You can only send an email every 30 seconds");
+      return;
+    }
+
     console.log(email);
     setLoading(true);
 
@@ -67,14 +73,38 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
       setError("Email is required");
       return;
     }
+
+    const res = await AXIOS.POST("/auth/send-recovery-mail", { email });
+
+    if (res.statusCode !== 200) {
+      setError(res.message);
+      setLoading(false);
+      return;
+    }
  
     setLoading(false);
+    toast.success("Email sent, please check your email");
+    setTimeReload(new Date(Date.now() + 1000 * 30));
+    setError("");
   };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
-    console.log(values);
+    
+    const res = await AXIOS.POST("/auth/recover-password", values);
+
+    if (res.statusCode !== 200) {
+      setError(res.message);
+      setLoading(false);
+      return;
+    }
+
     setLoading(false);
+    setError("");
+    
+    toast.success("Password updated");
+    window.location.href = "/sign-in";
+    return;
   };
 
   return (
@@ -113,7 +143,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 
           <FormField
             control={form.control}
-            name="newPassword"
+            name="password"
             render={({ field }) => (
               <FormItem>
                 <div className="flex justify-between items-center">
@@ -136,7 +166,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 
           <FormField
             control={form.control}
-            name="confirmPassword"
+            name="confirm_password"
             render={({ field }) => (
               <FormItem>
                 <div className="flex justify-between items-center">
@@ -193,7 +223,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
               onClick={sendEmail}
               variant="outline"
             >
-              Send Email
+              Send Token To Mail
             </Button>
 
             <Button type="submit" disabled={loading}>
