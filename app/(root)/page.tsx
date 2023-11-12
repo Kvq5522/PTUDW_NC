@@ -1,15 +1,13 @@
 import React from "react";
 import Image from "next/image";
-import HeroLandingPage from "@/components/Hero-section/HeroLandingPage";
-import ContentLandingPage from "@/components/Content/ContentLandingPage";
-import FeatureLandingPage from "@/components/Feature/FeatureLandingPage";
+import LandingPageDashboard from "@/components/Navbar/LandingPageDashboard";
+import FirstSection from "@/components/first-section/page";
 
 const page = () => {
   return (
     <main>
-      <HeroLandingPage />
-      <ContentLandingPage />
-      <FeatureLandingPage />
+      <LandingPageDashboard />
+      <FirstSection />
     </main>
   );
 };
