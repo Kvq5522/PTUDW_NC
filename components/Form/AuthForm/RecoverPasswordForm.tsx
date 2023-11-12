@@ -55,6 +55,12 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      confirm_password: "",
+      token: "",
+    },
   });
 
   const sendEmail = async () => {

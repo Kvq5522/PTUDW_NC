@@ -77,6 +77,16 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+      first_name: "",
+      last_name: "",
+      phone: "",
+      address: "",
+      age: 0,
+      gender: "",
+    }
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

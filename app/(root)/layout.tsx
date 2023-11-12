@@ -14,7 +14,9 @@ export const metadata: Metadata = {
 export default function homePage({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
-      <body className={font.className}>{children}</body>
+      <body className={font.className}>
+        <div id="root">{children}</div>
+      </body>
     </html>
   );
 }

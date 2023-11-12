@@ -41,6 +41,10 @@ export const SignInForm: React.FC<SignInFormProps> = (
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
