@@ -1,11 +1,11 @@
-import { SignInForm } from "@/components/Form/AuthForm/SignInForm"
+import { SignInForm } from "@/components/Form/AuthForm/SignInForm";
 
 export default function SignIn() {
-    return ( 
-        <div className="flex justify-center items-center bg-gradient-to-r min-h-screen w-screen from-[#2E3192] to-[#1BFFFF]">
-            <div className="bg-white p-3 rounded max-[1000px]:w-[90vw] max-[1200px]:w-[70vw] w-[60vw] max-[400px]:h-[90vh] max-[1000px]:h-[80vh] h-[60vh]">
-                <SignInForm className="h-full flex justify-center items-center" />
-            </div>
-        </div>
-    )
-};
+  return (
+    <div className="flex justify-center items-center bg-gradient-to-r min-h-screen w-screen from-yellow-500 to-green-300">
+      <div className="bg-white p-3 rounded max-[1000px]:w-[90vw] max-[1200px]:w-[70vw] w-[60vw] max-[400px]:h-[90vh] max-[1000px]:h-[80vh] h-[60vh]">
+        <SignInForm className="h-full flex justify-center items-center" />
+      </div>
+    </div>
+  );
+}

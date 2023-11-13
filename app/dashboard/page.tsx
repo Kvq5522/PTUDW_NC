@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import "@/Styles/dashboard.css";
+
 import Navbar from "@/components/Navbar/DashboardNavbar";
-import ClassCard from "@/components/classCard";
+import ClassCard from "@/app/dashboard/classCard";
 function Dashboard() {
   return (
     <div className="dashboard">
@@ -9,11 +9,11 @@ function Dashboard() {
         <div>
           <Navbar></Navbar>
         </div>
-        <div className="dashboard__classContainer">
+        <div className="dashboard__classContainer pt-10 pl-10">
           <div>
             <ClassCard />
           </div>
-          <div>
+          <div className="pt-10">
             <ClassCard />
           </div>
         </div>

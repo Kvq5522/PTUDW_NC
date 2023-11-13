@@ -24,7 +24,7 @@ const ActionButton = () => {
               <SheetDescription>
                 <div className="flex flex-col space-y-4 items-start w-full text-lg text-black alt-10">
                   <Link href="/sign-in">Sign In</Link>
-                  <Link href="/sign-up">Get Started</Link>
+                  <Link href="/sign-up">Sign Up</Link>
                 </div>
               </SheetDescription>
             </SheetHeader>
@@ -33,11 +33,11 @@ const ActionButton = () => {
       </div>
 
       <div className="hidden md:flex md:space-x-4 ">
-        <Button className="text-md" variant="ghost">
+        <Button className="text-md bg-green-500">
           <Link href="/sign-in">Sign In</Link>
         </Button>
         <Button className="text-md bg-green-500 ">
-          <Link href="/sign-up">Get Started</Link>
+          <Link href="/sign-up">Sign Up</Link>
         </Button>
       </div>
     </div>
