@@ -66,12 +66,12 @@ const formSchema = z.object({
   gender: z.string().optional(),
 });
 
-interface ProfileFrormProps {
+interface ProfileFormProps {
   className?: string;
 }
 
-export const ProfileFrorm: React.FC<ProfileFrormProps> = (
-  props: ProfileFrormProps
+export const ProfileForm: React.FC<ProfileFormProps> = (
+  props: ProfileFormProps
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -115,57 +115,61 @@ export const ProfileFrorm: React.FC<ProfileFrormProps> = (
             <h1 className="text-2xl">This is Profile Form</h1>
           </div>
 
-          <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
           <div className="flex justify-between gap-4">
-            <div></div>
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel className="truncate">
-                    Email (<text className="text-red-500">*</text>)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="email"
-                      placeholder="Email"
-                      disabled={loading}
-                    />
-                  </FormControl>
+            <div className="w-[50%] flex justify-center items-center">
+              <Image 
+                src="https://github.com/shadcn.png"
+                alt="Hero"
+                width={200}
+                height={200}
+                className="rounded-full"
+              />
+            </div>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="flex justify-between gap-4">
-            <div></div>
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel className=" truncate">
-                    Password (<text className="text-red-500">*</text>)
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type={"password"}
-                      placeholder="Password"
-                      disabled={loading}
-                    />
-                  </FormControl>
+            <div className="w-[50%]">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem className="mb-4">
+                    <FormLabel className="truncate">
+                      Email (<text className="text-red-500">*</text>)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="email"
+                        placeholder="Email"
+                        disabled={loading}
+                      />
+                    </FormControl>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className=" truncate">
+                      Password (<text className="text-red-500">*</text>)
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type={"password"}
+                        placeholder="Password"
+                        disabled={loading}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
           </div>
 
           <div className="flex justify-between gap-4">

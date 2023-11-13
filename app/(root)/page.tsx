@@ -25,12 +25,14 @@ const page = () => {
             </button>
           </div>
 
-          <Image
-            src="/images/logo/google-classroom-2.svg"
-            width={1200}
-            height={500}
-            alt="Hero"
-          />
+          <div className="w-[100%] flex justify-center pr-8 ">
+            <Image
+              src="/images/logo/google-classroom-2.svg"
+              width={500}
+              height={500}
+              alt="Hero"
+            />
+          </div>
         </div>
       </section>
     </main>
