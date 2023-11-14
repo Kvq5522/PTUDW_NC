@@ -96,11 +96,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [avatar, setAvatar] = useState<string>("");
-  const accessToken =
-    typeof window !== undefined ? localStorage.getItem("access-token") : "";
 
   useEffect(() => {
     const getUserInfo = async () => {
+      const accessToken = localStorage.getItem("access-token");
       const res = await AXIOS.GET("/user/get-info", {}, accessToken ?? "");
 
       if (res.statusCode === 200) {
@@ -136,7 +135,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
-    
+
+    const accessToken = localStorage.getItem("access-token");
+
     const res = await AXIOS.PATCH(
       "/user/update-info",
       {

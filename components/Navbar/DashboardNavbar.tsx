@@ -8,11 +8,12 @@ import { ProfileButton } from "../ui/ProfileButton";
 import { AXIOS } from "@/constants/ApiCall";
 
 const Navbar = () => {
-  const accessToken = localStorage.getItem("access-token");
   const [avatar, setAvatar] = useState<string>("");
 
   useEffect(() => {
     const getUserInfo = async () => {
+      const accessToken = localStorage.getItem("access-token");
+
       const res = await AXIOS.GET("/user/get-info", {}, accessToken ?? "");
 
       if (res.statusCode === 200) {
