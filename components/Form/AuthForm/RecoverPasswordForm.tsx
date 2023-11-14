@@ -67,12 +67,11 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
     //get email from form and send email
     const email = form.getValues("email");
 
-    if (timeReload && timeReload > new Date(Date.now())) {
+    if (timeReload && timeReload.getTime() > new Date(Date.now()).getTime()) {
       setError("You can only send an email every 30 seconds");
       return;
     }
 
-    console.log(email);
     setLoading(true);
 
     if (email === "") {
@@ -233,7 +232,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
             </Button>
 
             <Button type="submit" disabled={loading}>
-              Sign In
+              Recover
             </Button>
           </div>
 

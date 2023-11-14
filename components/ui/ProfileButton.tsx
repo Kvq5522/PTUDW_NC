@@ -1,3 +1,5 @@
+"use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,13 +11,28 @@ import {
 import Link from "next/link";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "./button";
 
-const ProfileButton = () => {
+interface ProfileButtonProps {
+  className?: string;
+  avatarSrc?: string;
+}
+
+const signOutHandler = () => {
+  localStorage.removeItem("access-token");
+  window.location.href = "/";
+};
+
+export const ProfileButton: React.FC<ProfileButtonProps> = (
+  props: ProfileButtonProps
+) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage
+            src={props.avatarSrc ?? "https://github.com/shadcn.png"}
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
@@ -26,11 +43,13 @@ const ProfileButton = () => {
           <Link href="dashboard/user-info">Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href="/">Sign Out</Link>
+          <Button
+            onClick={signOutHandler}
+          >
+            Sign Out
+          </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
 };
-
-export default ProfileButton;

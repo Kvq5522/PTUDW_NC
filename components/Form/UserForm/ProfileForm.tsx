@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
+import { useState, useRef, useEffect } from "react";
+import { useForm, FormProvider, set } from "react-hook-form";
 import Image from "next/image";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,6 +24,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -34,8 +41,13 @@ import Link from "next/link";
 import { toast } from "react-hot-toast";
 import { AXIOS } from "@/constants/ApiCall";
 
-const isAlphanumericWithUppercase = (value: string) => {
-  return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
+const isAlphanumericWithUppercase = (value: string | undefined) => {
+  if (!value) return true;
+
+  return (
+    /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value) && value.length > 7
+  );
+  //check if value is alphanumeric with uppercase and length > 7
 };
 
 const isAgePositiveInteger = (value: number | undefined) => {
@@ -47,8 +59,14 @@ const isPhoneNumber = (value: string | undefined) => {
 };
 
 const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).refine(isAlphanumericWithUppercase, {
+  new_password: z
+    .string()
+    .optional()
+    .refine(
+      (value) => value === "" || isAlphanumericWithUppercase(value),
+      "Password must be alphanumeric with uppercase"
+    ),
+  confirm_password: z.string().min(8).refine(isAlphanumericWithUppercase, {
     message: "Password must be alphanumeric with uppercase",
   }),
   first_name: z.string().min(1),
@@ -58,7 +76,7 @@ const formSchema = z.object({
   }),
   address: z.string().optional(),
   age: z.preprocess(
-    (value: any) => (value === "" ? undefined : value),
+    (value: any) => (value === "" ? 0 : Number(value)),
     z.number().optional().refine(isAgePositiveInteger, {
       message: "Age must be a positive integer less than 150",
     })
@@ -75,12 +93,36 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [avatar, setAvatar] = useState<string>("");
+  const accessToken =
+    typeof window !== undefined ? localStorage.getItem("access-token") : "";
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const res = await AXIOS.GET("/user/get-info", {}, accessToken ?? "");
+
+      if (res.statusCode === 200) {
+        const { metadata } = res;
+        setAvatar(metadata.avatar);
+        setValue("first_name", metadata.first_name);
+        setValue("last_name", metadata.last_name);
+        setValue("phone", metadata.phone ?? "");
+        setValue("address", metadata.address ?? "");
+        setValue("age", metadata.age ?? 0);
+        setValue("gender", metadata.gender ?? "");
+      }
+    };
+
+    getUserInfo();
+  }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      new_password: "",
+      confirm_password: "",
       first_name: "",
       last_name: "",
       phone: "",
@@ -90,18 +132,38 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
     },
   });
 
+  const { setValue } = form;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    
+    const res = await AXIOS.PATCH(
+      "/user/update-info",
+      {
+        ...values,
+        avatar: file,
+      },
+      accessToken ?? ""
+    );
 
-    const res = await AXIOS.POST("/auth/sign-up", values);
-
-    if (res.statusCode === 201) {
-      window.location.href = "/sign-in";
+    if (res.statusCode === 200) {
+      setAvatar(res.metadata.avatar);
+      window.location.reload();
       return;
     }
 
     setError(res.message);
     setLoading(false);
+  };
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFile(e.target.files[0]);
+    }
   };
 
   return (
@@ -112,34 +174,59 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       >
         <div className="space-y-4 w-full">
           <div className="flex justify-center">
-            <h1 className="text-2xl">This is Profile Form</h1>
+            <h1 className="text-2xl">User Profile</h1>
           </div>
 
           <div className="flex justify-between gap-4">
-            <div className="w-[50%] flex justify-center items-center">
-              <Image 
-                src="https://github.com/shadcn.png"
-                alt="Hero"
-                width={200}
-                height={200}
-                className="rounded-full"
+            <div
+              className="w-[50%] flex justify-center items-center"
+              onClick={handleImageClick}
+            >
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Image
+                      src={
+                        file
+                          ? URL.createObjectURL(file)
+                          : avatar
+                          ? avatar
+                          : "https://firebasestorage.googleapis.com/v0/b/ptudwnc2-20ktpm02-2023.appspot.com/o/images%2Favatar%2Fuser-default-avatar.png?alt=media&token=87041583-59b4-43a6-86eb-a93f06cd8b3e"
+                      }
+                      alt="Hero"
+                      width={300}
+                      height={300}
+                      placeholder="empty"
+                      blurDataURL={avatar}
+                      className="rounded object-fit hover:opacity-75 transition-opacity duration-200 ease-in-out"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Click here to upload image</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+
+              <Input
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileInputChange}
+                accept="image/*"
               />
             </div>
 
             <div className="w-[50%]">
               <FormField
                 control={form.control}
-                name="email"
+                name="first_name"
                 render={({ field }) => (
                   <FormItem className="mb-4">
-                    <FormLabel className="truncate">
-                      Email (<text className="text-red-500">*</text>)
-                    </FormLabel>
+                    <FormLabel className="truncate">First Name</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        type="email"
-                        placeholder="Email"
+                        placeholder="First Name"
                         disabled={loading}
                       />
                     </FormControl>
@@ -150,17 +237,14 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
               />
               <FormField
                 control={form.control}
-                name="password"
+                name="last_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className=" truncate">
-                      Password (<text className="text-red-500">*</text>)
-                    </FormLabel>
+                    <FormLabel className=" truncate">Last Name</FormLabel>
                     <FormControl>
                       <Input
                         {...field}
-                        type={"password"}
-                        placeholder="Password"
+                        placeholder="Last Name"
                         disabled={loading}
                       />
                     </FormControl>
@@ -170,54 +254,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                 )}
               />
             </div>
-          </div>
-
-          <div className="flex justify-between gap-4">
-            <FormField
-              control={form.control}
-              name="first_name"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel>
-                    <div className="truncate">
-                      First Name (<text className="text-red-500">*</text>)
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="First Name"
-                      disabled={loading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="last_name"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel>
-                    <div className="truncate">
-                      Last Name (<text className="text-red-500">*</text>)
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="text"
-                      placeholder="Last Name"
-                      disabled={loading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
           </div>
 
           <div className="flex justify-between gap-4">
@@ -233,7 +269,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                     <Input
                       {...field}
                       type="text"
-                      placeholder="Phone number"
+                      placeholder="Phone Number"
                       disabled={loading}
                     />
                   </FormControl>
@@ -309,6 +345,53 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                         <SelectItem value="F">Female</SelectItem>
                       </SelectContent>
                     </Select>
+                  </FormControl>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="flex justify-between gap-4">
+            <FormField
+              control={form.control}
+              name="new_password"
+              render={({ field }) => (
+                <FormItem className="w-[50%]">
+                  <FormLabel>
+                    <div className="truncate">New Password</div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="New Password"
+                      disabled={loading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="confirm_password"
+              render={({ field }) => (
+                <FormItem className="w-[50%]">
+                  <FormLabel>
+                    <div className="truncate">
+                      Old Password For Confirmation
+                    </div>
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      type="password"
+                      placeholder="New Password"
+                      disabled={loading}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

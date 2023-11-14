@@ -5,6 +5,16 @@ const API = axios.create({
 });
 
 export const AXIOS = {
+  ENCODE_FORM_DATA: (data: any) => {
+    const formData = new FormData();
+
+    for (const key in data) {
+      formData.append(key, data[key]);
+    }
+
+    return formData;
+  },
+  
   GET: async (uri: string, params: object, token?: string) => {
     try {
       const res = await API.get(uri, {
@@ -22,9 +32,9 @@ export const AXIOS = {
     }
   },
 
-  POST: async (uri: string, params: object, token?: string) => {
+  POST: async (uri: string, params: object, token?: string | undefined) => {
     try {
-      const res = await API.post(uri, params, {
+      const res = await API.post(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
@@ -38,15 +48,14 @@ export const AXIOS = {
     }
   },
 
-  PUT: async (uri: string, params: object, token?: string) => {
+  PUT: async (uri: string, params: object, token?: string | undefined) => {
     try {
-      const res = await API.put(uri, {
+      const res = await API.put(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: params,
       });
 
       return res.data;
@@ -55,15 +64,14 @@ export const AXIOS = {
     }
   },
 
-  PATCH: async (uri: string, params: object, token?: string) => {
+  PATCH: async (uri: string, params: object, token?: string | undefined) => {
     try {
-      const res = await API.patch(uri, {
+      const res = await API.patch(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: params,
       });
 
       return res.data;
@@ -72,7 +80,7 @@ export const AXIOS = {
     }
   },
 
-  DELETE: async (uri: string, params: object, token?: string) => {
+  DELETE: async (uri: string, params: object, token?: string | undefined) => {
     try {
       const res = await API.delete(uri, {
         headers: {
