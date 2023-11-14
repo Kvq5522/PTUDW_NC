@@ -160,7 +160,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       {
         ...values,
       },
-      accessToken ?? ""
+      accessToken ?? "",
+      true
     );
 
     if (res.statusCode === 200) {
@@ -180,7 +181,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
     e.preventDefault();
 
     if (e.target.files) {
-      console.log(e.target.files[0]);
       setFile(e.target.files[0]);
       setValue("avatar", e.target.files[0]);
     }
