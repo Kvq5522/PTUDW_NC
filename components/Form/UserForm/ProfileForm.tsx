@@ -5,8 +5,6 @@ import { useForm, FormProvider, set } from "react-hook-form";
 import Image from "next/image";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { UserX } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -82,6 +80,15 @@ const formSchema = z.object({
     })
   ),
   gender: z.string().optional(),
+  avatar: z.any().optional().refine(file => {
+    if (!(file instanceof File)) return false;
+
+    const { type } = file;
+
+    return type.startsWith("image");
+  }, {
+    message: "File must be an image"
+  }),
 });
 
 interface ProfileFormProps {
@@ -128,6 +135,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       address: "",
       age: 0,
       gender: "",
+      avatar: undefined,
     },
   });
 
@@ -137,18 +145,25 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
     setLoading(true);
 
     const accessToken = localStorage.getItem("access-token");
+    const payload: {[key: string]: any} = values;
+
+    const formData = new FormData();
+
+    for (const key in payload) {
+      if (payload[key] !== undefined) {
+        formData.append(key, payload[key]);
+      }
+    }
 
     const res = await AXIOS.PATCH(
       "/user/update-info",
       {
         ...values,
-        avatar: file,
       },
       accessToken ?? ""
     );
 
     if (res.statusCode === 200) {
-      setAvatar(res.metadata.avatar);
       window.location.reload();
       return;
     }
@@ -162,8 +177,12 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+
     if (e.target.files) {
+      console.log(e.target.files[0]);
       setFile(e.target.files[0]);
+      setValue("avatar", e.target.files[0]);
     }
   };
 
@@ -172,6 +191,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn("p-3 overflow-auto", props.className)}
+        encType="multipart/form-data"
       >
         <div className="space-y-4 w-full">
           <div className="flex justify-center">
@@ -181,40 +201,53 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
           <div className="flex justify-between gap-4">
             <div
               className="w-[50%] flex justify-center items-center"
-              onClick={handleImageClick}
             >
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <Image
-                      src={
-                        file
-                          ? URL.createObjectURL(file)
-                          : avatar
-                          ? avatar
-                          : "https://firebasestorage.googleapis.com/v0/b/ptudwnc2-20ktpm02-2023.appspot.com/o/images%2Favatar%2Fuser-default-avatar.png?alt=media&token=87041583-59b4-43a6-86eb-a93f06cd8b3e"
-                      }
-                      alt="Hero"
-                      width={300}
-                      height={300}
-                      placeholder="empty"
-                      blurDataURL={avatar}
-                      className="rounded object-fit hover:opacity-75 transition-opacity duration-200 ease-in-out"
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Click here to upload image</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+              <FormField
+                control={form.control}
+                name="avatar"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div onClick={handleImageClick}>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger>
+                              <Image
+                                src={
+                                  file
+                                    ? URL.createObjectURL(file)
+                                    : avatar
+                                    ? avatar
+                                    : "https://firebasestorage.googleapis.com/v0/b/ptudwnc2-20ktpm02-2023.appspot.com/o/images%2Favatar%2Fuser-default-avatar.png?alt=media&token=87041583-59b4-43a6-86eb-a93f06cd8b3e"
+                                }
+                                alt="Hero"
+                                width={300}
+                                height={300}
+                                placeholder="empty"
+                                loading="lazy"
+                                className="rounded object-fit hover:opacity-75 transition-opacity duration-200 ease-in-out"
+                              />
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Click here to upload image</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
 
-              <Input
-                type="file"
-                className="hidden"
-                ref={fileInputRef}
-                onChange={handleFileInputChange}
-                accept="image/*"
-              />
+                        <Input
+                          {...form.register("avatar")}
+                          type="file"
+                          className="hidden"
+                          ref={fileInputRef}
+                          onChange={handleFileInputChange}
+                          accept="image/*"
+                          disabled={loading}
+                        />
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              ></FormField>
             </div>
 
             <div className="w-[50%]">

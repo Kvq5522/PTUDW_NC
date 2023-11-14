@@ -28,7 +28,7 @@ export const AXIOS = {
 
       return res.data;
     } catch (err: any) {
-      return err.response.data;
+      return err.response;
     }
   },
 
@@ -37,14 +37,14 @@ export const AXIOS = {
       const res = await API.post(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           Accept: "application/json",
         },
       });
 
       return res.data;
     } catch (error: any) {
-      return error.response.data;
+      return error.response;
     }
   },
 
@@ -60,7 +60,7 @@ export const AXIOS = {
 
       return res.data;
     } catch (error: any) {
-      return error.response.data;
+      return error.response;
     }
   },
 
@@ -69,14 +69,14 @@ export const AXIOS = {
       const res = await API.patch(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          "Content-Type": "multipart/form-data",
           Accept: "application/json",
         },
       });
 
       return res.data;
     } catch (error: any) {
-      return error.response.data;
+      return error.response;
     }
   },
 
@@ -93,7 +93,7 @@ export const AXIOS = {
 
       return res.data;
     } catch (error: any) {
-      return error.response.data;
+      return error.response;
     }
   },
 };
