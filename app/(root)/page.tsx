@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import LandingPageDashboard from "@/components/Navbar/LandingPageDashboard";
 import Link from "next/link";
+import { Button } from "@mui/material";
 
 const page = () => {
   return (
@@ -17,12 +18,19 @@ const page = () => {
             Khang from HCMUS
           </p>
           <div className="flex gap-4 justify-center pt-10">
-            <button className="bg-green-500 text-white px-10 py-4 rounded-md text-lg font-bold">
-              <Link href="/sign-in">Sign In</Link>
-            </button>
-            <button className="bg-gray-500 text-white px-10 py-4 rounded-md text-lg font-bold">
-              <Link href="/sign-up">Get Started</Link>
-            </button>
+            <Link
+              href="/sign-in"
+              className="bg-green-500 text-white px-10 py-4 rounded-md text-lg font-bold"
+            >
+              Sign In
+            </Link>
+
+            <Link
+              href="/sign-up"
+              className="bg-gray-500 text-white px-10 py-4 rounded-md text-lg font-bold"
+            >
+              Get Started
+            </Link>
           </div>
 
           <div className="w-[100%] flex justify-center pr-8 ">
