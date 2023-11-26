@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { FC } from "react";
 
@@ -10,36 +11,23 @@ import HomeIcon from "@mui/icons-material/Home";
 
 const NotFound: FC = () => {
   return (
-    <div className="mx-auto">
-      <div className="text-center">
-        <h1 className="mb-4 text-6xl font-semibold text-green-500">404</h1>
-        <p className="mb-4 text-lg text-gray-600">
-          Oops! Looks like you're lost.
-        </p>
-        <div className="animate-bounce">
-          <svg
-            className="mx-auto h-16 w-16 text-green-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-            ></path>
-          </svg>
-        </div>
-        <p className="mt-4 text-gray-600">
-          Let's get you back{" "}
-          <a href="/" className="text-blue-500">
-            home
-          </a>
-          .
-        </p>
+    <main className="h-screen w-full flex flex-col justify-center items-center bg-[#1A2238]">
+      <h1 className="text-9xl font-extrabold text-white tracking-widest">
+        404
+      </h1>
+      <div className="bg-[green] px-2 text-sm rounded rotate-12 absolute">
+        Page Not Found
       </div>
-    </div>
+      <button className="mt-5">
+        <a className="relative inline-block text-sm font-medium text-[green] group active:text-orange-500 focus:outline-none focus:ring">
+          <span className="absolute inset-0 transition-transform translate-x-0.5 translate-y-0.5 bg-[green] group-hover:translate-y-0 group-hover:translate-x-0"></span>
+
+          <span className="relative block px-8 py-3 bg-[white] border border-current">
+            <Link href="/">Go Home</Link>
+          </span>
+        </a>
+      </button>
+    </main>
   );
 };
 
