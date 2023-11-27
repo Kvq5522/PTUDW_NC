@@ -14,8 +14,16 @@ export const AXIOS = {
 
     return formData;
   },
-  
-  GET: async (uri: string, params: object, token?: string) => {
+
+  GET: async ({
+    uri,
+    params,
+    token,
+  }: {
+    uri: string;
+    params?: object;
+    token?: string | undefined;
+  }) => {
     try {
       const res = await API.get(uri, {
         headers: {
@@ -32,12 +40,24 @@ export const AXIOS = {
     }
   },
 
-  POST: async (uri: string, params: object, token?: string | undefined, hasFile?: boolean) => {
+  POST: async ({
+    uri,
+    params,
+    token,
+    hasFile,
+  }: {
+    uri: string;
+    params?: object;
+    token?: string | undefined;
+    hasFile?: boolean;
+  }) => {
     try {
       const res = await API.post(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
-          ...(hasFile ? { "Content-Type": "multipart/form-data" } : {"Content-Type": "application/json"}),
+          ...(hasFile
+            ? { "Content-Type": "multipart/form-data" }
+            : { "Content-Type": "application/json" }),
           Accept: "application/json",
         },
       });
@@ -48,12 +68,24 @@ export const AXIOS = {
     }
   },
 
-  PUT: async (uri: string, params: object, token?: string | undefined, hasFile?: boolean) => {
+  PUT: async ({
+    uri,
+    params,
+    token,
+    hasFile,
+  }: {
+    uri: string;
+    params?: object;
+    token?: string | undefined;
+    hasFile?: boolean;
+  }) => {
     try {
       const res = await API.put(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
-          ...(hasFile ? { "Content-Type": "multipart/form-data" } : {"Content-Type": "application/json"}),
+          ...(hasFile
+            ? { "Content-Type": "multipart/form-data" }
+            : { "Content-Type": "application/json" }),
           Accept: "application/json",
         },
       });
@@ -64,12 +96,24 @@ export const AXIOS = {
     }
   },
 
-  PATCH: async (uri: string, params: object, token?: string | undefined, hasFile?: boolean) => {
+  PATCH: async ({
+    uri,
+    params,
+    token,
+    hasFile,
+  }: {
+    uri: string;
+    params?: object;
+    token?: string | undefined;
+    hasFile?: boolean;
+  }) => {
     try {
       const res = await API.patch(uri, AXIOS.ENCODE_FORM_DATA(params), {
         headers: {
           Authorization: `Bearer ${token}`,
-          ...(hasFile ? { "Content-Type": "multipart/form-data" } : {"Content-Type": "application/json"}),
+          ...(hasFile
+            ? { "Content-Type": "multipart/form-data" }
+            : { "Content-Type": "application/json" }),
           Accept: "application/json",
         },
       });
@@ -80,7 +124,15 @@ export const AXIOS = {
     }
   },
 
-  DELETE: async (uri: string, params: object, token?: string | undefined) => {
+  DELETE: async ({
+    uri,
+    params,
+    token,
+  }: {
+    uri: string;
+    params?: object;
+    token?: string | undefined;
+  }) => {
     try {
       const res = await API.delete(uri, {
         headers: {

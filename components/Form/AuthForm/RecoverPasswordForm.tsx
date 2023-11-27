@@ -28,19 +28,21 @@ const isAlphanumericWithUppercase = (value: string) => {
   return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
 };
 
-const formSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8).refine(isAlphanumericWithUppercase, {
-    message: "Password must be alphanumeric with uppercase",
-  }),
-  confirm_password: z.string().min(8).refine(isAlphanumericWithUppercase, {
-    message: "Password must be alphanumeric with uppercase",
-  }),
-  token: z.string().min(1),
-}).refine((data) => data.password === data.confirm_password, {
-  message: "Passwords must match",
-  path: ["confirm_password"],
-});
+const formSchema = z
+  .object({
+    email: z.string().email(),
+    password: z.string().min(8).refine(isAlphanumericWithUppercase, {
+      message: "Password must be alphanumeric with uppercase",
+    }),
+    confirm_password: z.string().min(8).refine(isAlphanumericWithUppercase, {
+      message: "Password must be alphanumeric with uppercase",
+    }),
+    token: z.string().min(1),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    message: "Passwords must match",
+    path: ["confirm_password"],
+  });
 
 interface RecoverPasswordFormProps {
   className?: string;
@@ -79,14 +81,17 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
       return;
     }
 
-    const res = await AXIOS.POST("/auth/send-recovery-mail", { email });
+    const res = await AXIOS.POST({
+      uri: "/auth/send-recovery-mail",
+      params: { email: email },
+    });
 
     if (res.statusCode !== 200) {
       setError(res.message);
       setLoading(false);
       return;
     }
- 
+
     setLoading(false);
     toast.success("Email sent, please check your email");
     setTimeReload(new Date(Date.now() + 1000 * 30));
@@ -95,8 +100,11 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
-    
-    const res = await AXIOS.POST("/auth/recover-password", values);
+
+    const res = await AXIOS.POST({
+      uri: "/auth/recover-password",
+      params: values,
+    });
 
     if (res.statusCode !== 200) {
       setError(res.message);
@@ -106,7 +114,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 
     setLoading(false);
     setError("");
-    
+
     toast.success("Password updated");
     window.location.href = "/sign-in";
     return;

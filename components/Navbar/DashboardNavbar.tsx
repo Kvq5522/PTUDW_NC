@@ -14,7 +14,10 @@ const Navbar = () => {
     const getUserInfo = async () => {
       const accessToken = localStorage.getItem("access-token");
 
-      const res = await AXIOS.GET("/user/get-info", {}, accessToken ?? "");
+      const res = await AXIOS.GET({
+        uri: "/user/get-info",
+        token: accessToken ?? "",
+      });
 
       if (res.statusCode === 200) {
         setAvatar(res.metadata.avatar);
@@ -27,9 +30,7 @@ const Navbar = () => {
   return (
     <div className="flex justify-between items-center px-10 border-b">
       <Logo />
-      <ProfileButton 
-        avatarSrc={avatar}
-      />
+      <ProfileButton avatarSrc={avatar} />
     </div>
   );
 };

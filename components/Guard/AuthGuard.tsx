@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+
+import Loader from "@/components/Loader/Loader";
+
+import { AXIOS } from "@/constants/ApiCall";
 
 interface GuardProps {
   children: React.ReactNode;
@@ -9,17 +14,11 @@ interface GuardProps {
 
 export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
   const router = useRouter();
-
-  const getExpJWT = (token: string) => {
-    const payloadBase64 = token.split(".")[1];
-    const payloadJson = atob(payloadBase64);
-    const payload = JSON.parse(payloadJson);
-    const { exp } = payload;
-
-    return exp;
-  };
+  const pathname = usePathname();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    setIsLoading(true);
     const accessToken = localStorage.getItem("access-token");
 
     if (!accessToken) {
@@ -27,18 +26,31 @@ export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
       return;
     }
 
-    try {
-      const exp = getExpJWT(accessToken);
+    const checkToken = async () => {
+      try {
+        const data = await AXIOS.POST({
+          uri: "auth/verify-token",
+          params: { token: accessToken },
+        });
 
-      if (exp < Date.now() / 1000) {
+        if (data.statusCode === 200) {
+          setIsLoading(false);
+          return;
+        }
+
         router.push("/sign-in");
-        return;
+        localStorage.removeItem("access-token");
+      } catch (error) {
+        router.push("/sign-in");
+        localStorage.removeItem("access-token");
       }
-    } catch (error) {
-      router.push("/sign-in");
-      return;
-    }
-  }, [router]);
+    };  
+
+    checkToken();
+  }, [router, pathname]);
+
+  if (isLoading)
+    return <div className="w-[100vw] h-[100vh]"><Loader className="w-[100%] h-[100%]" text="Loading..." /></div>;
 
   return <div className="w-[100%] h-[100%]">{props.children}</div>;
 };

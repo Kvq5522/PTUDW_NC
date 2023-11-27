@@ -32,6 +32,7 @@ export const ProfileButton: React.FC<ProfileButtonProps> = (
         <Avatar>
           <AvatarImage
             src={props.avatarSrc ?? "https://github.com/shadcn.png"}
+            referrerPolicy="no-referrer"
           />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>

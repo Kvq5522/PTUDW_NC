@@ -80,15 +80,21 @@ const formSchema = z.object({
     })
   ),
   gender: z.string().optional(),
-  avatar: z.any().optional().refine(file => {
-    if (!(file instanceof File)) return false;
+  avatar: z
+    .any()
+    .optional()
+    .refine(
+      (file) => {
+        if (!(file instanceof File)) return false;
 
-    const { type } = file;
+        const { type } = file;
 
-    return type.startsWith("image");
-  }, {
-    message: "File must be an image"
-  }),
+        return type.startsWith("image");
+      },
+      {
+        message: "File must be an image",
+      }
+    ),
 });
 
 interface ProfileFormProps {
@@ -107,7 +113,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
   useEffect(() => {
     const getUserInfo = async () => {
       const accessToken = localStorage.getItem("access-token");
-      const res = await AXIOS.GET("/user/get-info", {}, accessToken ?? "");
+      const res = await AXIOS.GET({
+        uri: "/user/get-info",
+        token: accessToken ?? "",
+      });
 
       if (res.statusCode === 200) {
         const { metadata } = res;
@@ -145,7 +154,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
     setLoading(true);
 
     const accessToken = localStorage.getItem("access-token");
-    const payload: {[key: string]: any} = values;
+    const payload: { [key: string]: any } = values;
+
+    console.log(payload);
 
     const formData = new FormData();
 
@@ -155,14 +166,14 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       }
     }
 
-    const res = await AXIOS.PATCH(
-      "/user/update-info",
-      {
+    const res = await AXIOS.PATCH({
+      uri: "/user/update-info",
+      params: {
         ...values,
       },
-      accessToken ?? "",
-      true
-    );
+      token: accessToken ?? "",
+      hasFile: true,
+    });
 
     if (res.statusCode === 200) {
       window.location.reload();
@@ -199,9 +210,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
           </div>
 
           <div className="flex justify-between gap-4">
-            <div
-              className="w-[50%] flex justify-center items-center"
-            >
+            <div className="w-[50%] flex justify-center items-center">
               <FormField
                 control={form.control}
                 name="avatar"

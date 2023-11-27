@@ -86,18 +86,18 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
       address: "",
       age: 0,
       gender: "",
-    }
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
 
-    const res = await AXIOS.POST("/auth/sign-up", values);
+    const res = await AXIOS.POST({ uri: "/auth/sign-up", params: values });
 
     if (res.statusCode === 201) {
       window.location.href = "/sign-in";
       return;
-    } 
+    }
 
     setError(res.message);
     setLoading(false);
