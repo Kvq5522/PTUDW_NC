@@ -1,0 +1,308 @@
+div {
+  display: block;
+}
+
+.stream-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: calc(100% - 2 * 1.5rem);
+  max-width: 63rem;
+  background-color: white;
+  margin: auto;
+}
+.stream-header {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-top: 1.5rem;
+}
+
+.stream-header .wrapper {
+  position: relative;
+  height: 13rem;
+  width: 100%;
+}
+
+.stream-header-image {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-image: url("https://gstatic.com/classroom/themes/img_bookclub.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.stream-header-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1rem 1.5rem;
+  color: white;
+}
+
+.change-theme-btn {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  bottom: 0;
+  right: 0;
+  top: 0;
+  margin: 1rem 1rem 1rem 0rem;
+}
+.change-theme {
+  font-size: 0.75rem;
+  padding: 3px 0 3px 0;
+  cursor: pointer;
+}
+.change-theme:hover {
+  text-decoration: underline;
+}
+
+.main-label,
+.sub-label {
+  display: block;
+  padding-right: 2rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space-collapse: collapse;
+  text-wrap: nowrap;
+}
+.main-label {
+  font-size: 2.5rem;
+  font-weight: 600;
+  line-height: 2.5rem;
+}
+.sub-label {
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.75rem;
+}
+
+.classroom-sharing {
+  height: 2rem;
+  width: 2rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 1rem;
+  margin-right: 1.5rem;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+aside {
+  display: block;
+}
+.stream-body {
+  display: flex;
+  margin-top: 1.5rem;
+}
+.stream-aside {
+  flex-shrink: inherit;
+}
+
+/* Upcoming card for deco */
+.upcoming-card {
+  background-color: white;
+  border: 1px solid rgb(127, 127, 127);
+  border-radius: 9px;
+  width: 11.6rem;
+  margin-right: 1rem;
+  padding: 0.6rem;
+}
+.upcoming-title {
+  padding-bottom: 1rem;
+  font-size: 0.83rem;
+  font-weight: 500;
+  line-height: 1rem;
+  text-transform: none;
+}
+.upcoming-content {
+  display: block;
+}
+.upC-main {
+  font-size: 0.8rem;
+  font-weight: 300;
+  line-height: 1rem;
+  margin-bottom: 0.5rem;
+}
+.vwAllUpC {
+  display: block;
+  text-align: right;
+  margin: 0.5rem 0rem;
+}
+
+.link-todo {
+  color: #018373;
+  font-size: 0.83rem;
+  font-weight: 500;
+  padding: 8px 9px;
+}
+
+.link-todo:hover {
+  background-color: rgb(227, 227, 227);
+}
+
+/* Stream Main content */
+main {
+  display: block;
+}
+
+.stream-main {
+  background-color: white;
+  overflow: hidden;
+  margin: -1rem;
+  padding: 1rem;
+  flex-grow: 1;
+  min-height: 100vh;
+}
+.streamContent-wrapper {
+  display: block;
+}
+
+/* Announce Card */
+.announce-box {
+  min-height: 4.5rem;
+  box-shadow: 0 1px 2px 0 rgba(60, 64, 67, 0.3),
+    0 2px 6px 2px rgba(60, 64, 67, 0.15);
+  border-radius: 0.5rem;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+.announceCard-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  z-index: 0;
+}
+.inactive-announceContent {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
+  flex-direction: row;
+  cursor: pointer;
+}
+.iaAnnounce-text {
+  align-items: center;
+  color: rgba(0, 0, 0, 0.549);
+  display: flex;
+  flex: 1 1 auto;
+  height: 100%;
+  justify-content: flex-start;
+}
+.iaAnnounce-text:hover {
+  color: #32ac71;
+}
+.announce-avt {
+  margin-left: 0.5rem;
+  padding: 1rem;
+}
+
+/* Dialog */
+.invite-dialog {
+  background-color: #fff;
+  border-radius: 8px;
+  height: 32rem;
+  max-height: 100%;
+  width: 100%;
+  max-width: 28rem;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  -webkit-box-orient: vertical;
+  -webkit-box-align: stretch;
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3),
+    0 4px 8px 3px rgba(60, 64, 67, 0.15);
+  outline: 1px solid transparent;
+  overflow: hidden;
+  transition: transform 0.225s cubic-bezier(0, 0, 0.2, 1),
+    -webkit-transform 0.225s cubic-bezier(0, 0, 0.2, 1);
+}
+.invite-dialog > button > svg {
+  display: none;
+}
+.inv-dialog-wrapper {
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  flex-grow: 2;
+  flex-shrink: 2;
+  line-height: 20px;
+  display: block;
+  outline: none;
+}
+
+.classlink-area {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  gap: 5px;
+}
+.classlink-area input {
+  outline: none;
+  box-sizing: border-box;
+  height: 100%;
+}
+.classlink-area input:focus {
+  outline: none;
+  -webkit-box-shadow: none;
+}
+
+.inv-dialog-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.search-select {
+  display: block;
+  background-color: white;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.invite-area {
+  max-height: 100px;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  flex-direction: column;
+  overflow-y: auto;
+  justify-content: center;
+}
+.inv-item {
+  height: 3rem;
+  align-content: flex-start;
+  align-items: center;
+  -webkit-box-align: center;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  flex-direction: row;
+  flex-wrap: wrap;
+  -webkit-box-pack: start;
+  justify-content: flex-start;
+}
+.search-email {
+  outline: none;
+  border: none;
+  -webkit-box-shadow: none;
+  background-color: white;
+}
+.custom-item {
+  display: flex;
+  width: fit-content;
+  justify-content: start;
+  align-items: center;
+  background-color: white;
+  border: 1px solid slategray;
+  padding: 2px 2px;
+  margin-bottom: 1px;
+  border-radius: 15px;
+  min-width: 100px;
+}
