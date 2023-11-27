@@ -1,6 +1,6 @@
 const ShowResult = () => {
   return (
-    <div>
+    <div className="search-result">
       Enter
     </div>
   );

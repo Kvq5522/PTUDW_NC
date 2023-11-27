@@ -35,6 +35,8 @@ import { Label } from "../ui/label";
 
 const ClassroomMenu = () => {
   const classcode = "0123456789"; // Tối đa 10 ký tự
+  const classlink =
+    "https://classroom.google.com/c/NjQyNDY3MTk3Mzg4?cjc=xwhpugk";
   const copyToClipboard = () => {
     navigator.clipboard.writeText(classcode);
   };
@@ -72,16 +74,24 @@ const ClassroomMenu = () => {
 
       <DialogContent className="invite-dialog">
         <DialogHeader>
-          <DialogTitle className="font-medium tracking-wider">Invite Students</DialogTitle>
+          <DialogTitle className="font-medium tracking-wider">
+            Invite Students
+          </DialogTitle>
         </DialogHeader>
         <div className="inv-dialog-wrapper">
           <div className="inv-dialog-content">
+            {/* Invite Link */}
             <div>
               <Label htmlFor="classlink" className="font-normal">
-                Invite Link
+                Direct Link
               </Label>
               <div className="classlink-area">
-                <Input id="classlink" defaultValue={classcode} readOnly />
+                <Input
+                  id="classlink"
+                  className="font-extralight"
+                  defaultValue={classlink}
+                  readOnly
+                />
                 <Button
                   type="submit"
                   size="sm"
@@ -93,14 +103,18 @@ const ClassroomMenu = () => {
                 </Button>
               </div>
             </div>
+
+            {/* Search Student */}
             <div className="inv-student-area">
-              <Separator id="topline" />
-              <div className="search-select">
-                <SearchWithEmail />
-              </div>
-              <Separator id="bottomline" />
-              <div className="search-result">
+              <div className="inv-student-wrapper">
+                <Separator id="topline" />
+                <div className="search-select">
+                  <SearchWithEmail />
+                </div>
+                <Separator id="bottomline" />
+                
                 <ShowResult />
+                
               </div>
             </div>
           </div>

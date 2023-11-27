@@ -27,7 +27,13 @@ const AnnounceCard = () => {
             Announce something to your class
           </div>
         </div>
-        <div className={ isActive ? "active-announceContent" :  "active-announceContent hidden" }>
+        <div
+          className={
+            isActive
+              ? "active-announceContent"
+              : "active-announceContent hidden"
+          }
+        >
           <Button onClick={handleClick}>Cancel</Button>
         </div>
       </div>
