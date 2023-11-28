@@ -141,7 +141,7 @@ export const SignInForm: React.FC<SignInFormProps> = (
               )}
             />
 
-            {error.length > 0 && <em className="text-red-600">{error}</em>}
+            { typeof(error) === "string" && error.length > 0 && <em className="text-red-600">{error}</em>}
 
             <div className="pt-6 space-x-2 flex items-center flex-wrap justify-end w-full">
               <Link
