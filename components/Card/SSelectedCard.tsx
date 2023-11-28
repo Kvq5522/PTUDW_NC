@@ -1,7 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { X } from "lucide-react";
 
-const SSelectedCard = ({ index, email, onRemove }) => {
+interface SSelectedCardProps {
+  index: number,
+  email: string,
+  onRemove: () => void
+}
+
+const SSelectedCard = (props: SSelectedCardProps) => {
   return (
     <>
       <style jsx>
@@ -56,7 +62,7 @@ const SSelectedCard = ({ index, email, onRemove }) => {
           }
         `}
       </style>
-      <div key={index} draggable="true" className="selected-item-wrapper">
+      <div key={props.index} draggable="true" className="selected-item-wrapper">
         <div className="siWcwi">
           <div className="custom-item">
             <div className="dTiwraper">
@@ -67,8 +73,8 @@ const SSelectedCard = ({ index, email, onRemove }) => {
                 />
                 <AvatarFallback>CN</AvatarFallback>
               </Avatar>
-              <div className="item-name">{email}</div>
-              <div className="item-delete" onClick={onRemove}>
+              <div className="item-name">{props.email}</div>
+              <div className="item-delete" onClick={props.onRemove}>
                 <X className="block"/>
               </div>
             </div>
