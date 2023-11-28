@@ -2,23 +2,35 @@ import React, { useEffect } from "react";
 
 import Navbar from "@/components/Navbar/DashboardNavbar";
 import ClassCard from "@/app/dashboard/classCard";
+import DashBoardSidebar from "@/components/SideBar/DashBoardSidebar";
+import { SidebarProvider } from "@/components/Contexts/SideBarContext";
 function Dashboard() {
   return (
-    <div className="dashboard">
-      <>
-        <div>
+    <SidebarProvider>
+      <div className="max-h-screen flex flex-col">
+        <>
           <Navbar></Navbar>
-        </div>
-        <div className="dashboard__classContainer pt-10 pl-10">
-          <div>
+          <hr></hr>
+
+          <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
+            <div>
+              <DashBoardSidebar />
+            </div>
+            <div className="overflow-x-hidden px-8 pb-4">
+              <div className="grid gap-4 grid-cols-[repeat(auto-fillminmax(300px,1fr))]">
+                <ClassCard />
+              </div>
+            </div>
+            {/* <div>
             <ClassCard />
           </div>
           <div className="pt-10">
             <ClassCard />
+          </div> */}
           </div>
-        </div>
-      </>
-    </div>
+        </>
+      </div>
+    </SidebarProvider>
   );
 }
 export default Dashboard;
