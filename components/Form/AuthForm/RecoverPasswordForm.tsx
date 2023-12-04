@@ -100,6 +100,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    setError("");
 
     const res = await AXIOS.POST({
       uri: "/auth/recover-password",
@@ -223,7 +224,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
             )}
           />
 
-          {error.length > 0 && (
+          {error && (
             <div className="pt-2">
               <em className="text-red-600">{error}</em>
             </div>

@@ -34,7 +34,7 @@ import { toast } from "react-hot-toast";
 import { AXIOS } from "@/constants/ApiCall";
 
 const isAlphanumericWithUppercase = (value: string) => {
-  return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
+  return /[A-Z]/.test(value) && /[0-9]/.test(value);
 };
 
 const isAgePositiveInteger = (value: number | undefined) => {
@@ -91,10 +91,11 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    setError("");
 
     const res = await AXIOS.POST({ uri: "/auth/sign-up", params: values });
 
-    if (res.statusCode === 201) {
+    if (res && res.statusCode === 201) {
       window.location.href = "/sign-in";
       return;
     }
@@ -304,7 +305,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
             />
           </div>
 
-          {error.length > 0 && <em className="text-red-600">{error}</em>}
+          {error && <em className="text-red-600">{error}</em>}
 
           <div className="pt-6 space-x-2 flex flex-wrap items-center justify-end w-full">
             <Link

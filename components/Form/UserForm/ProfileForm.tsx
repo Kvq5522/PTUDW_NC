@@ -57,16 +57,6 @@ const isPhoneNumber = (value: string | undefined) => {
 };
 
 const formSchema = z.object({
-  new_password: z
-    .string()
-    .optional()
-    .refine(
-      (value) => value === "" || isAlphanumericWithUppercase(value),
-      "Password must be alphanumeric with uppercase"
-    ),
-  confirm_password: z.string().min(8).refine(isAlphanumericWithUppercase, {
-    message: "Password must be alphanumeric with uppercase",
-  }),
   first_name: z.string().min(1),
   last_name: z.string().min(1),
   phone: z.string().optional().refine(isPhoneNumber, {
@@ -131,13 +121,12 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
     };
 
     getUserInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      new_password: "",
-      confirm_password: "",
       first_name: "",
       last_name: "",
       phone: "",
@@ -152,6 +141,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    setError("");
 
     const accessToken = localStorage.getItem("access-token");
     const payload: { [key: string]: any } = values;
@@ -210,7 +200,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
           </div>
 
           <div className="flex justify-between gap-4">
-            <div className="w-[50%] flex justify-center items-center">
+            <div className={`w-[50%] flex justify-center items-center`}>
               <FormField
                 control={form.control}
                 name="avatar"
@@ -234,7 +224,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                                 height={300}
                                 placeholder="empty"
                                 loading="lazy"
-                                className="rounded object-fit hover:opacity-75 transition-opacity duration-200 ease-in-out"
+                                priority={false}
+                                className="object-cover rounded-full hover:opacity-75 w-[300px] h-[300px] transition-opacity duration-200 ease-in-out"
                               />
                             </TooltipTrigger>
                             <TooltipContent>
@@ -396,53 +387,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
             />
           </div>
 
-          <div className="flex justify-between gap-4">
-            <FormField
-              control={form.control}
-              name="new_password"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel>
-                    <div className="truncate">New Password</div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="New Password"
-                      disabled={loading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="confirm_password"
-              render={({ field }) => (
-                <FormItem className="w-[50%]">
-                  <FormLabel>
-                    <div className="truncate">
-                      Old Password For Confirmation
-                    </div>
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="password"
-                      placeholder="New Password"
-                      disabled={loading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          {error.length > 0 && <em className="text-red-600">{error}</em>}
+          {error && <em className="text-red-600">{error}</em>}
 
           <div className="pt-6 space-x-2 flex flex-wrap items-center justify-end w-full">
             <Link
