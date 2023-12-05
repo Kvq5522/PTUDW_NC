@@ -1,0 +1,152 @@
+.grade-container {
+  position: relative;
+  display: flex;
+  margin: 0 auto;
+  min-height: 100%;
+  width: calc(100% - 2 * 1rem);
+  z-index: auto;
+  background-color: white;
+  overflow: hidden;
+}
+
+.grade-wrapper {
+  height: 100%;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  z-index: auto;
+  overflow: hidden;
+  box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.3),
+    0 4px 8px 3px rgba(60, 64, 67, 0.15);
+}
+
+.grade-top {
+  display: flex;
+  width: 100%;
+  height: 69vh;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  justify-content: center;
+}
+
+.dnd-list-container {
+  z-index: 2;
+  width: 369px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  display: block;
+  border: 2px solid rgb(99, 99, 99);
+  overflow: hidden;
+  border-radius: 15px;
+  display: block;
+  box-shadow: 0 1px 3px 0 rgba(63, 66, 69, 0.39),
+    0 4px 8px 3px rgba(63, 66, 69, 0.16);
+}
+.dnd-list-wrapper {
+  height: 100%;
+  width: 100%;
+  background-color:rgb(255, 255, 255);
+  overflow: hidden;
+}
+.dndl-content {
+  display: block;
+  position: relative;
+  height: 85%;
+  width: 100%;
+  padding: 3px;
+  border: none;
+  outline: none;
+  overflow: auto;
+}
+.dndl-content::-webkit-scrollbar {
+  width: 3px; /* Set the width of the scrollbar */
+}
+.dndl-content::-webkit-scrollbar-thumb {
+  background-color: #888; /* Set the color of the scrollbar thumb */
+  border-radius: 10px; /* Set the border-radius to round the edges of the thumb */
+}
+.dndl-content::-webkit-scrollbar-track {
+  background-color: #f0f0f0; /* Set the color of the scrollbar track */
+}
+.dndl-item {
+  display: block;
+  position: relative;
+  height: 3rem;
+  border-radius: 1rem;
+  padding: 3px;
+  background-color: rgb(190, 190, 190);
+  margin-bottom: 5px;
+}
+.dndl-item-wrapper {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  justify-content: space-between;
+}
+.dndlina {
+  display: block;
+  width: 45%;
+  overflow: hidden;
+  text-align: start;
+  text-overflow: ellipsis;
+  font-weight: bold;
+  
+} 
+.dndliwi {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dndl-item-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  border-radius: 10px;
+}
+
+/* --------------------------------------------------------- */
+
+.dndl-tools {
+  background-color: #22c55e;
+  height: 15%;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: space-around;
+}
+.dndl-tools-actions > button {
+  border: none;
+  background-color: #bebebe;
+}
+.addIPlustbtn:hover {
+  color: #0866ff;
+  background-color: whtie;
+  transition: 0.1s ease-in all;
+}
+.createTbtn:hover {
+  color: #8b5cf6;
+  background-color: whtie;
+  transition: 0.1s ease-in all;
+}
+.addIPlustbtn:active, .createTbtn:active {
+  background-color: black;
+  transition: 0.1s ease all;
+}
+
+/* --------------------------------------------------------- */
+
+.grade-table {
+  display: block;
+  width: 100%;
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+  border: 1px solid black;
+}
