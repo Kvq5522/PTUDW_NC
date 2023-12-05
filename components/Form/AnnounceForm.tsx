@@ -24,11 +24,9 @@ import { Input } from "@/components/ui/input"
 
 const AnnounceForm = () => {
   return (
-    <Form >
-      <form>
-
-      </form>
-    </Form>
+    <div >
+      Blank Component
+    </div>
   )
 }
 
