@@ -122,7 +122,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Email (<text className="text-red-500">*</text>)
+                    Email (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -145,7 +145,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Password (<text className="text-red-500">*</text>)
+                    Password (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -169,7 +169,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
                 <FormItem className="w-[50%]">
                   <FormLabel>
                     <div className="truncate">
-                      First Name (<text className="text-red-500">*</text>)
+                      First Name (<span className="text-red-500">*</span>)
                     </div>
                   </FormLabel>
                   <FormControl>
@@ -192,7 +192,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
                 <FormItem className="w-[50%]">
                   <FormLabel>
                     <div className="truncate">
-                      Last Name (<text className="text-red-500">*</text>)
+                      Last Name (<span className="text-red-500">*</span>)
                     </div>
                   </FormLabel>
                   <FormControl>

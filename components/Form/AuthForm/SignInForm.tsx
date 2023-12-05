@@ -108,7 +108,7 @@ export const SignInForm: React.FC<SignInFormProps> = (
                 <FormItem>
                   <div className="flex justify-between items-center">
                     <FormLabel className="w-[15%] truncate">
-                      Email (<text className="text-red-500">*</text>)
+                      Email (<span className="text-red-500">*</span>)
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -131,7 +131,7 @@ export const SignInForm: React.FC<SignInFormProps> = (
                 <FormItem>
                   <div className="flex justify-between items-center">
                     <FormLabel className="w-[15%] truncate">
-                      Password (<text className="text-red-500">*</text>)
+                      Password (<span className="text-red-500">*</span>)
                     </FormLabel>
                     <FormControl>
                       <Input
