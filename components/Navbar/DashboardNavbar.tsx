@@ -7,34 +7,18 @@ import { Button } from "@/components/ui/button";
 
 import { ProfileButton } from "../ui/ProfileButton";
 
-import { AXIOS } from "@/constants/ApiCall";
 import { Barcode, Menu, Plus } from "lucide-react";
 import { useSidebarContext } from "../Contexts/SideBarContext";
-import { type } from "os";
+import { useAppSelector } from "@/redux/store";
 
 type PageNavbarSectionProps = {
   hidden?: boolean;
 };
 
 const Navbar = () => {
-  const [avatar, setAvatar] = useState<string>("");
-
-  useEffect(() => {
-    const getUserInfo = async () => {
-      const accessToken = localStorage.getItem("access-token");
-
-      const res = await AXIOS.GET({
-        uri: "/user/get-info",
-        token: accessToken ?? "",
-      });
-
-      if (res.statusCode === 200) {
-        setAvatar(res.metadata.avatar);
-      }
-    };
-
-    getUserInfo();
-  });
+  const avatar = useAppSelector(
+    (state: any) => state.userInfoReducer.value?.userInfo?.avatar
+  );
 
   return (
     <div className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4">

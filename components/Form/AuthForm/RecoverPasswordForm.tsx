@@ -86,7 +86,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
       params: { email: email },
     });
 
-    if (res.statusCode !== 200) {
+    if (res.statusCode && res.statusCode !== 200) {
       setError(res.message);
       setLoading(false);
       return;
@@ -107,7 +107,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
       params: values,
     });
 
-    if (res.statusCode !== 200) {
+    if (res.statusCode && res.statusCode !== 200) {
       setError(res.message);
       setLoading(false);
       return;

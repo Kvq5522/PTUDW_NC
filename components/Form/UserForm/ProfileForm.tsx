@@ -36,30 +36,25 @@ import { cn } from "@/lib/utils";
 
 import Link from "next/link";
 
-import { toast } from "react-hot-toast";
 import { AXIOS } from "@/constants/ApiCall";
 
-const isAlphanumericWithUppercase = (value: string | undefined) => {
-  if (!value) return true;
-
-  return (
-    /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value) && value.length > 7
-  );
-  //check if value is alphanumeric with uppercase and length > 7
-};
+import { useAppSelector } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { setUserInfo } from "@/redux/slices/user-info-slice";
+import { AppDispatch } from "@/redux/store";
 
 const isAgePositiveInteger = (value: number | undefined) => {
   return value ? /^(150|[1-9][0-9]?)$/.test(value.toString()) : true;
 };
 
-const isPhoneNumber = (value: string | undefined) => {
+const isPhoneNumber = (value?: string | undefined) => {
   return value ? /^[0-9]{10}$/.test(value) : true;
 };
 
 const formSchema = z.object({
   first_name: z.string().min(1),
   last_name: z.string().min(1),
-  phone: z.string().optional().refine(isPhoneNumber, {
+  phone_number: z.string().optional().refine(isPhoneNumber, {
     message: "Phone number must be with 10 digits",
   }),
   address: z.string().optional(),
@@ -75,6 +70,7 @@ const formSchema = z.object({
     .optional()
     .refine(
       (file) => {
+        if (!file) return true;
         if (!(file instanceof File)) return false;
 
         const { type } = file;
@@ -99,28 +95,20 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [avatar, setAvatar] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
+  const userProfile = useAppSelector(
+    (state: any) => state.userInfoReducer.value?.userInfo
+  );
 
   useEffect(() => {
-    const getUserInfo = async () => {
-      const accessToken = localStorage.getItem("access-token");
-      const res = await AXIOS.GET({
-        uri: "/user/get-info",
-        token: accessToken ?? "",
-      });
+    setAvatar(userProfile?.avatar ?? "");
+    setValue("first_name", userProfile?.first_name ?? "");
+    setValue("last_name", userProfile?.last_name ?? "");
+    setValue("phone_number", userProfile?.phone_number ?? "");
+    setValue("address", userProfile?.address ?? "");
+    setValue("age", userProfile?.age ?? 0);
+    setValue("gender", userProfile?.gender ?? "");
 
-      if (res.statusCode === 200) {
-        const { metadata } = res;
-        setAvatar(metadata.avatar);
-        setValue("first_name", metadata.first_name);
-        setValue("last_name", metadata.last_name);
-        setValue("phone", metadata.phone ?? "");
-        setValue("address", metadata.address ?? "");
-        setValue("age", metadata.age ?? 0);
-        setValue("gender", metadata.gender ?? "");
-      }
-    };
-
-    getUserInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -129,11 +117,11 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
     defaultValues: {
       first_name: "",
       last_name: "",
-      phone: "",
+      phone_number: "",
       address: "",
       age: 0,
       gender: "",
-      avatar: undefined,
+      avatar: "",
     },
   });
 
@@ -145,8 +133,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
 
     const accessToken = localStorage.getItem("access-token");
     const payload: { [key: string]: any } = values;
-
-    console.log(payload);
 
     const formData = new FormData();
 
@@ -165,8 +151,10 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       hasFile: true,
     });
 
-    if (res.statusCode === 200) {
-      window.location.reload();
+    if (res.statusCode && res.statusCode === 200) {
+      dispatch(setUserInfo(res.metadata));
+      setError("");
+      setLoading(false);
       return;
     }
 
@@ -190,7 +178,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit((data) => onSubmit(data))}
         className={cn("p-3 overflow-auto", props.className)}
         encType="multipart/form-data"
       >
@@ -220,8 +208,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                                     : "https://firebasestorage.googleapis.com/v0/b/ptudwnc2-20ktpm02-2023.appspot.com/o/images%2Favatar%2Fuser-default-avatar.png?alt=media&token=87041583-59b4-43a6-86eb-a93f06cd8b3e"
                                 }
                                 alt="Hero"
-                                width={300}
-                                height={300}
+                                width={600}
+                                height={600}
                                 placeholder="empty"
                                 loading="lazy"
                                 priority={false}
@@ -293,7 +281,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
           <div className="flex justify-between gap-4">
             <FormField
               control={form.control}
-              name="phone"
+              name="phone_number"
               render={({ field }) => (
                 <FormItem className="w-[50%]">
                   <FormLabel>

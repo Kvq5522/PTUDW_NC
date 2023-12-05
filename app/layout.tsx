@@ -2,8 +2,8 @@ import { Outfit } from "next/font/google";
 import type { Metadata } from "next";
 import "@/Styles/globals.css";
 
-import { Children } from "react";
-import LandingPageDashboard from "@/components/Navbar/LandingPageDashboard";
+import ReduxProvider from "@/redux/provider";
+
 const font = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -15,7 +15,9 @@ export default function homePage({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body className={font.className}>
-        <div id="root">{children}</div>
+        <ReduxProvider>
+          <div id="root">{children}</div>
+        </ReduxProvider>
       </body>
     </html>
   );
