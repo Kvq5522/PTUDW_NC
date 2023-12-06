@@ -14,8 +14,8 @@ const page = () => {
             This is Google Classroom Clone
           </div>
           <p className="text-lg md:text-xl md:10 bg-gradient-to-r from-black to-gray-400 bg-clip-text text-transparent font-bold ">
-            This is a Google classroom clone by Ha Huynh Duc Huy and Quach Vinh
-            Khang from HCMUS
+            This is a Google classroom clone by Ha Huynh Duc Huy, Quach Vinh
+            Khang, Luu Minh Phat from HCMUS
           </p>
           <div className="flex gap-4 justify-center pt-10">
             <Link
