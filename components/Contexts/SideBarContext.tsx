@@ -23,7 +23,7 @@ const SidebarContext = createContext<SidebarContextType | null>(null);
 
 export function useSidebarContext() {
   const value = useContext(SidebarContext);
-  if (value == null) throw Error("cannot use SidebarProvider");
+  if (value == null) throw Error("Cannot use SidebarProvider");
 
   return value;
 }

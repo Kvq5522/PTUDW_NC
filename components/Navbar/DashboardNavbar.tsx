@@ -1,5 +1,12 @@
 "use client";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import React, { useState, useEffect } from "react";
 import Logo from "./Logo";
 import Link from "next/link";
@@ -22,14 +29,22 @@ const Navbar = () => {
 
   return (
     <div className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4">
-      <FirstNabarSection />
+      <FirstNavbarSection />
       <div className="flex flex-shrink-0 md:gap-2 justify-end">
-        <Button size="icon" variant="ghost">
-          <Plus />
-        </Button>
-        <Button size="icon" variant="ghost">
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Plus />
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Join a class</DropdownMenuItem>
+            <DropdownMenuItem>Create a class</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        {/* <Button size="icon" variant="ghost">
           <Barcode />
-        </Button>
+        </Button> */}
 
         <ProfileButton avatarSrc={avatar} />
       </div>
@@ -41,14 +56,14 @@ const Navbar = () => {
   );
 };
 
-export function FirstNabarSection({ hidden }: PageNavbarSectionProps) {
+export function FirstNavbarSection({ hidden }: PageNavbarSectionProps) {
   const { toggle } = useSidebarContext();
   return (
     <div className="flex gap-4 items-center flex-shrink-0">
       <Button onClick={toggle} variant="ghost" size="icon">
         <Menu />
       </Button>
-      <Link href="/">
+      <Link href="/dashboard">
         <Logo />
       </Link>
     </div>
