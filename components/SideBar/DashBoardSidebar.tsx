@@ -4,10 +4,12 @@ import {
   Calendar,
   ChevronDown,
   ChevronUp,
+  FolderOpen,
   GraduationCap,
   HardDriveDownload,
   Home,
   Settings,
+  Users,
 } from "lucide-react";
 
 import Link from "next/link";
@@ -18,10 +20,11 @@ import { cn } from "@/lib/utils";
 import { boolean } from "zod";
 import { type } from "os";
 import { useSidebarContext } from "../Contexts/SideBarContext";
-import { FirstNabarSection } from "../Navbar/DashboardNavbar";
+import { FirstNavbarSection } from "../Navbar/DashboardNavbar";
 
 const DashBoardSideBar = () => {
   const { isLargeOpen, isSmallOpen, close } = useSidebarContext();
+  const [stateTest, setStateTest] = useState("");
   return (
     <>
       <aside
@@ -29,28 +32,40 @@ const DashBoardSideBar = () => {
           isLargeOpen ? "lg:hidden" : "lg:flex"
         }`}
       >
-        <SmallSidebarItem Icon={Home} title="Home" url="/"></SmallSidebarItem>
+        <div>menu</div>
+
+        <SmallSidebarItem
+          Icon={Home}
+          title="Home"
+          url="/dashboard"
+        ></SmallSidebarItem>
         <SmallSidebarItem
           Icon={Calendar}
           title="Calendar"
-          url="/"
+          url="/dashboard"
+        ></SmallSidebarItem>
+        <div className="border"></div>
+        <SmallSidebarItem
+          Icon={Users}
+          title="teach"
+          url="/dashboard"
         ></SmallSidebarItem>
         <div className="border"></div>
         <SmallSidebarItem
           Icon={GraduationCap}
           title="sub"
-          url="/"
+          url="/dashboard"
         ></SmallSidebarItem>
         <div className="border"></div>
         <SmallSidebarItem
           Icon={HardDriveDownload}
           title="Home"
-          url="/"
+          url="/dashboard"
         ></SmallSidebarItem>
         <SmallSidebarItem
           Icon={Settings}
-          title="asdas"
-          url="/"
+          title="Setting"
+          url="/dashboard"
         ></SmallSidebarItem>
       </aside>
       {isSmallOpen && (
@@ -65,28 +80,48 @@ const DashBoardSideBar = () => {
         } ${isSmallOpen ? "flex z-[999] bg-white max-h-screen " : "hidden"}`}
       >
         <div className=" lg:hidden pt-2 pb-4 sticky top-0 bg-white">
-          <FirstNabarSection />
+          <FirstNavbarSection />
         </div>
         <LargeSidebarSection>
-          <LargeSidebarItem isActive Icon={Home} title="Home" url="/" />
-          <LargeSidebarItem Icon={Calendar} title="Calendar" url="/" />
+          <LargeSidebarItem
+            isActive
+            Icon={Home}
+            title="Home"
+            url="/dashboard"
+          />
+          <LargeSidebarItem Icon={Calendar} title="Calendar" url="/dashboard" />
           <hr></hr>
+
+          <LargeSidebarSection visibleItemCount={1}>
+            <LargeSidebarItem Icon={Users} title="Teaching" url="/dashboard" />
+            <LargeSidebarItem
+              Icon={FolderOpen}
+              title="Checking"
+              url="/dashboard"
+            />
+          </LargeSidebarSection>
+          <hr></hr>
+
           <LargeSidebarSection visibleItemCount={1}>
             <LargeSidebarItem
               Icon={GraduationCap}
               title="Subscription"
-              url="/"
+              url="/dashboard"
             />
-            <LargeSidebarItem Icon={BookOpenCheck} title="To Do" url="/" />
+            <LargeSidebarItem
+              Icon={BookOpenCheck}
+              title="To Do"
+              url="/dashboard"
+            />
           </LargeSidebarSection>
 
           <hr></hr>
           <LargeSidebarItem
             Icon={HardDriveDownload}
             title="Saved Classes"
-            url="/"
+            url="/dashboard"
           />
-          <LargeSidebarItem Icon={Settings} title="Setting" url="/" />
+          <LargeSidebarItem Icon={Settings} title="Setting" url="/dashboard" />
         </LargeSidebarSection>
       </aside>
     </>

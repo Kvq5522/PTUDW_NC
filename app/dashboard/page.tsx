@@ -4,6 +4,8 @@ import Navbar from "@/components/Navbar/DashboardNavbar";
 import ClassCard from "@/app/dashboard/classCard";
 import DashBoardSidebar from "@/components/SideBar/DashBoardSidebar";
 import { SidebarProvider } from "@/components/Contexts/SideBarContext";
+import Link from "next/link";
+
 function Dashboard() {
   return (
     <SidebarProvider>
@@ -33,4 +35,5 @@ function Dashboard() {
     </SidebarProvider>
   );
 }
+
 export default Dashboard;

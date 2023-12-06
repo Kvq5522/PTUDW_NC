@@ -35,12 +35,12 @@ const SteamContent = () => {
             <div className="classroom-sharing">
               <ClassroomMenu />
             </div>
-          ) : ( 
+          ) : (
             <></>
           )}
         </div>
       </div>
-      
+
       <div className="stream-body">
         <aside role="complementary" className="stream-aside">
           <div className="stream-aside-wrapper">

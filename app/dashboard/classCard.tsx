@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "next/link";
 import { FolderOpen, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,15 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 function ClassCard() {
@@ -28,7 +26,11 @@ function ClassCard() {
   return (
     <Card className="w-[350px]">
       <CardHeader className="border-b">
-        <CardTitle>20KTPM02-Huy Ha</CardTitle>
+        <CardTitle>
+          <HoverCard>
+            <HoverCardTrigger>20KTPM02-Huy Ha</HoverCardTrigger>
+          </HoverCard>
+        </CardTitle>
         <Avatar>
           <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
           <AvatarFallback>CN</AvatarFallback>
