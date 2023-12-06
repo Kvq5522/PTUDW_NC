@@ -57,7 +57,7 @@ const formSchema = z.object({
   }),
   address: z.string().optional(),
   age: z.preprocess(
-    (value: any) => (value === "" ? undefined : value),
+    (value: any) => (value === "" ? 0 : Number(value)),
     z.number().optional().refine(isAgePositiveInteger, {
       message: "Age must be a positive integer less than 150",
     })
