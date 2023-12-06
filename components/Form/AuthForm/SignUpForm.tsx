@@ -34,7 +34,7 @@ import { toast } from "react-hot-toast";
 import { AXIOS } from "@/constants/ApiCall";
 
 const isAlphanumericWithUppercase = (value: string) => {
-  return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
+  return /[A-Z]/.test(value) && /[0-9]/.test(value);
 };
 
 const isAgePositiveInteger = (value: number | undefined) => {
@@ -91,10 +91,11 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    setError("");
 
     const res = await AXIOS.POST({ uri: "/auth/sign-up", params: values });
 
-    if (res.statusCode === 201) {
+    if (res && res.statusCode === 201) {
       window.location.href = "/sign-in";
       return;
     }
@@ -121,7 +122,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Email (<text className="text-red-500">*</text>)
+                    Email (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -144,7 +145,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Password (<text className="text-red-500">*</text>)
+                    Password (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -168,7 +169,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
                 <FormItem className="w-[50%]">
                   <FormLabel>
                     <div className="truncate">
-                      First Name (<text className="text-red-500">*</text>)
+                      First Name (<span className="text-red-500">*</span>)
                     </div>
                   </FormLabel>
                   <FormControl>
@@ -191,7 +192,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
                 <FormItem className="w-[50%]">
                   <FormLabel>
                     <div className="truncate">
-                      Last Name (<text className="text-red-500">*</text>)
+                      Last Name (<span className="text-red-500">*</span>)
                     </div>
                   </FormLabel>
                   <FormControl>
@@ -304,7 +305,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
             />
           </div>
 
-          {error.length > 0 && <em className="text-red-600">{error}</em>}
+          {error && <em className="text-red-600">{error}</em>}
 
           <div className="pt-6 space-x-2 flex flex-wrap items-center justify-end w-full">
             <Link

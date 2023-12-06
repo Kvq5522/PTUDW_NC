@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@mui/material";
 import { useState } from "react";
+import AnnounceForm from "../Form/AnnounceForm";
 
 const AnnounceCard = () => {
   const [isActive, setIsActive] = useState(false);
@@ -34,6 +35,7 @@ const AnnounceCard = () => {
               : "active-announceContent hidden"
           }
         >
+          <AnnounceForm />
           <Button onClick={handleClick}>Cancel</Button>
         </div>
       </div>

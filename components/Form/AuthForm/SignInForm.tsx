@@ -15,6 +15,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
+import { FaGoogle, FaFacebook } from "react-icons/fa";
+
 import { Input } from "@/components/ui/input";
 import { Button, buttonVariants } from "@/components/ui/button";
 
@@ -49,40 +51,44 @@ export const SignInForm: React.FC<SignInFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
-    const data = await AXIOS.POST({ uri: "/auth/sign-in", params: values });
+    const res = await AXIOS.POST({ uri: "/auth/sign-in", params: values });
 
-    if (data.statusCode === 200) {
-      localStorage.setItem("access-token", data.metadata.token);
+    if (res && res.statusCode === 200) {
+      localStorage.setItem("access-token", res.metadata.token);
       window.location.href = "/dashboard";
       setLoading(false);
 
       return;
     }
 
-    setError(data.message);
+    setError(res.message);
     setLoading(false);
   };
 
   return (
     <div className="flex justify-center mx-0 px-0 h-[100%]">
-      <div className="flex flex-wrap justify-center items-center px-2 w-[30%] border-r-4">
-        <Button
-          className="truncate"
-          onClick={() => {
-            window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/google`;
-          }}
-        >
-          Sign In with Google
-        </Button>
+      <div className="flex space-y-3 justify-center items-center p-2 w-[30%] border-r-4">
+        <div className="flex flex-wrap space-y-3 pb-[4.6rem] overflow-hidden">
+          <Button
+            className="truncate w-[100%] text-center bg-green-600 hover:bg-green-700 hover:opacity-80 gap-1"
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/google`;
+            }}
+            type="button"
+          >
+            Sign in with <FaGoogle className="inline-block mr-2" />
+          </Button>
 
-        <Button
-          className="truncate"
-          onClick={() => {
-            window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/facebook`;
-          }}
-        >
-          Sign In With Facebook
-        </Button>
+          <Button
+            className="truncate w-[100%] text-center bg-blue-600 hover:bg-blue-800 hover:opacity-80 gap-1"
+            onClick={() => {
+              window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/facebook`;
+            }}
+            type="button"
+          >
+            Sign in with <FaFacebook className="inline-block mr-2" />
+          </Button>
+        </div>
       </div>
 
       <Form {...form}>
@@ -102,7 +108,7 @@ export const SignInForm: React.FC<SignInFormProps> = (
                 <FormItem>
                   <div className="flex justify-between items-center">
                     <FormLabel className="w-[15%] truncate">
-                      Email (<text className="text-red-500">*</text>)
+                      Email (<span className="text-red-500">*</span>)
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -125,7 +131,7 @@ export const SignInForm: React.FC<SignInFormProps> = (
                 <FormItem>
                   <div className="flex justify-between items-center">
                     <FormLabel className="w-[15%] truncate">
-                      Password (<text className="text-red-500">*</text>)
+                      Password (<span className="text-red-500">*</span>)
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -141,7 +147,9 @@ export const SignInForm: React.FC<SignInFormProps> = (
               )}
             />
 
-            { typeof(error) === "string" && error.length > 0 && <em className="text-red-600">{error}</em>}
+            {typeof error === "string" && error.length > 0 && (
+              <em className="text-red-600">{error}</em>
+            )}
 
             <div className="pt-6 space-x-2 flex items-center flex-wrap justify-end w-full">
               <Link

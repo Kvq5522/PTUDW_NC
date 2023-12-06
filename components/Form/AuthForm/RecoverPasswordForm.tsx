@@ -86,7 +86,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
       params: { email: email },
     });
 
-    if (res.statusCode !== 200) {
+    if (res.statusCode && res.statusCode !== 200) {
       setError(res.message);
       setLoading(false);
       return;
@@ -100,13 +100,14 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
+    setError("");
 
     const res = await AXIOS.POST({
       uri: "/auth/recover-password",
       params: values,
     });
 
-    if (res.statusCode !== 200) {
+    if (res.statusCode && res.statusCode !== 200) {
       setError(res.message);
       setLoading(false);
       return;
@@ -138,7 +139,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Email (<text className="text-red-500">*</text>)
+                    Email (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -161,7 +162,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Password (<text className="text-red-500">*</text>)
+                    Password (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -184,7 +185,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Confirm Pwd (<text className="text-red-500">*</text>)
+                    Confirm Pwd (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -207,7 +208,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
               <FormItem>
                 <div className="flex justify-between items-center">
                   <FormLabel className="w-[15%] truncate">
-                    Token (<text className="text-red-500">*</text>)
+                    Token (<span className="text-red-500">*</span>)
                   </FormLabel>
                   <FormControl>
                     <Input
@@ -223,7 +224,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
             )}
           />
 
-          {error.length > 0 && (
+          {error && (
             <div className="pt-2">
               <em className="text-red-600">{error}</em>
             </div>
