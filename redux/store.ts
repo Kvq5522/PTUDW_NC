@@ -2,14 +2,14 @@ import { configureStore } from "@reduxjs/toolkit";
 import { combineReducers } from "@reduxjs/toolkit";
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import thunk from "redux-thunk";
 
 import userInfoReducer from "./slices/user-info-slice";
+import classroomInfoReducer from "./slices/classroom-info-slice";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
-import { get } from "http";
 
 const reducers = combineReducers({
   userInfoReducer,
+  classroomInfoReducer,
 });
 
 const persistConfig = {

@@ -2,18 +2,30 @@
 
 import React, { useEffect } from "react";
 
-import Navbar from "@/components/Navbar/DashboardNavbar";
-import ClassCard from "@/app/dashboard/classCard";
-import DashBoardSidebar from "@/components/SideBar/DashBoardSidebar";
-import { SidebarProvider } from "@/components/Contexts/SideBarContext";
+import ClassCard from "@/components/Card/ClassCard";
 
 import { AXIOS } from "@/constants/ApiCall";
-import { setUserInfo, resetUserInfo } from "@/redux/slices/user-info-slice";
+
+import { cn } from "@/lib/utils";
+
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
+import { useAppSelector } from "@/redux/store";
+import { setUserInfo } from "@/redux/slices/user-info-slice";
+import { setClasslist } from "@/redux/slices/classroom-info-slice";
 
-const Dashboard = () => {
+import Loader from "@/components/Loader/Loader";
+
+interface DashboardProps {
+  className?: string;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ className }) => {
   const dispatch = useDispatch<AppDispatch>();
+  const [loading, setLoading] = React.useState(false);
+  const classList = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.classroomList
+  );
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -31,35 +43,61 @@ const Dashboard = () => {
       }
     };
 
-    fetchUser();
+    const fetchClassList = async () => {
+      try {
+        const res = await AXIOS.GET({
+          uri: "/classroom/list",
+          token: localStorage.getItem("access-token") ?? "",
+        });
+
+        if (res.statusCode && res.statusCode === 200) {
+          dispatch(setClasslist(res.metadata));
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const fetchAsync = async () => {
+      setLoading(true);
+
+      await fetchUser();
+      await fetchClassList();
+
+      setLoading(false);
+    };
+
+    fetchAsync();
   }, [dispatch]);
 
-  return (
-    <SidebarProvider>
-      <div className="max-h-screen flex flex-col">
-        <>
-          <Navbar></Navbar>
-          <hr></hr>
+  if (loading)
+    return (
+      <Loader
+        text="Loading classrooms ..."
+        className="w-full h-full"
+      />
+    );
 
-          <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
-            <div>
-              <DashBoardSidebar />
-            </div>
-            <div className="overflow-x-hidden px-8 pb-4">
-              <div className="grid gap-4 grid-cols-[repeat(auto-fillminmax(300px,1fr))]">
-                <ClassCard />
-              </div>
-            </div>
-            {/* <div>
-            <ClassCard />
-          </div>
-          <div className="pt-10">
-            <ClassCard />
-          </div> */}
-          </div>
-        </>
+  return (
+    <div className={cn("overflow-x-hidden px-8 p-4", className)}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {classList?.map((classroom: any, index) => {
+          return (
+            <ClassCard
+              key={index}
+              id={classroom.classroom_id}
+              classroomName={classroom.classroom_id_fk.name}
+              creatorName={
+                classroom.classroom_id_fk.owner_fk.first_name +
+                " " +
+                classroom.classroom_id_fk.owner_fk.last_name
+              }
+              creatorPhoto={classroom.classroom_id_fk.owner_fk.avatar}
+            />
+          );
+        })}
       </div>
-    </SidebarProvider>
+    </div>
   );
 };
 export default Dashboard;

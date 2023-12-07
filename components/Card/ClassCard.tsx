@@ -16,52 +16,64 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Image from "next/image";
 
-function ClassCard() {
-  //   const history = useHistory();
-  //   const goToClass = () => {
-  //     history.push(`/class/${id}`);
-  //   };
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+
+interface ClassCardProps {
+  id: string;
+  classroomName: string;
+  creatorName: string;
+  creatorPhoto: string;
+  className?: string;
+}
+
+const ClassCard: React.FC<ClassCardProps> = ({
+  id,
+  classroomName,
+  creatorName,
+  creatorPhoto,
+  className,
+}) => {
   return (
-    <Card className="w-[350px]">
+    <Card className={cn("w-full", className)}>
       <CardHeader className="border-b">
         <CardTitle>
           <HoverCard>
             <HoverCardTrigger href="/dashboard/classroom">
-              20KTPM02-Huy Ha
+              {classroomName}
             </HoverCardTrigger>
           </HoverCard>
         </CardTitle>
+
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage src={creatorPhoto} className="object-cover" alt="@shadcn" />
+          <AvatarFallback>
+            <Image
+              src="/images/user-default-avatar.png"
+              fill
+              className="object-cover w-full h-full"
+              alt="User Avatar"
+            />
+          </AvatarFallback>
         </Avatar>
       </CardHeader>
+
       <CardContent></CardContent>
-      <CardFooter className="flex justify-right">
-        <Button variant="ghost">
+
+      <CardFooter className="flex justify-right overflow-x-auto">
+        <p>Owner: {creatorName}</p>
+
+        {/* <Button variant="ghost">
           <FolderOpen />
         </Button>
+
         <Button variant="ghost">
           <UserPlus />
-        </Button>
+        </Button> */}
       </CardFooter>
     </Card>
-    // <div className="classCard">
-    //   <div className="classCard__upper">
-    //     <div className="classCard__className">20KTPM02</div>
-    //     <div className="classCard__creatorName">Huy Ha</div>
-    //     <img className="classCard__creatorPhoto" />
-    //   </div>
-    //   <div className="classCard__middle"></div>
-    //   <div className="classCard__lower">
-    //     <IconButton>
-    //       <FolderOpenOutlined />
-    //     </IconButton>
-    //
-    //   </div>
-    // </div>
   );
-}
+};
 export default ClassCard;

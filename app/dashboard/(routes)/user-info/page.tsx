@@ -2,8 +2,8 @@ import { ProfileForm } from "@/components/Form/UserForm/ProfileForm";
 
 export default function SignUp() {
   return (
-    <div className="flex justify-center items-center bg-gradient-to-r min-h-screen w-screen from-yellow-500 to-green-300">
-      <div className="bg-white max-[1000px]:w-[90vw] max-[1200px]:w-[70vw] w-[60vw] h-fit p-3 rounded overflow-auto">
+    <div className="flex justify-center items-center bg-gradient-to-r h-full w-full  from-yellow-500 to-green-300">
+      <div className="bg-white max-[1000px]:w-[90%] max-[1200px]:w-[70%] w-[60%] h-fit p-3 rounded">
         <ProfileForm className="flex justify-center items-center" />
       </div>
     </div>

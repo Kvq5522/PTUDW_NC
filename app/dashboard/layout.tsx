@@ -12,28 +12,20 @@ export default function AuthLayout({
     <div className="min-w-screen min-h-screen">
       <AuthGuard>
         <SidebarProvider>
-          <div className="max-h-screen flex flex-col">
-            <>
+          <div className="flex flex-col">
               <Navbar></Navbar>
+
               <hr></hr>
 
               <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
                 <div>
                   <DashBoardSideBar />
                 </div>
-                <div className="overflow-x-hidden px-8 pb-4">
-                  <div className="grid gap-4 grid-cols-[repeat(auto-fillminmax(300px,1fr))]">
+
+                <div className="overflow-x-auto min-h-[calc(100vh-56px-1.5rem)] min-w-screen">
                     {children}
-                  </div>
                 </div>
-                {/* <div>
-            <ClassCard />
-          </div>
-          <div className="pt-10">
-            <ClassCard />
-          </div> */}
               </div>
-            </>
           </div>
         </SidebarProvider>
       </AuthGuard>

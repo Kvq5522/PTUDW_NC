@@ -28,8 +28,9 @@ const Navbar = () => {
   );
 
   return (
-    <div className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4">
+    <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">
       <FirstNavbarSection />
+      
       <div className="flex flex-shrink-0 md:gap-2 justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -42,17 +43,9 @@ const Navbar = () => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        {/* <Button size="icon" variant="ghost">
-          <Barcode />
-        </Button> */}
-
         <ProfileButton avatarSrc={avatar} />
       </div>
     </div>
-    // <div className="flex gap-10 lg:gap20 justify-between items-center px-10 border-b">
-    //   <Logo />
-    //   <ProfileButton avatarSrc={avatar} />
-    // </div>
   );
 };
 
