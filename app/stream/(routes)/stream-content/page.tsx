@@ -6,7 +6,7 @@ import ClassroomMenu from "@/components/DropDownMenu/ClassroomMenu";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
-const SteamContent = () => {
+const StreamContent = () => {
   const [isTeacher, setIsTeacher] = useState(true);
   const isNecessary = false;
 
@@ -62,4 +62,4 @@ const SteamContent = () => {
   );
 };
 
-export default SteamContent;
+export default StreamContent;
