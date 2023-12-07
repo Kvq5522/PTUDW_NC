@@ -16,11 +16,7 @@ import { setClasslist } from "@/redux/slices/classroom-info-slice";
 
 import Loader from "@/components/Loader/Loader";
 
-interface DashboardProps {
-  className?: string;
-}
-
-const Dashboard: React.FC<DashboardProps> = ({ className }) => {
+const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const [loading, setLoading] = React.useState(false);
   const classList = useAppSelector(
