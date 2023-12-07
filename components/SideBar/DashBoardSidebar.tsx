@@ -32,8 +32,6 @@ const DashBoardSideBar = () => {
           isLargeOpen ? "lg:hidden" : "lg:flex"
         }`}
       >
-        <div>menu</div>
-
         <SmallSidebarItem
           Icon={Home}
           title="Home"

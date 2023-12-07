@@ -28,7 +28,9 @@ function ClassCard() {
       <CardHeader className="border-b">
         <CardTitle>
           <HoverCard>
-            <HoverCardTrigger>20KTPM02-Huy Ha</HoverCardTrigger>
+            <HoverCardTrigger href="/dashboard/classroom">
+              20KTPM02-Huy Ha
+            </HoverCardTrigger>
           </HoverCard>
         </CardTitle>
         <Avatar>
