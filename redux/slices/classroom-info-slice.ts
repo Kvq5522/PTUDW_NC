@@ -27,6 +27,9 @@ export const classroomInfo = createSlice({
         },
       };
     },
+    appendToClasslist: (state, action: PayloadAction<any>) => {
+      state.value.classroomList.push(action.payload as never);
+    },
     resetClasslist: (state) => {
       return {
         value: {
@@ -51,6 +54,7 @@ export const classroomInfo = createSlice({
 
 export const {
   setClasslist,
+  appendToClasslist,
   setCurrentClassroom,
   resetClasslist,
   resetCurrentClassroom,

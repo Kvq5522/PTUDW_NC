@@ -41,14 +41,18 @@ const ClassCard: React.FC<ClassCardProps> = ({
       <CardHeader className="border-b">
         <CardTitle>
           <HoverCard>
-            <HoverCardTrigger href="/dashboard/classroom">
+            <HoverCardTrigger href={`/dashboard/classroom/${id}`} className="truncate">
               {classroomName}
             </HoverCardTrigger>
           </HoverCard>
         </CardTitle>
 
         <Avatar>
-          <AvatarImage src={creatorPhoto} className="object-cover" alt="@shadcn" />
+          <AvatarImage
+            src={creatorPhoto}
+            className="object-cover"
+            alt="@shadcn"
+          />
           <AvatarFallback>
             <Image
               src="/images/user-default-avatar.png"

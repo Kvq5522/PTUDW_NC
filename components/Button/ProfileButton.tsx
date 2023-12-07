@@ -12,7 +12,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "./button";
+import { Button } from "../ui/button";
 
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";

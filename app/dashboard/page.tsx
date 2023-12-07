@@ -67,28 +67,25 @@ const Dashboard = () => {
   }, [dispatch]);
 
   if (loading)
-    return (
-      <Loader
-        text="Loading classrooms ..."
-        className="w-full h-full"
-      />
-    );
+    return <Loader text="Loading classrooms ..." className="w-full h-full" />;
 
   return (
     <div className={cn("overflow-x-hidden px-8 p-4")}>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {classList?.map((classroom: any, index) => {
+          if (!classroom) return null;
+          
           return (
             <ClassCard
               key={index}
-              id={classroom.classroom_id}
-              classroomName={classroom.classroom_id_fk.name}
+              id={classroom?.classroom_id}
+              classroomName={classroom?.classroom_id_fk?.name}
               creatorName={
-                classroom.classroom_id_fk.owner_fk.first_name +
+                classroom?.classroom_id_fk?.owner_fk?.first_name +
                 " " +
-                classroom.classroom_id_fk.owner_fk.last_name
+                classroom?.classroom_id_fk?.owner_fk?.last_name
               }
-              creatorPhoto={classroom.classroom_id_fk.owner_fk.avatar}
+              creatorPhoto={classroom?.classroom_id_fk?.owner_fk?.avatar}
             />
           );
         })}

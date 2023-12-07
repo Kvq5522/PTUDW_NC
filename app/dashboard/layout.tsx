@@ -3,6 +3,9 @@ import { AuthGuard } from "@/components/Guard/AuthGuard";
 import Navbar from "@/components/Navbar/DashboardNavbar";
 import DashBoardSideBar from "@/components/SideBar/DashBoardSidebar";
 
+import CreateClassModal from "@/components/Modal/CreateClassModal";
+import JoinClassModal from "@/components/Modal/JoinClassModal";
+
 export default function AuthLayout({
   children,
 }: {
@@ -13,19 +16,22 @@ export default function AuthLayout({
       <AuthGuard>
         <SidebarProvider>
           <div className="flex flex-col">
-              <Navbar></Navbar>
+            <Navbar></Navbar>
 
-              <hr></hr>
+            <CreateClassModal />
+            <JoinClassModal />
 
-              <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
-                <div>
-                  <DashBoardSideBar />
-                </div>
+            <hr></hr>
 
-                <div className="overflow-x-auto min-h-[calc(100vh-56px-1.5rem)] min-w-screen">
-                    {children}
-                </div>
+            <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
+              <div>
+                <DashBoardSideBar />
               </div>
+
+              <div className="overflow-x-auto min-h-[calc(100vh-56px-1.5rem)] min-w-screen">
+                {children}
+              </div>
+            </div>
           </div>
         </SidebarProvider>
       </AuthGuard>

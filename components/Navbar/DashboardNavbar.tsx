@@ -1,4 +1,5 @@
 "use client";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,17 +13,21 @@ import Logo from "./Logo";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
-import { ProfileButton } from "../ui/ProfileButton";
+import { ProfileButton } from "../Button/ProfileButton";
 
 import { Barcode, Menu, Plus } from "lucide-react";
 import { useSidebarContext } from "../Contexts/SideBarContext";
 import { useAppSelector } from "@/redux/store";
+import { useCreateClassModal } from "@/hooks/create-class-modal";
+import { useJoinClassModal } from "@/hooks/join-class-modal";
 
 type PageNavbarSectionProps = {
   hidden?: boolean;
 };
 
 const Navbar = () => {
+  const createClassModal = useCreateClassModal();
+  const joinClassModal = useJoinClassModal();
   const avatar = useAppSelector(
     (state: any) => state.userInfoReducer.value?.userInfo?.avatar
   );
@@ -30,7 +35,7 @@ const Navbar = () => {
   return (
     <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">
       <FirstNavbarSection />
-      
+
       <div className="flex flex-shrink-0 md:gap-2 justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger>
@@ -38,8 +43,12 @@ const Navbar = () => {
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Join a class</DropdownMenuItem>
-            <DropdownMenuItem>Create a class</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => joinClassModal.onOpen()}>
+              Join a class
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => createClassModal.onOpen()}>
+              Create a class
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
 
