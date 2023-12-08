@@ -196,6 +196,7 @@ const DragNDropBox = (props: dndProps) => {
           </div>
         </div>
       </div>
+      
       <CompositionDialog
         isOpen={openDialog}
         onClose={handleAddCompositionDialog}

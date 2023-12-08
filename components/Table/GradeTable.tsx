@@ -113,6 +113,12 @@ const invoices = [
     totalAmount: "$300.00",
     paymentMethod: "Credit Card",
   },
+  {
+    invoice: "INV008",
+    paymentStatus: "Unpaid",
+    totalAmount: "$300.00",
+    paymentMethod: "Credit Card",
+  },
 ];
 
 interface gradeTableProps {
@@ -122,12 +128,11 @@ interface gradeTableProps {
 const GradeTable = () => {
   return (
     <div className="flex flex-row">
-      <div></div>
       <Table className="relative">
         <TableHeader className="">
           <TableRow>
-            <TableHead className="w-[100px]">Invoice</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead className="w-[100px]">ID</TableHead>
+            <TableHead className="w-[250px]">Student&rsquo;s name</TableHead>
             <TableHead>Method</TableHead>
             <TableHead className="text-right">Amount</TableHead>
           </TableRow>
