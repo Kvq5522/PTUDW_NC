@@ -53,7 +53,7 @@ const StreamContent = () => {
           <section role="section" id="streamContent">
             <div className="streamContent-wrapper">
               <AnnounceCard />
-              <div className=" announce-box">StreamStack</div>
+              <div className="announce-box">StreamStack</div>
             </div>
           </section>
         </main>
