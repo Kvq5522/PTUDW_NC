@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { DialogOverlay} from "@radix-ui/react-dialog";
 
 interface compositionDialogProps {
+  id:string
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
@@ -21,10 +22,9 @@ interface compositionDialogProps {
 const CompositionDialog = (props: compositionDialogProps) => {
   return (
     <>
-      <Dialog open={props.isOpen} onOpenChange={props.onClose} >
-        <DialogOverlay />
+      <Dialog key={props.id} open={props.isOpen} onOpenChange={props.onClose} >
         <DialogContent className={props.classname}>
-          <div className="">{props.children}</div>
+          <div>{props.children}</div>
         </DialogContent>
       </Dialog>
     </>
