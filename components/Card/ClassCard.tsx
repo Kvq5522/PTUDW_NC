@@ -41,8 +41,10 @@ const ClassCard: React.FC<ClassCardProps> = ({
       <CardHeader className="border-b">
         <CardTitle>
           <HoverCard>
-            <HoverCardTrigger href={`/dashboard/classroom/${id}`} className="truncate">
-              {classroomName}
+            <HoverCardTrigger
+              href={`/classroom/${id}/stream/stream-content`}
+            >
+              <div className="truncate">{classroomName}</div>
             </HoverCardTrigger>
           </HoverCard>
         </CardTitle>
