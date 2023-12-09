@@ -1,21 +1,15 @@
 "use client";
 
 import { Separator } from "@radix-ui/react-select";
-import { Plus, Table2, X } from "lucide-react";
+import { Plus, Table2, X, Save } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import {
-  DragDropContext,
-  DropResult,
-  Droppable,
-  Draggable,
-} from "react-beautiful-dnd";
+import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import GradeComposition from "../Card/GradeComposition";
 import { Button } from "../ui/button";
@@ -262,14 +256,39 @@ const DragNDropBox = (props: dndProps) => {
         </Form>
       </CompositionDialog>
 
+      {/* ---------------------------------------------------------- */}
+
       {/* Show Table Dialog */}
       <CompositionDialog
         id="tableDialog"
         isOpen={openDialog && dialogId === "tableDialog"}
         onClose={() => handleAddCompositionDialog("tableDialog")}
-        classname="overflow-x-auto overflow-y-auto h-full max-w-full "
+        classname="tableDialog min-w-full h-screen"
       >
-        <GradeTable />
+        <div className="table-nav">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => handleAddCompositionDialog("tableDialog")}
+          >
+            <X />
+          </Button>
+          
+          <input type="text" />
+          
+          <Button
+            className=" bg-blue-300 hover:bg-blue-600 text-[16px] font-bold text-gray-800"
+            variant="ghost"
+            onClick={() => handleAddCompositionDialog("tableDialog")}
+          >
+            <Save />
+            Save
+          </Button>
+        </div>
+
+        <div className="table-box">
+          <GradeTable />
+        </div>
       </CompositionDialog>
     </div>
   );

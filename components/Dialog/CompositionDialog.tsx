@@ -9,10 +9,10 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
-import { DialogOverlay} from "@radix-ui/react-dialog";
+import { DialogOverlay } from "@radix-ui/react-dialog";
 
 interface compositionDialogProps {
-  id:string
+  id: string;
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
@@ -21,13 +21,11 @@ interface compositionDialogProps {
 
 const CompositionDialog = (props: compositionDialogProps) => {
   return (
-    <>
-      <Dialog key={props.id} open={props.isOpen} onOpenChange={props.onClose} >
-        <DialogContent className={props.classname}>
-          <div>{props.children}</div>
-        </DialogContent>
-      </Dialog>
-    </>
+    <Dialog key={props.id} open={props.isOpen} onOpenChange={props.onClose}>
+      <DialogContent className={props.classname}>
+        <div>{props.children}</div>
+      </DialogContent>
+    </Dialog>
   );
 };
 

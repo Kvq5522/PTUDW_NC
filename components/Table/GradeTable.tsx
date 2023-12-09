@@ -9,117 +9,19 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Input } from "../ui/input";
+import { invoices } from "@/constants/mockdata";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV008",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+// const invoices = [
+//   {
+//     invoice: "INV001",
+//     paymentStatus: "Paid",
+//     totalAmount: "$250.00",
+//     paymentMethod: "Credit Csadfasdfasdfasdfard",
+//     test1: "Pass",
+//     test2: "OK",
+//     Demotesting: "Check",
+//   }
+// ];
 
 interface gradeTableProps {
   isOpen: boolean;
@@ -129,12 +31,19 @@ const GradeTable = () => {
   return (
     <div className="flex flex-row">
       <Table className="relative">
-        <TableHeader className="">
+        <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">ID</TableHead>
-            <TableHead className="w-[250px]">Student&rsquo;s name</TableHead>
+            <TableHead className="max-w-[200px]">ID</TableHead>
+            <TableHead className="max-w-[200px]">ID</TableHead>
+            <TableHead className="max-w-[200px]">Student&rsquo;s name</TableHead>
             <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead >Amount</TableHead>
+            <TableHead >Test1</TableHead>
+            <TableHead >Test2</TableHead>
+            <TableHead >Demo Testing</TableHead>
+            <TableHead >Demo Testing</TableHead>
+            <TableHead >Demo Testing</TableHead>
+            <TableHead >Demo Testing</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -150,12 +59,29 @@ const GradeTable = () => {
                   value={invoice.totalAmount}
                 />
               </TableCell>
+              <TableCell className="text-right">
+                <Input
+                  className=" w-fit"
+                  type="text"
+                  value={invoice.totalAmount}
+                />
+              </TableCell>
+              <TableCell>{invoice.test1}</TableCell>
+              <TableCell>{invoice.test2}</TableCell>
+              <TableCell className="text-right">
+                <Input
+                  className=" w-fit"
+                  type="text"
+                  value={invoice.totalAmount}
+                />
+              </TableCell>
+              <TableCell>{invoice.Demotesting}</TableCell>
             </TableRow>
           ))}
         </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
+            <TableCell colSpan={10}>Total</TableCell>
             <TableCell className="text-right">$2,500.00</TableCell>
           </TableRow>
         </TableFooter>
