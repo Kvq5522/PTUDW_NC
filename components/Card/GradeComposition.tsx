@@ -96,6 +96,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
       </Draggable>
 
       <CompositionDialog
+        id={props.id}
         key={props.id}
         isOpen={openDialog}
         onClose={handleCloseDialog}
