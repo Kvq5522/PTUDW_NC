@@ -42,7 +42,7 @@ const ClassCard: React.FC<ClassCardProps> = ({
         <CardTitle>
           <HoverCard>
             <HoverCardTrigger
-              href={`/classroom/${id}/stream/stream-content`}
+              href={`/classroom/${id}/stream`}
             >
               <div className="truncate">{classroomName}</div>
             </HoverCardTrigger>

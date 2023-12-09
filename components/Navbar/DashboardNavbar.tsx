@@ -20,6 +20,8 @@ import { useSidebarContext } from "../Contexts/SideBarContext";
 import { useAppSelector } from "@/redux/store";
 import { useCreateClassModal } from "@/hooks/create-class-modal";
 import { useJoinClassModal } from "@/hooks/join-class-modal";
+import CreateClassModal from "../Modal/CreateClassModal";
+import JoinClassModal from "../Modal/JoinClassModal";
 
 type PageNavbarSectionProps = {
   hidden?: boolean;
@@ -34,6 +36,8 @@ const Navbar = () => {
 
   return (
     <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">
+      <CreateClassModal />
+      <JoinClassModal />
       <FirstNavbarSection />
 
       <div className="flex flex-shrink-0 md:gap-2 justify-end">

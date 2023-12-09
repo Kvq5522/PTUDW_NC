@@ -25,6 +25,7 @@ import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 import { AXIOS } from "@/constants/ApiCall";
+import { useSearchParams } from "next/navigation";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -40,6 +41,8 @@ export const SignInForm: React.FC<SignInFormProps> = (
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const query = useSearchParams();
+  const callbackUrl = query.get("callback-url");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,15 +52,19 @@ export const SignInForm: React.FC<SignInFormProps> = (
     },
   });
 
+  console.log(decodeURIComponent(callbackUrl??""))
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);
     const res = await AXIOS.POST({ uri: "/auth/sign-in", params: values });
 
     if (res && res.statusCode === 200) {
       localStorage.setItem("access-token", res.metadata.token);
-      window.location.href = "/dashboard";
-      setLoading(false);
 
+      if (callbackUrl) window.location.href = decodeURIComponent(callbackUrl);
+      else window.location.href = "/dashboard";
+
+      setLoading(false);
       return;
     }
 

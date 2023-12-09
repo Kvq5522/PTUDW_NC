@@ -52,7 +52,8 @@ export const AXIOS = {
     hasFile?: boolean;
   }) => {
     try {
-      const res = await API.post(uri, AXIOS.ENCODE_FORM_DATA(params), {
+      const data = hasFile ? AXIOS.ENCODE_FORM_DATA(params) : params;
+      const res = await API.post(uri, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           ...(hasFile
@@ -80,7 +81,9 @@ export const AXIOS = {
     hasFile?: boolean;
   }) => {
     try {
-      const res = await API.put(uri, AXIOS.ENCODE_FORM_DATA(params), {
+      const data = hasFile ? AXIOS.ENCODE_FORM_DATA(params) : params;
+
+      const res = await API.put(uri, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           ...(hasFile
@@ -108,7 +111,9 @@ export const AXIOS = {
     hasFile?: boolean;
   }) => {
     try {
-      const res = await API.patch(uri, AXIOS.ENCODE_FORM_DATA(params), {
+      const data = hasFile ? AXIOS.ENCODE_FORM_DATA(params) : params;
+
+      const res = await API.patch(uri, data, {
         headers: {
           Authorization: `Bearer ${token}`,
           ...(hasFile

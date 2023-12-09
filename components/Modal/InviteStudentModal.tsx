@@ -27,6 +27,7 @@ import { AXIOS } from "@/constants/ApiCall";
 
 import MultiValueInput from "@/components/Input/MultipleValueInput";
 import { useParams } from "next/navigation";
+import { useInviteStudentModal } from "@/hooks/invite-student-modal";
 
 const formSchema = z.object({
   member_emails: z.array(z.string().email()).refine((val) => val.length > 0, {
@@ -39,14 +40,14 @@ interface InviteTeacherModalProps {
   invite_uri: string;
 }
 
-export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
+export const InviteStudentModal: React.FC<InviteTeacherModalProps> = ({
   invite_code,
   invite_uri,
 }) => {
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const toast = useToast();
-  const inviteTeacherModal = useInviteTeacherModal();
+  const inviteStudentModal = useInviteStudentModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -68,7 +69,7 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
         token: localStorage.getItem("access-token") ?? "",
         params: {
           classroom_id: Number(params?.classroomId),
-          role_id: 2,
+          role_id: 1,
           members: _data,
         },
       });
@@ -79,7 +80,7 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
           description: "Send invitations successfully",
           className: "top-[-85vh] bg-green-500 text-white",
         });
-        inviteTeacherModal.onClose();
+        inviteStudentModal.onClose();
       }
 
       if (res && (res.status >= 400 || res.statusCode >= 400)) {
@@ -113,10 +114,10 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
 
   return (
     <Modal
-      title="Invite a teacher"
-      description="Let's join teaching!"
-      isOpen={inviteTeacherModal.isOpen}
-      onClose={inviteTeacherModal.onClose}
+      title="Invite a a student"
+      description="Let's start teaching!"
+      isOpen={inviteStudentModal.isOpen}
+      onClose={inviteStudentModal.onClose}
     >
       <div className="space-y-4 pt-2 pb-4 px-2">
         <div className="flex justify-between gap-4">
@@ -159,7 +160,7 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="flex gap-2">
-                    <span className="pt-1">{"What's the teacher email?"}</span>{" "}
+                    <span className="pt-1">{"What's your student email?"}</span>{" "}
                     {loading && <Loader className="animate-spin" />}
                   </FormLabel>
                   <FormControl>
@@ -181,7 +182,7 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
             <div className="pt-6 space-x-2 flex items-center justify-end w-full">
               <Button
                 disabled={loading}
-                onClick={inviteTeacherModal.onClose}
+                onClick={inviteStudentModal.onClose}
                 variant="outline"
                 type="button"
               >
@@ -199,4 +200,4 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
   );
 };
 
-export default InviteTeacherModal;
+export default InviteStudentModal;

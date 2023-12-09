@@ -24,6 +24,7 @@ const MultiValueInput: React.FC<MultiValueInputProps> = ({
   const [inputValues, setInputValues] = useState<string[]>([]);
 
   const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+
     if (event.key === "Enter" && inputValue) {
       event.preventDefault();
 

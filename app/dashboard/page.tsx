@@ -15,6 +15,7 @@ import { setUserInfo } from "@/redux/slices/user-info-slice";
 import { setClasslist } from "@/redux/slices/classroom-info-slice";
 
 import Loader from "@/components/Loader/Loader";
+import EmptyState from "@/components/EmptyState";
 
 const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -69,12 +70,23 @@ const Dashboard = () => {
   if (loading)
     return <Loader text="Loading classrooms ..." className="w-full h-full" />;
 
+  if (!classList?.length) {
+    return (
+      <div className="w-full h-full">
+        <EmptyState
+          title="No classroom found"
+          subTitle="Let's join a classroom"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={cn("overflow-x-hidden px-8 p-4")}>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {classList?.map((classroom: any, index) => {
+        {classList?.map((classroom: any, index: number) => {
           if (!classroom) return null;
-          
+
           return (
             <ClassCard
               key={index}

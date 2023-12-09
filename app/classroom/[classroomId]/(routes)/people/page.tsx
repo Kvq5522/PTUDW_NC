@@ -27,24 +27,81 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import InviteTeacherModal from "@/components/Modal/InviteTeacherModal";
 import { useInviteTeacherModal } from "@/hooks/invite-teacher-modal";
+import InviteStudentModal from "@/components/Modal/InviteStudentModal";
+import { useInviteStudentModal } from "@/hooks/invite-student-modal";
+
+import { useToast } from "@/components/ui/use-toast";
+import { AXIOS } from "@/constants/ApiCall";
+import { setCurrentClassroom } from "@/redux/slices/classroom-info-slice";
+import Loader from "@/components/Loader/Loader";
+import EmptyState from "@/components/EmptyState";
+import Image from "next/image";
 
 const People = () => {
-  const params = useParams();
-  const [loading, setLoading] = useState(false);
   const inviteTeacherModal = useInviteTeacherModal();
+  const inviteStudentModal = useInviteStudentModal();
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
-  const userInfo = useAppSelector((state) => state.userInfoReducer.value);
-  const currentClassroom = useAppSelector((state) =>
-    state.classroomInfoReducer.value?.classroomList?.find(
-      (classroom: any) =>
-        classroom?.classroom_id === Number(params?.classroomId)
-    )
-  );
+  const params = useParams();
 
-  if (!userInfo || !currentClassroom) {
-    const fetchUser = async () => {};
-  }
+  const members = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.members
+  );
+  const userInClass = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.user
+  );
+  const invitations = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.invitations
+  );
+  const isStudent = userInClass?.member_role < 2;
+  const isOwner = userInClass?.member_role === 3;
+
+  useEffect(() => {
+    const fetchCurrentClassroom = async () => {
+      setLoading(true);
+
+      try {
+        const res = await AXIOS.GET({
+          uri: `/classroom/info/${params.classroomId}`,
+          token: localStorage.getItem("access-token") ?? "",
+        });
+
+        console.log(res, res?.statusCode === 200);
+
+        if (res.statusCode && res.statusCode === 200) {
+          dispatch(setCurrentClassroom(res.metadata));
+          return;
+        }
+
+        if (res && (res.status >= 400 || res.statusCode >= 400)) {
+          throw new Error(res.message);
+        }
+      } catch (error) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentClassroom();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (loading)
+    return <Loader className="w-[100%] h-[100%]" text="Loading..." />;
+
+  if (error)
+    return (
+      <div className="w-[100%] h-[100%]">
+        <EmptyState
+          title="No result found"
+          subTitle="Something's wrong :("
+          showReset
+        />
+      </div>
+    );
 
   return (
     <div className="overflow-x-auto px-8">
@@ -54,46 +111,57 @@ const People = () => {
             <div className="flex gap-10 lg:gap20 justify-between py-2 mb-6 mx-4 border-b-4">
               <div className="text-3xl">Teacher</div>
 
-              <InviteTeacherModal invite_code="test" invite_uri="test" />
+              <InviteTeacherModal
+                invite_code={invitations.student_invite_code}
+                invite_uri={invitations.student_invite_uri_code}
+              />
 
-              <div
-                className="cursor-pointer"
-                onClick={() => inviteTeacherModal.onOpen()}
-              >
-                <UserPlus />
-              </div>
+              {!isStudent && (
+                <div
+                  className="cursor-pointer"
+                  onClick={() => inviteTeacherModal.onOpen()}
+                >
+                  <UserPlus />
+                </div>
+              )}
             </div>
           </CardHeader>
 
           <CardContent>
-            <div className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4 ">
-              <div className="flex gap-8">
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+            {members?.map((member: any, index) => {
+              if (member.member_role < 2) return null;
 
-                <div className="font-bold pt-[0.35rem]">
-                  Name
+              return (
+                <div
+                  key={index}
+                  className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4 "
+                >
+                  <div className="flex gap-8">
+                    <Avatar className="object-cover">
+                      <AvatarImage src={member?.member_id_fk.avatar} />
+                      <AvatarFallback>
+                        <Image
+                          src="/images/user-default-avatar.png"
+                          fill
+                          className="w-full h-full"
+                          alt="User Avatar"
+                        />
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="font-bold pt-[0.35rem]">
+                      {member?.member_id_fk.email}
+                    </div>
+                  </div>
+
+                  {isOwner && (
+                    <div className="pt-[0.35rem]">
+                      <MoreVertical />
+                    </div>
+                  )}
                 </div>
-              </div>
-
-              <div className="pt-[0.35rem]">
-                <MoreVertical />
-              </div>
-            </div>
-
-            <div className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4 ">
-              <div className="flex gap-8">
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <strong>Andrew Alfred</strong>
-              </div>
-
-              <MoreVertical />
-            </div>
+              );
+            })}
           </CardContent>
         </Card>
       </div>
@@ -104,39 +172,55 @@ const People = () => {
             <div className="flex gap-10 lg:gap20 justify-between py-2 mb-6 mx-4 border-b-4">
               <div className="text-3xl">Student</div>
 
-              <Popover>
-                <PopoverTrigger>
-                  <UserPlus />
-                </PopoverTrigger>
-                <PopoverContent>
-                  Place content for the popover here.
-                </PopoverContent>
-              </Popover>
+              <InviteStudentModal
+                invite_code={invitations.teacher_invite_code}
+                invite_uri={invitations.teacher_invite_uri_code}
+              />
+
+              <div
+                className="cursor-pointer"
+                onClick={() => inviteStudentModal.onOpen()}
+              >
+                <UserPlus />
+              </div>
             </div>
           </CardHeader>
           <CardContent>
-            <div className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4 ">
-              <div className="flex gap-8">
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <strong>Andrew Alfred</strong>
-              </div>
+            {members?.map((member: any, index) => {
+              if (member.member_role > 1) return null;
 
-              <MoreVertical />
-            </div>
-            <div className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4 ">
-              <div className="flex gap-8">
-                <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-                <strong>Andrew Alfred</strong>
-              </div>
+              return (
+                <div
+                  key={index}
+                  className="flex gap-10 lg:gap20 justify-between pt-2 mb-6 mx-4 "
+                >
+                  <div className="flex gap-8">
+                    <Avatar className="object-cover">
+                      <AvatarImage src={member?.member_id_fk.avatar} />
+                      <AvatarFallback>
+                        <Image
+                          src="/images/user-default-avatar.png"
+                          fill
+                          className="w-full h-full"
+                          alt="User Avatar"
+                        />
+                      </AvatarFallback>
+                    </Avatar>
 
-              <MoreVertical />
-            </div>
+                    <div className="font-bold pt-[0.35rem]">
+                      {member?.member_id_fk.email}
+                    </div>
+                  </div>
+
+                  {(!isStudent ||
+                    member.member_email === userInClass.member_id_fk.email) && (
+                    <div className="pt-[0.35rem]">
+                      <MoreVertical />
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
       </div>

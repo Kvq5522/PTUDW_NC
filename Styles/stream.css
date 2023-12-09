@@ -1,11 +1,3 @@
-div {
-  display: block;
-}
-
-.hidden {
-  display: none !important;
-}
-
 .stream-container {
   display: flex;
   flex-direction: column;

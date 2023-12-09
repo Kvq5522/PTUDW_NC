@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 import Loader from "@/components/Loader/Loader";
 
@@ -14,6 +14,7 @@ interface GuardProps {
 export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
   const router = useRouter();
   const pathname = usePathname();
+  const query = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
     const accessToken = localStorage.getItem("access-token");
 
     if (!accessToken) {
-      router.push("/sign-in");
+      router.push(`/sign-in?callback-url=${encodeURIComponent(pathname + '?' + query.toString())}`);
       return;
     }
 

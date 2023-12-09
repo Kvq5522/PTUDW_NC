@@ -6,9 +6,44 @@ import ClassroomMenu from "@/components/DropDownMenu/ClassroomMenu";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 
+import { useDispatch } from "react-redux";
+import { AppDispatch, useAppSelector } from "@/redux/store";
+import { setCurrentClassroom } from "@/redux/slices/classroom-info-slice";
+import { useParams } from "next/navigation";
+import { AXIOS } from "@/constants/ApiCall";
+
 const StreamContent = () => {
-  const [isTeacher, setIsTeacher] = useState(true);
   const isNecessary = false;
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
+  const params = useParams();
+  const currentClassroom = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom
+  );
+
+  console.log(params, currentClassroom)
+
+  if (!currentClassroom) {
+    const fetchCurrentClassroom = async () => {
+      setLoading(true);
+      
+      try {
+        const res = AXIOS.GET({
+          uri: `/classroom/info/${params.classroomId}`,
+          token: localStorage.getItem("access-token") ?? "",
+        });
+
+        console.log(res);
+      } catch (error) {
+        
+      }
+      finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCurrentClassroom();
+  }
 
   return (
     <div className="stream-container">
@@ -18,7 +53,7 @@ const StreamContent = () => {
           <div className="stream-header-label">
             <div className="main-label">CLASSROOM&lsquo;S NAME</div>
             <div className="sub-label">Advanced Web Programming</div>
-            {isTeacher && isNecessary ? (
+            {true && isNecessary ? (
               <div className="change-theme-btn">
                 <Button variant="link" className="text-white text-xs">
                   Select Theme
@@ -31,7 +66,7 @@ const StreamContent = () => {
               <></>
             )}
           </div>
-          {isTeacher ? (
+          {true ? (
             <div className="classroom-sharing">
               <ClassroomMenu />
             </div>

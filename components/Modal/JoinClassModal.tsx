@@ -96,7 +96,7 @@ export const JoinClassModal = () => {
       isOpen={JoinClassModal.isOpen}
       onClose={JoinClassModal.onClose}
     >
-      <div className="space-y-4 py-2 pb-4">
+      <div className="space-y-4 py-2 pb-4 w-[50vh]">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <FormField

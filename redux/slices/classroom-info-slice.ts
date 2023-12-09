@@ -3,9 +3,30 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const initialState = {
   value: {
     classroomList: [],
-    currentClassroom: {},
+    currentClassroom: {
+      user: {
+        member_id: 0,
+        member_role: 0,
+        classroom_id: 0,
+        member_id_fk: {
+          first_name: "",
+          last_name: "",
+          email: "",
+          avatar: "",
+        },
+      },
+      members: [],
+      invitations: {
+        student_invite_code: "",
+        student_invite_uri_code: "",
+        teacher_invite_code: "",
+        teacher_invite_uri_code: "",
+      },
+    },
   },
 };
+
+export type ClassroomInfoState = typeof initialState;
 
 export const classroomInfo = createSlice({
   name: "classroomInfo",
@@ -23,7 +44,11 @@ export const classroomInfo = createSlice({
       return {
         value: {
           ...state.value,
-          currentClassroom: action.payload,
+          currentClassroom: {
+            user: { ...action.payload.user },
+            members: [...action.payload.members] as never[],
+            invitations: { ...action.payload.invitations },
+          },
         },
       };
     },
@@ -42,7 +67,9 @@ export const classroomInfo = createSlice({
       return {
         value: {
           ...state.value,
-          currentClassroom: {},
+          currentClassroom: {
+            ...initialState.value.currentClassroom,
+          },
         },
       };
     },

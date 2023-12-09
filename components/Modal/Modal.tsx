@@ -7,11 +7,11 @@ import {
 } from "@/components/ui/dialog";
 
 interface ModalProps {
-  title: string,
-  description: string,
-  isOpen: boolean,
-  onClose: () => void,
-  children?: React.ReactNode
+  title: string;
+  description: string;
+  isOpen: boolean;
+  onClose: () => void;
+  children?: React.ReactNode;
 }
 
 export const Modal: React.FC<ModalProps> = ({
@@ -19,30 +19,25 @@ export const Modal: React.FC<ModalProps> = ({
   description,
   isOpen,
   onClose,
-  children
+  children,
 }) => {
   const onChange = (open: boolean) => {
-      if (!open) {
-          onClose();
-      }   
+    if (!open) {
+      onClose();
+    }
   };
 
-  return <Dialog open={isOpen} onOpenChange={onChange}>
+  return (
+    <Dialog open={isOpen} onOpenChange={onChange}>
       <DialogContent>
-          <DialogHeader>
-              <DialogTitle>
-                  {title}
-              </DialogTitle>
-          </DialogHeader>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+        </DialogHeader>
 
-          <DialogDescription>
-              {description}   
-          </DialogDescription>
+        <DialogDescription>{description}</DialogDescription>
 
-          <div>
-              {children}
-          </div>
+        <div className="w-full">{children}</div>
       </DialogContent>
-  </Dialog>
-}
-
+    </Dialog>
+  );
+};
