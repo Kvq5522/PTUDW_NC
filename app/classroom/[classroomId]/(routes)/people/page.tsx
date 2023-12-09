@@ -112,8 +112,8 @@ const People = () => {
               <div className="text-3xl">Teacher</div>
 
               <InviteTeacherModal
-                invite_code={invitations.student_invite_code}
-                invite_uri={invitations.student_invite_uri_code}
+                invite_code={invitations.teacher_invite_code}
+                invite_uri={invitations.teacher_invite_uri_code}
               />
 
               {!isStudent && (
@@ -173,8 +173,8 @@ const People = () => {
               <div className="text-3xl">Student</div>
 
               <InviteStudentModal
-                invite_code={invitations.teacher_invite_code}
-                invite_uri={invitations.teacher_invite_uri_code}
+                invite_code={invitations.student_invite_code}
+                invite_uri={invitations.student_invite_uri_code}
               />
 
               <div
