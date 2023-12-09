@@ -17,6 +17,7 @@ interface gradeCompositionProps {
   // open: (type: string) => void;
   onScaleChange: (id: string, newScale: string) => void;
   onRemoveChange: (id: string) => void;
+  onOpenTable: (id: string) => void;
 }
 
 const GradeComposition = (props: gradeCompositionProps) => {
@@ -75,6 +76,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     variant="ghost"
                     size="icon"
                     className="h-6 w-6 rounded-xl"
+                    onClick={() => props.onOpenTable("tableDialog")}
                   >
                     <ClipboardEdit className="h-5 w-5 text-green-800" />
                   </Button>
@@ -94,18 +96,22 @@ const GradeComposition = (props: gradeCompositionProps) => {
           </div>
         )}
       </Draggable>
-
+      
+      {/* Edit */}
       <CompositionDialog
+        id={props.id}
         key={props.id}
         isOpen={openDialog}
         onClose={handleCloseDialog}
+        classname=" h-auto w-auto"
       >
-        <div className="">
+        <div className=" mb-2">
           <Label htmlFor="grade-name">Grade name</Label>
-          <Input id="grade-name" type="text" value={props.name} />
+          <Input id="grade-name" type="text" value={props.name} className="bg-slate-200 " />
         </div>
-        <div>
-          <Button onClick={handleCloseDialog}>Close Dialog</Button>
+        <div className="flex justify-end">
+          <Button variant="default" onClick={handleCloseDialog}>Save</Button>
+          <Button variant="destructive" onClick={handleCloseDialog}>Close</Button>
         </div> 
       </CompositionDialog>
     </>
