@@ -207,7 +207,7 @@ function LargeSidebarItem({
         }`
       )}
     >
-      <Icon className="h-6 w-6"></Icon>
+      <Icon className="h-6 w-6"/>
       <div className="whitespace-nowrap overflow-hidden text-ellipsis">
         {title}
       </div>

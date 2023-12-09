@@ -1,22 +1,25 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@mui/material";
+import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import AnnounceForm from "../Form/AnnounceForm";
+import { ArrowLeftRight } from "lucide-react";
 
-const AnnounceCard = () => {
+interface announceCardProps {
+  isTeacher?: boolean;
+}
+
+const AnnounceCard = (props: announceCardProps) => {
   const [isActive, setIsActive] = useState(false);
+
   const handleClick = () => {
     setIsActive((current) => !current);
   };
+
   return (
     <div className="announce-box">
       <div className="announceCard-content">
         <div
-          className={
-            isActive
-              ? "inactive-announceContent hidden"
-              : "inactive-announceContent"
-          }
+          className={"inactive-announceContent " + (isActive ? "hidden" : "")}
         >
           <div className="announce-avt">
             <Avatar>
@@ -28,6 +31,7 @@ const AnnounceCard = () => {
             Announce something to your class
           </div>
         </div>
+
         <div
           className={
             isActive
@@ -35,8 +39,7 @@ const AnnounceCard = () => {
               : "active-announceContent hidden"
           }
         >
-          <AnnounceForm />
-          <Button onClick={handleClick}>Cancel</Button>
+          <AnnounceForm onCancel={handleClick} />
         </div>
       </div>
     </div>
