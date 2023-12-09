@@ -36,14 +36,14 @@ const GradeTable = () => {
             <TableHead className="max-w-[200px]">ID</TableHead>
             <TableHead className="max-w-[200px]">ID</TableHead>
             <TableHead className="max-w-[200px]">Student&rsquo;s name</TableHead>
-            <TableHead>Method</TableHead>
+            <TableHead className="max-w-[200px]">Method</TableHead>
             <TableHead >Amount</TableHead>
             <TableHead >Test1</TableHead>
             <TableHead >Test2</TableHead>
-            <TableHead >Demo Testing</TableHead>
-            <TableHead >Demo Testing</TableHead>
-            <TableHead >Demo Testing</TableHead>
-            <TableHead >Demo Testing</TableHead>
+            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
+            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
+            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
+            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
