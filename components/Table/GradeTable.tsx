@@ -11,31 +11,19 @@ import {
 import { Input } from "../ui/input";
 import { invoices } from "@/constants/mockdata";
 
-// const invoices = [
-//   {
-//     invoice: "INV001",
-//     paymentStatus: "Paid",
-//     totalAmount: "$250.00",
-//     paymentMethod: "Credit Csadfasdfasdfasdfard",
-//     test1: "Pass",
-//     test2: "OK",
-//     Demotesting: "Check",
-//   }
-// ];
-
 interface gradeTableProps {
-  isOpen: boolean;
+  composition: string;
 }
 
-const GradeTable = () => {
+const GradeTable = (props: gradeTableProps) => {
   return (
-    <div className="flex flex-row">
-      <Table className="relative">
+    <div className="flex flex-row h-full">
+      <Table className="relative h-full">
         <TableHeader>
           <TableRow>
             <TableHead className="max-w-[200px]">ID</TableHead>
-            <TableHead className="max-w-[200px]">ID</TableHead>
             <TableHead className="max-w-[200px]">Student&rsquo;s name</TableHead>
+            <TableHead className="max-w-[200px]">{props.composition}</TableHead>
             <TableHead className="max-w-[200px]">Method</TableHead>
             <TableHead >Amount</TableHead>
             <TableHead >Test1</TableHead>

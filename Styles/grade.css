@@ -37,7 +37,7 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
   display: block;
-  border: 2px solid rgb(99, 99, 99);
+  /* border: 2px solid rgb(212, 212, 212); */
   overflow: hidden;
   border-radius: 15px;
   display: block;
@@ -189,10 +189,12 @@
 
 
 .tableDialog {
+  min-width: 100%;
+  height: 100vh;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  padding: 0.3rem;
+  padding: 0;
 }
 .tableDialog > button > svg {
   display: none;
@@ -204,6 +206,7 @@
   align-items: center;
   background-color: lightgray;
   padding: 0.5rem 0.3rem 0.5rem 0.1rem;
+  margin-bottom: 0.2rem;
   border-radius: 15px;
 }
 .table-box {

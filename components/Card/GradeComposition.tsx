@@ -4,7 +4,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 import CompositionDialog from "../Dialog/CompositionDialog";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
@@ -16,18 +16,25 @@ interface gradeCompositionProps {
   // onRemove: () => void;
   // open: (type: string) => void;
   onScaleChange: (id: string, newScale: string) => void;
+  onNameChange: (id: string, newName: string) => void;
   onRemoveChange: (id: string) => void;
-  onOpenTable: (id: string) => void;
+  onOpenTable: (type: string, compositionID: string) => void;
 }
 
 const GradeComposition = (props: gradeCompositionProps) => {
   const [openDialog, setOpenDialog] = useState(false);
+  const [newName, setNewName] = useState(props.name);
+
   function handleOpenDialog() {
     setOpenDialog(true);
   }
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+  const handleSave = () => {
+    props.onNameChange(props.id, newName);
+    handleCloseDialog();
+  }
 
   return (
     <>
@@ -47,7 +54,8 @@ const GradeComposition = (props: gradeCompositionProps) => {
               >
                 <GripHorizontal />
               </div>
-              <div className="dndlina">{props.name}</div>
+
+              <div className="dndlina">{newName}</div>
 
               <div className="dndliwi">
                 <input
@@ -57,6 +65,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   onChange={(e) =>
                     props.onScaleChange(props.id, e.target.value)
                   }
+                  max={100}
                 />
               </div>
               <Separator orientation="vertical" className="bg-slate-600" />
@@ -76,7 +85,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     variant="ghost"
                     size="icon"
                     className="h-6 w-6 rounded-xl"
-                    onClick={() => props.onOpenTable("tableDialog")}
+                    onClick={() => props.onOpenTable("tableDialog", props.id)}
                   >
                     <ClipboardEdit className="h-5 w-5 text-green-800" />
                   </Button>
@@ -96,8 +105,8 @@ const GradeComposition = (props: gradeCompositionProps) => {
           </div>
         )}
       </Draggable>
-      
-      {/* Edit */}
+
+      {/* Edit Dialog */}
       <CompositionDialog
         id={props.id}
         key={props.id}
@@ -107,12 +116,22 @@ const GradeComposition = (props: gradeCompositionProps) => {
       >
         <div className=" mb-2">
           <Label htmlFor="grade-name">Grade name</Label>
-          <Input id="grade-name" type="text" value={props.name} className="bg-slate-200 " />
+          <Input
+            id="grade-name"
+            type="text"
+            value={newName}
+            className="bg-slate-200 "
+            onChange={(e) => setNewName(e.target.value)}
+          />
         </div>
         <div className="flex justify-end">
-          <Button variant="default" onClick={handleCloseDialog}>Save</Button>
-          <Button variant="destructive" onClick={handleCloseDialog}>Close</Button>
-        </div> 
+          <Button variant="default" onClick={handleSave}>
+            Save
+          </Button>
+          <Button variant="destructive" onClick={handleCloseDialog}>
+            Close
+          </Button>
+        </div>
       </CompositionDialog>
     </>
   );

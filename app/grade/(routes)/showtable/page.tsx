@@ -13,7 +13,7 @@ const ShowTable = () => {
           <Button variant="ghost" size="icon"><Delete /></Button>
         </div>
         <div>
-          <GradeTable />
+          <GradeTable composition="all" />
         </div>
       </div>
     </div>

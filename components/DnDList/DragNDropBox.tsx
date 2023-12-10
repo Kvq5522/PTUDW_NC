@@ -37,11 +37,11 @@ interface dndProps {}
 const DragNDropBox = (props: dndProps) => {
   const [itemList, setItemList] = useState(gradeComposition);
   const [openDialog, setOpenDialog] = useState(false);
-  const [inputText, setInputText] = useState<string>("");
+  const [composition, setComposition] = useState<string>("");
   const [totalScale, setTotalScale] = useState<string>("0");
   const [isChange, setIsChange] = useState(false);
 
-  const [dialogId, setDialogId] = useState("");
+  const [dialogType, setDialogType] = useState("");
 
   function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
@@ -62,6 +62,12 @@ const DragNDropBox = (props: dndProps) => {
   }, [itemList]);
 
   const handleScaleChange = (id: string, newScale: string) => {
+    if (parseInt(newScale, 10) > 100) {
+      newScale = "100";
+    }
+    if (parseInt(newScale, 10) <= 0 || newScale === "") {
+      newScale = "0";
+    }
     setIsChange(true);
     setItemList((prevItems) =>
       prevItems.map((item) =>
@@ -70,13 +76,25 @@ const DragNDropBox = (props: dndProps) => {
     );
     setIsChange(false);
   };
+
+  const handleNameChange = (id: string, newName: string) => {
+    // setIsChange(true);
+    setItemList((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, name: newName } : item
+      )
+    );
+    // setIsChange(false);
+  }
+
   const handleDelete = (id: string) => {
     setItemList(itemList.filter((item) => item.id != id));
   };
 
-  const handleDialog = (id: string) => {
+  const handleDialog = (type: string, compoID: string) => {
     setOpenDialog((current) => !current);
-    setDialogId(id);
+    setDialogType(type);
+    setComposition(compoID);
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -104,7 +122,7 @@ const DragNDropBox = (props: dndProps) => {
     setItemList((prevItems) => [...prevItems, newItem]);
 
     // Close the composition dialog
-    handleDialog(newItem.id);
+    handleDialog("addDialog", newItem.id);
   };
 
   return (
@@ -127,6 +145,7 @@ const DragNDropBox = (props: dndProps) => {
                       name={name}
                       scale={scale}
                       onScaleChange={handleScaleChange}
+                      onNameChange={handleNameChange}
                       onRemoveChange={handleDelete}
                       onOpenTable={handleDialog}
                     />
@@ -146,7 +165,7 @@ const DragNDropBox = (props: dndProps) => {
               variant="outline"
               size="icon"
               className="h-8 w-8 addIPlustbtn"
-              onClick={() => handleDialog("addDialog")}
+              onClick={() => handleDialog("addDialog", "all")}
             >
               <Plus />
             </Button>
@@ -154,7 +173,7 @@ const DragNDropBox = (props: dndProps) => {
               variant="outline"
               size="icon"
               className="h-8 w-8 createTbtn"
-              onClick={() => handleDialog("tableDialog")}
+              onClick={() => handleDialog("tableDialog", "all")}
             >
               <Table2 />
             </Button>
@@ -165,8 +184,8 @@ const DragNDropBox = (props: dndProps) => {
       {/* Add Dialog */}
       <CompositionDialog
         id="addDialog"
-        isOpen={openDialog && dialogId === "addDialog"}
-        onClose={() => handleDialog("addDialog")}
+        isOpen={openDialog && dialogType === "addDialog"}
+        onClose={() => handleDialog("addDialog", "all")}
         classname="h-[13rem] w-[32rem] block"
       >
         <Form {...form}>
@@ -228,25 +247,23 @@ const DragNDropBox = (props: dndProps) => {
       {/* Show Table Dialog */}
       <CompositionDialog
         id="tableDialog"
-        isOpen={openDialog && dialogId === "tableDialog"}
-        onClose={() => handleDialog("tableDialog")}
-        classname="tableDialog min-w-full h-screen"
+        isOpen={openDialog && dialogType === "tableDialog"}
+        onClose={() => handleDialog("tableDialog", "all")}
+        classname="tableDialog"
       >
         <div className="table-nav">
           <Button
             variant="ghost"
             size="icon"
-            onClick={() => handleDialog("tableDialog")}
+            onClick={() => handleDialog("tableDialog", "all")}
           >
             <X />
           </Button>
-          
-          <input type="text" />
-          
+          <input type="text" value={composition}/>
           <Button
             className=" bg-blue-300 hover:bg-blue-600 text-[16px] font-bold text-gray-800"
             variant="ghost"
-            onClick={() => handleDialog("tableDialog")}
+            onClick={() => handleDialog("tableDialog", "all")}
           >
             <Save />
             Save
@@ -254,7 +271,7 @@ const DragNDropBox = (props: dndProps) => {
         </div>
 
         <div className="table-box">
-          <GradeTable />
+          <GradeTable composition={composition} />
         </div>
       </CompositionDialog>
     </div>
