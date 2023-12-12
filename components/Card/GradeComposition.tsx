@@ -2,17 +2,29 @@ import { GripHorizontal, ClipboardEdit, Pencil, Trash2 } from "lucide-react";
 import { Draggable, DraggableProvided } from "react-beautiful-dnd";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 import CompositionDialog from "../Dialog/CompositionDialog";
 import { useEffect, useState } from "react";
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 
-interface gradeCompositionProps {
+type gradeComposition = {
   index: number;
   id: string;
   name: string;
   scale: string;
+  status: string;
+}
+
+interface gradeCompositionProps extends gradeComposition {
+  
   // onRemove: () => void;
   // open: (type: string) => void;
   onScaleChange: (id: string, newScale: string) => void;
@@ -24,6 +36,7 @@ interface gradeCompositionProps {
 const GradeComposition = (props: gradeCompositionProps) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [newName, setNewName] = useState(props.name);
+  const [inputText, setInputText] = useState(props.name);
 
   function handleOpenDialog() {
     setOpenDialog(true);
@@ -32,8 +45,13 @@ const GradeComposition = (props: gradeCompositionProps) => {
     setOpenDialog(false);
   };
   const handleSave = () => {
+    setNewName(inputText);
     props.onNameChange(props.id, newName);
     handleCloseDialog();
+  };
+
+  const handleSelectChange = (value: string) => {
+    console.log(props.id, value)
   }
 
   return (
@@ -60,7 +78,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
               <div className="dndliwi">
                 <input
                   type="number"
-                  className="w-10 text-center border-none p-0"
+                  className="w-12 text-center border-none p-0"
                   value={props.scale}
                   onChange={(e) =>
                     props.onScaleChange(props.id, e.target.value)
@@ -68,8 +86,24 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   max={100}
                 />
               </div>
-              <Separator orientation="vertical" className="bg-slate-600" />
+
+              <div className="dndshare">
+                <Select defaultValue={props.status} onValueChange={handleSelectChange}>
+                  <SelectTrigger placeholder="Select state" className="w-[90px] h-[30px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="public" >Public</SelectItem>
+                    <SelectItem value="private">Private</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <div className="dndl-item-actions">
+                <Separator
+                  orientation="vertical"
+                  className="bg-slate-600 m-1"
+                />
                 <div>
                   <Button
                     variant="ghost"
@@ -119,9 +153,9 @@ const GradeComposition = (props: gradeCompositionProps) => {
           <Input
             id="grade-name"
             type="text"
-            value={newName}
+            value={inputText}
             className="bg-slate-200 "
-            onChange={(e) => setNewName(e.target.value)}
+            onChange={(e) => setInputText(e.target.value)}
           />
         </div>
         <div className="flex justify-end">
