@@ -4,7 +4,7 @@ import Navbar from "@/components/Navbar/DashboardNavbar";
 
 import CreateClassModal from "@/components/Modal/CreateClassModal";
 import JoinClassModal from "@/components/Modal/JoinClassModal";
-import AdminSideBar from "./adminSideBar";
+import AdminSideBar from "../../components/SideBar/adminSideBar";
 
 export default function AuthLayout({
   children,
