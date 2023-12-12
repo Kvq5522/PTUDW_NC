@@ -14,15 +14,21 @@ import {
 
 import Link from "next/link";
 import React, { ElementType, ReactNode, Children, useState } from "react";
-import { Button, buttonVariants } from "../ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { twMerge } from "tailwind-merge";
 import { cn } from "@/lib/utils";
 import { boolean } from "zod";
 import { type } from "os";
-import { useSidebarContext } from "../Contexts/SideBarContext";
-import { FirstNavbarSection } from "../Navbar/DashboardNavbar";
-
-const DashBoardSideBar = () => {
+import { useSidebarContext } from "@/components/Contexts/SideBarContext";
+import { FirstNavbarSection } from "@/components/Navbar/DashboardNavbar";
+interface AdminSideBar {
+  // Define the properties and their types here
+  // For example:
+  id: number;
+  title: string;
+  // ...
+}
+const AdminSideBar = () => {
   const { isLargeOpen, isSmallOpen, close } = useSidebarContext();
   const [stateTest, setStateTest] = useState("");
   return (
@@ -37,11 +43,6 @@ const DashBoardSideBar = () => {
           title="Home"
           url="/dashboard"
         ></SmallSidebarItem>
-        <SmallSidebarItem
-          Icon={Calendar}
-          title="Calendar"
-          url="/dashboard"
-        ></SmallSidebarItem>
         <div className="border"></div>
         <SmallSidebarItem
           Icon={Users}
@@ -49,17 +50,7 @@ const DashBoardSideBar = () => {
           url="/dashboard"
         ></SmallSidebarItem>
         <div className="border"></div>
-        <SmallSidebarItem
-          Icon={GraduationCap}
-          title="sub"
-          url="/dashboard"
-        ></SmallSidebarItem>
-        <div className="border"></div>
-        <SmallSidebarItem
-          Icon={HardDriveDownload}
-          title="Home"
-          url="/dashboard"
-        ></SmallSidebarItem>
+
         <SmallSidebarItem
           Icon={Settings}
           title="Setting"
@@ -84,41 +75,17 @@ const DashBoardSideBar = () => {
           <LargeSidebarItem
             isActive
             Icon={Home}
-            title="Home"
+            title="Account"
             url="/dashboard"
           />
-          <LargeSidebarItem Icon={Calendar} title="Calendar" url="/dashboard" />
+
           <hr></hr>
 
           <LargeSidebarSection visibleItemCount={1}>
             <LargeSidebarItem Icon={Users} title="Teaching" url="/dashboard" />
-            <LargeSidebarItem
-              Icon={FolderOpen}
-              title="Checking"
-              url="/dashboard"
-            />
           </LargeSidebarSection>
           <hr></hr>
 
-          <LargeSidebarSection visibleItemCount={1}>
-            <LargeSidebarItem
-              Icon={GraduationCap}
-              title="Subscription"
-              url="/dashboard"
-            />
-            <LargeSidebarItem
-              Icon={BookOpenCheck}
-              title="To Do"
-              url="/dashboard"
-            />
-          </LargeSidebarSection>
-
-          <hr></hr>
-          <LargeSidebarItem
-            Icon={HardDriveDownload}
-            title="Saved Classes"
-            url="/dashboard"
-          />
           <LargeSidebarItem Icon={Settings} title="Setting" url="/dashboard" />
         </LargeSidebarSection>
       </aside>
@@ -215,4 +182,4 @@ function LargeSidebarItem({
   );
 }
 
-export default DashBoardSideBar;
+export default AdminSideBar;

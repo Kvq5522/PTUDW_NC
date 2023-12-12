@@ -15,13 +15,14 @@ import { Button } from "@/components/ui/button";
 
 import { ProfileButton } from "../Button/ProfileButton";
 
-import { Barcode, Menu, Plus } from "lucide-react";
+import { Barcode, Menu, Plus, ShieldCheck } from "lucide-react";
 import { useSidebarContext } from "../Contexts/SideBarContext";
 import { useAppSelector } from "@/redux/store";
 import { useCreateClassModal } from "@/hooks/create-class-modal";
 import { useJoinClassModal } from "@/hooks/join-class-modal";
 import CreateClassModal from "../Modal/CreateClassModal";
 import JoinClassModal from "../Modal/JoinClassModal";
+import { Icon } from "@mui/material";
 
 type PageNavbarSectionProps = {
   hidden?: boolean;
@@ -41,6 +42,13 @@ const Navbar = () => {
       <FirstNavbarSection />
 
       <div className="flex flex-shrink-0 md:gap-2 justify-end">
+        <Link
+          className="flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
+          href="/admin"
+        >
+          <ShieldCheck />
+        </Link>
+
         <DropdownMenu>
           <DropdownMenuTrigger>
             <Plus />
