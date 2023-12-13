@@ -1,7 +1,6 @@
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { Input } from "../ui/input";
 import { invoices } from "@/constants/mockdata";
+import { FileUp, FileDown } from "lucide-react"
 
 interface gradeTableProps {
   composition: string;

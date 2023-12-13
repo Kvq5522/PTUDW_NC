@@ -21,14 +21,14 @@ type gradeComposition = {
   name: string;
   scale: string;
   status: string;
-}
+};
 
 interface gradeCompositionProps extends gradeComposition {
-  
   // onRemove: () => void;
   // open: (type: string) => void;
   onScaleChange: (id: string, newScale: string) => void;
   onNameChange: (id: string, newName: string) => void;
+  onStatusChange: (id: string, newStatus: string) => void;
   onRemoveChange: (id: string) => void;
   onOpenTable: (type: string, compositionID: string) => void;
 }
@@ -51,20 +51,30 @@ const GradeComposition = (props: gradeCompositionProps) => {
   };
 
   const handleSelectChange = (value: string) => {
-    console.log(props.id, value)
-  }
+    props.onStatusChange(props.id, value);
+    // console.log(props.id, value);
+    // console.log(props.id, props.status);
+    // props.status = value;
+  };
 
   return (
     <>
-      <Draggable key={props.id} draggableId={props.id} index={props.index}>
+      <Draggable draggableId={props.id} index={props.index}>
         {(provided, snapshot) => (
           <div
-            className="dndl-item"
+            className={
+              `dndl-item ` 
+              // + (props.status === "private" ? "bg-red-700" : "bg-blue-700")
+            }
             ref={provided.innerRef}
             // {...provided.dragHandleProps}
             {...provided.draggableProps}
           >
-            <div className="dndl-item-wrapper">
+            <div
+              className={
+                `dndl-item-wrapper`
+              }
+            >
               <div
                 ref={provided.innerRef}
                 {...provided.dragHandleProps}
@@ -88,12 +98,15 @@ const GradeComposition = (props: gradeCompositionProps) => {
               </div>
 
               <div className="dndshare">
-                <Select defaultValue={props.status} onValueChange={handleSelectChange}>
-                  <SelectTrigger placeholder="Select state" className="w-[90px] h-[30px]">
+                <Select value={props.status} onValueChange={handleSelectChange}>
+                  <SelectTrigger
+                    placeholder="Select state"
+                    className="w-[80px] h-[25px]"
+                  >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="public" >Public</SelectItem>
+                    <SelectItem value="public">Public</SelectItem>
                     <SelectItem value="private">Private</SelectItem>
                   </SelectContent>
                 </Select>

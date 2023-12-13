@@ -20,7 +20,7 @@ const Transcript = () => {
   
   return (
     <div className="grade-container">
-      <div className="grade-wrapper bg-black"> 
+      <div className="grade-wrapper"> 
         <div className="grade-top">
           <DragNDropBox />
         </div>

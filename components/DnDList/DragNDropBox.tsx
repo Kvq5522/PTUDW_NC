@@ -1,7 +1,7 @@
 "use client";
 
 import { Separator } from "@radix-ui/react-select";
-import { Plus, Table2, X, Save, FileUp, FileDown } from "lucide-react";
+import { Plus, Table2, X, Save, FileKey2, FileLock2 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import {
@@ -11,11 +11,17 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import GradeComposition from "../Card/GradeComposition";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Button } from "../ui/button";
-import CompositionDialog from "../Dialog/CompositionDialog";
 import { Input } from "../ui/input";
-import { Checkbox } from "../ui/checkbox";
+
+import GradeComposition from "../Card/GradeComposition";
+import CompositionDialog from "../Dialog/CompositionDialog";
 
 import { useForm, FormProvider } from "react-hook-form";
 import * as z from "zod";
@@ -24,6 +30,7 @@ import { DialogClose } from "../ui/dialog";
 import GradeTable from "../Table/GradeTable";
 
 import { gradeComposition } from "@/constants/mockdata";
+import ShowGradeDialog from "../Dialog/ShowGradeDialog";
 
 const formSchema = z.object({
   id: z.string(),
@@ -76,6 +83,14 @@ const DragNDropBox = (props: dndProps) => {
     setIsChange(false);
   };
 
+  const handleStatusChange = (id: string, newStatus: string) => {
+    setItemList((prevItems) =>
+      prevItems.map((item) =>
+        item.id === id ? { ...item, status: newStatus } : item
+      )
+    );
+  };
+
   const handleNameChange = (id: string, newName: string) => {
     setItemList((prevItems) =>
       prevItems.map((item) =>
@@ -95,6 +110,25 @@ const DragNDropBox = (props: dndProps) => {
     setComposition(compoID);
   };
 
+  const handleMakePublic = () => {
+    // Update the status property of each item to "public"
+    setItemList((prevItems) =>
+      prevItems.map((item) => ({
+        ...item,
+        status: "public",
+      }))
+    );
+  };
+  const handleMakePrivate = () => {
+    // Update the status property of each item to "public"
+    setItemList((prevItems) =>
+      prevItems.map((item) => ({
+        ...item,
+        status: "private",
+      }))
+    );
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -106,7 +140,6 @@ const DragNDropBox = (props: dndProps) => {
   });
 
   useEffect(() => {
-    console.log("OK");
     calcSum();
   }, [itemList, isChange, calcSum]);
 
@@ -124,6 +157,7 @@ const DragNDropBox = (props: dndProps) => {
       id: values.id || Date.now().toString(), // Use existing ID or generate a timestamp-based ID
       name: values.name || "",
       scale: values.scale || "0",
+      status: values.status || "private",
     };
 
     // Update the itemList state with the new item
@@ -144,17 +178,18 @@ const DragNDropBox = (props: dndProps) => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {itemList.map(({ id, name, scale }, index) => {
+                {itemList.map((grade, index) => {
                   return (
                     <GradeComposition
-                      key={id}
+                      key={`${grade.id}-${index}`}
                       index={index}
-                      id={id}
-                      name={name}
-                      scale={scale}
-                      status="private"
+                      id={grade.id}
+                      name={grade.name}
+                      scale={grade.scale}
+                      status={grade.status}
                       onScaleChange={handleScaleChange}
                       onNameChange={handleNameChange}
+                      onStatusChange={handleStatusChange}
                       onRemoveChange={handleDelete}
                       onOpenTable={handleDialog}
                     />
@@ -167,9 +202,33 @@ const DragNDropBox = (props: dndProps) => {
         </DragDropContext>
         <Separator className="bg-black h-[2px]" />
         <div className="dndl-tools">
-          <div className="flex flex-row gap-1 items-center justify-between p-0 ml-[6rem]">
+          <div className="flex flex-row dndl-tools-actions">
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-7 w-7 addIPlustbtn"
+              onClick={handleMakePublic}
+            >
+              <FileKey2 />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon"
+              className="h-7 w-7 addIPlustbtn"
+              onClick={handleMakePrivate}
+            >
+              <FileLock2 />
+            </Button>
+          </div>
+
+          <div className="flex flex-row gap-1 items-center justify-between p-0">
             <div className="block text-[16px] font-bold">Total Scale: </div>
-            <input type="text" className="w-9 text-center" value={totalScale} />
+            <input
+              type="text"
+              className="w-9 text-center"
+              value={totalScale}
+              readOnly
+            />
           </div>
 
           <div className="flex flex-row gap-1 dndl-tools-actions">
@@ -201,17 +260,17 @@ const DragNDropBox = (props: dndProps) => {
         id="addDialog"
         isOpen={openDialog && dialogType === "addDialog"}
         onClose={() => handleDialog("addDialog", "all")}
-        classname="h-[16rem] w-[32rem] block"
+        classname="h-[16.5rem] w-[32rem] block"
       >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="p-1 mb-4 mt-4 flex flex-col gap-4 h-full w-full">
+            <div className="p-1 mb-3 mt-3 flex gap-3 flex-col h-[10rem] w-full">
               <FormField
                 control={form.control}
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-start flex-col">
                       <FormLabel className="w-[15%] truncate">
                         Name (<span className="text-red-500">*</span>)
                       </FormLabel>
@@ -221,9 +280,10 @@ const DragNDropBox = (props: dndProps) => {
                             {...field}
                             type="text"
                             placeholder="Enter Grade Composition Name"
+                            className="mt-1"
                           />
                           {form.formState.errors.name && (
-                            <div className="text-red-500 text-sm">
+                            <div className="text-red-500 text-sm mt-1">
                               {form.formState.errors.name.message}
                             </div>
                           )}
@@ -239,13 +299,14 @@ const DragNDropBox = (props: dndProps) => {
                 name="scale"
                 render={({ field }) => (
                   <FormItem>
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-center items-start flex-col">
                       <FormLabel className="w-[15%] truncate">Scale</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
                           type="number"
                           placeholder="Enter Scale"
+                          className="mt-1"
                         />
                       </FormControl>
                     </div>
@@ -268,7 +329,14 @@ const DragNDropBox = (props: dndProps) => {
       {/* ---------------------------------------------------------- */}
 
       {/* Show Table Dialog */}
-      <CompositionDialog
+      <ShowGradeDialog
+        id="tableDialog"
+        composition={composition}
+        typeTable="tableDialog"
+        onHandleDialog={handleDialog}
+        isOpen={openDialog && dialogType === "tableDialog"}
+      />
+      {/* <CompositionDialog
         id="tableDialog"
         isOpen={openDialog && dialogType === "tableDialog"}
         onClose={() => handleDialog("tableDialog", "all")}
@@ -295,7 +363,7 @@ const DragNDropBox = (props: dndProps) => {
         <div className="table-box">
           <GradeTable composition={composition} />
         </div>
-      </CompositionDialog>
+      </CompositionDialog> */}
     </div>
   );
 };
