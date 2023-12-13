@@ -3,9 +3,6 @@ import {
   Dialog,
   DialogContent,
 } from "@/components/ui/dialog";
-import { Separator } from "../ui/separator";
-import { Button } from "../ui/button";
-import { DialogOverlay } from "@radix-ui/react-dialog";
 
 interface compositionDialogProps {
   id: string;

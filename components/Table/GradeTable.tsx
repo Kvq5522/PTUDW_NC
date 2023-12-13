@@ -18,11 +18,11 @@ interface gradeTableProps {
 const GradeTable = (props: gradeTableProps) => {
   return (
     <Table className="">
-      <div className="h-[28rem]">
-        <TableHeader>
+      <div className="h-[28rem] min-h-full">
+        <TableHeader className="bg-slate-300">
           <TableRow>
-            <TableHead className="max-w-[200px]">ID</TableHead>
-            <TableHead className="max-w-[200px]">
+            <TableHead className="min-w-[9rem]">ID</TableHead>
+            <TableHead className="min-w-[13rem]">
               Student&rsquo;s name
             </TableHead>
             <TableHead className="max-w-[200px]">{props.composition}</TableHead>

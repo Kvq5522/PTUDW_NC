@@ -31,6 +31,7 @@ import GradeTable from "../Table/GradeTable";
 
 import { gradeComposition } from "@/constants/mockdata";
 import ShowGradeDialog from "../Dialog/ShowGradeDialog";
+import TooltipPro from "../TooltipPro";
 
 const formSchema = z.object({
   id: z.string(),
@@ -48,6 +49,7 @@ const DragNDropBox = (props: dndProps) => {
   const [totalScale, setTotalScale] = useState<string>("0");
   const [isChange, setIsChange] = useState(false);
   const [dialogType, setDialogType] = useState("");
+  const [isSave, setIsSave] = useState(true)
 
   function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
@@ -81,6 +83,7 @@ const DragNDropBox = (props: dndProps) => {
       )
     );
     setIsChange(false);
+    // setIsSave(false);
   };
 
   const handleStatusChange = (id: string, newStatus: string) => {
@@ -89,6 +92,7 @@ const DragNDropBox = (props: dndProps) => {
         item.id === id ? { ...item, status: newStatus } : item
       )
     );
+    // setIsSave(false);
   };
 
   const handleNameChange = (id: string, newName: string) => {
@@ -129,6 +133,11 @@ const DragNDropBox = (props: dndProps) => {
     );
   };
 
+  const handleSaveBox = () => {
+    console.log("Success");
+    setIsSave(true)
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -141,6 +150,7 @@ const DragNDropBox = (props: dndProps) => {
 
   useEffect(() => {
     calcSum();
+    setIsSave(false);
   }, [itemList, isChange, calcSum]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -203,22 +213,28 @@ const DragNDropBox = (props: dndProps) => {
         <Separator className="bg-black h-[2px]" />
         <div className="dndl-tools">
           <div className="flex flex-row dndl-tools-actions">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 addIPlustbtn"
-              onClick={handleMakePublic}
-            >
-              <FileKey2 />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 addIPlustbtn"
-              onClick={handleMakePrivate}
-            >
-              <FileLock2 />
-            </Button>
+            <TooltipPro description="Public All">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 addIPlustbtn"
+                onClick={handleMakePublic}
+                disabled={!isSave}
+              >
+                <FileKey2 />
+              </Button>
+            </TooltipPro>
+            <TooltipPro description="Private All">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 addIPlustbtn"
+                onClick={handleMakePrivate}
+                disabled={!isSave}
+              >
+                <FileLock2 />
+              </Button>
+            </TooltipPro>
           </div>
 
           <div className="flex flex-row gap-1 items-center justify-between p-0">
@@ -232,25 +248,38 @@ const DragNDropBox = (props: dndProps) => {
           </div>
 
           <div className="flex flex-row gap-1 dndl-tools-actions">
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 addIPlustbtn"
-              onClick={() => handleDialog("addDialog", "all")}
-            >
-              <Plus />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="h-7 w-7 createTbtn"
-              onClick={() => handleDialog("tableDialog", "all")}
-            >
-              <Table2 />
-            </Button>
-            <Button variant="outline" size="icon" className="h-7 w-7 saveTbtn">
-              <Save />
-            </Button>
+            <TooltipPro description="Add Composition">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 addIPlustbtn"
+                onClick={() => handleDialog("addDialog", "all")}
+              >
+                <Plus />
+              </Button>
+            </TooltipPro>
+
+            <TooltipPro description="Show All">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 createTbtn"
+                onClick={() => handleDialog("tableDialog", "all")}
+              >
+                <Table2 />
+              </Button>
+            </TooltipPro>
+
+            <TooltipPro description="Save This Box">
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-7 w-7 saveTbtn"
+                onClick={handleSaveBox}
+              >
+                <Save />
+              </Button>
+            </TooltipPro>
           </div>
         </div>
       </div>

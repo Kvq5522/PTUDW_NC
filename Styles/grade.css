@@ -148,12 +148,12 @@
 }
 .addIPlustbtn:hover {
   color: #0866ff;
-  background-color: whtie;
+  background-color: white;
   transition: 0.1s ease-in all;
 }
 .createTbtn:hover {
   color: #8b5cf6;
-  background-color: whtie;
+  background-color: white;
   transition: 0.1s ease-in all;
 }
 .addIPlustbtn:active, .createTbtn:active {
