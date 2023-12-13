@@ -260,7 +260,7 @@ const DragNDropBox = (props: dndProps) => {
         id="addDialog"
         isOpen={openDialog && dialogType === "addDialog"}
         onClose={() => handleDialog("addDialog", "all")}
-        classname="h-[16.5rem] w-[32rem] block"
+        classname="h-fit w-[32rem] block"
       >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

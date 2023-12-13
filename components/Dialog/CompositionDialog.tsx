@@ -19,7 +19,7 @@ const CompositionDialog = (props: compositionDialogProps) => {
   return (
     <Dialog key={props.id} open={props.isOpen} onOpenChange={props.onClose}>
       <DialogContent className={props.classname}>
-        <div>{props.children}</div>
+        {props.children}
       </DialogContent>
     </Dialog>
   );

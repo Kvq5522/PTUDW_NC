@@ -25,15 +25,16 @@ const ShowGradeDialog = (props: showGradeProps) => {
       id="tableDialog"
       isOpen={props.isOpen}
       onClose={() => props.onHandleDialog("tableDialog", "all")}
-      classname="tableDialog"
+      classname="table-dialog"
     >
       <div className="table-nav">
         <Button
           variant="ghost"
           size="icon"
           onClick={() => props.onHandleDialog("tableDialog", "all")}
+          className="h-6 w-6"
         >
-          <X />
+          <X  />
         </Button>
         <input type="text" value={props.composition} />
         <Button
