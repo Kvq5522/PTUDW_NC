@@ -8,78 +8,49 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Input } from "../ui/input";
-import { invoices } from "@/constants/mockdata";
-import { FileUp, FileDown } from "lucide-react";
+import { invoices, studentGrade } from "@/constants/mockdata";
+import { useEffect } from "react";
+
+
+type StudentGrade = {
+  studentId: string;
+  studentEmail: string;
+}
 
 interface gradeTableProps {
-  composition: string;
+  compositionID: string;
+  tableHeaders: string[];
 }
 
 const GradeTable = (props: gradeTableProps) => {
   return (
-    <Table className="">
-      <div className="h-[28rem] min-h-full">
+    <Table className="min-h-[26rem]">
+      <div className="min-h-full flex flex-col">
         <TableHeader className="bg-slate-300">
           <TableRow>
-            <TableHead className="min-w-[9rem]">ID</TableHead>
-            <TableHead className="min-w-[13rem]">
-              Student&rsquo;s name
-            </TableHead>
-            <TableHead className="max-w-[200px]">{props.composition}</TableHead>
-            <TableHead className="max-w-[200px]">Method</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Test1</TableHead>
-            <TableHead>Test2</TableHead>
-            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
-            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
-            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
-            <TableHead className="max-w-[200px]">Demo Testing</TableHead>
+            {props.tableHeaders.map((header, index) => (
+              <TableHead key={index} className="min-w-[13rem]">
+                {header}
+              </TableHead>
+            ))}
           </TableRow>
         </TableHeader>
-        <TableBody className="h-[25rem]">
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice} className="">
-              <TableCell className="font-medium h-3 bg-blue-800">
-                {invoice.invoice}
-              </TableCell>
-              <TableCell className="font-medium h-3">
-                {invoice.paymentStatus}
-              </TableCell>
-              <TableCell className="font-medium h-3">
-                {invoice.paymentMethod}
-              </TableCell>
-              <TableCell className="text-right">
-                <Input
-                  className=" w-fit"
-                  type="text"
-                  value={invoice.totalAmount}
-                />
-              </TableCell>
-              <TableCell className="text-right">
-                <Input
-                  className=" w-fit"
-                  type="text"
-                  value={invoice.totalAmount}
-                />
-              </TableCell>
-              <TableCell>{invoice.test1}</TableCell>
-              <TableCell>{invoice.test2}</TableCell>
-              <TableCell className="text-right">
-                <Input
-                  className=" w-fit"
-                  type="text"
-                  value={invoice.totalAmount}
-                />
-              </TableCell>
-              <TableCell>{invoice.Demotesting}</TableCell>
+        <TableBody className="">
+          {studentGrade.map((student, index) => (
+            <TableRow key={student.studentId} className="w-full">
+              {props.tableHeaders.map((header, index) => (
+                <TableCell key={index} className="font-medium h-3 bg-slate-500">
+                  {student[header as keyof StudentGrade]}
+                </TableCell>
+              ))}
             </TableRow>
           ))}
         </TableBody>
       </div>
 
-      <TableFooter className=" fixed bottom-0 left-0 right-0">
+      <TableFooter className="fixed bottom-0 left-0 right-0 h-[2.5rem] flex items-center">
         <TableRow>
-          <TableCell colSpan={10}>Total</TableCell>
+          <TableCell colSpan={props.tableHeaders.length-1}>Total</TableCell>
           <TableCell className="text-right">$2,500.00</TableCell>
         </TableRow>
       </TableFooter>

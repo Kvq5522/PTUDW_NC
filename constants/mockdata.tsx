@@ -156,11 +156,51 @@ export const gradeComposition = [
 
 export const studentGrade = [
   {
-    studentID:"",
-    studentName:"",
-    grades: [
-      {id:"sadfdf"},
-      {id:"gqgq "}
-    ],
-  }
+    studentId:"20127061",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127062",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127063",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127064",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127063",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127064",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127063",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127064",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127063",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127064",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127063",
+    studentEmail:"20127061@gmail.com",
+  },
+  {
+    studentId:"20127064",
+    studentEmail:"20127061@gmail.com",
+  },
 ];

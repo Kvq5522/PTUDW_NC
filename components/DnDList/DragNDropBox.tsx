@@ -1,7 +1,7 @@
 "use client";
 
 import { Separator } from "@radix-ui/react-select";
-import { Plus, Table2, X, Save, FileKey2, FileLock2 } from "lucide-react";
+import { Plus, Table2, X, Save, FileKey2, FileLock2, FileDown, FileUp } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import {
@@ -114,23 +114,13 @@ const DragNDropBox = (props: dndProps) => {
     setComposition(compoID);
   };
 
-  const handleMakePublic = () => {
+  const handleUpload = () => {
     // Update the status property of each item to "public"
-    setItemList((prevItems) =>
-      prevItems.map((item) => ({
-        ...item,
-        status: "public",
-      }))
-    );
+    console.log("Upload success");
   };
-  const handleMakePrivate = () => {
+  const handleDownload = () => {
     // Update the status property of each item to "public"
-    setItemList((prevItems) =>
-      prevItems.map((item) => ({
-        ...item,
-        status: "private",
-      }))
-    );
+    console.log("Download success");
   };
 
   const handleSaveBox = () => {
@@ -213,26 +203,24 @@ const DragNDropBox = (props: dndProps) => {
         <Separator className="bg-black h-[2px]" />
         <div className="dndl-tools">
           <div className="flex flex-row dndl-tools-actions">
-            <TooltipPro description="Public All">
+            <TooltipPro description="Upload">
               <Button
                 variant="outline"
                 size="icon"
                 className="h-7 w-7 addIPlustbtn"
-                onClick={handleMakePublic}
-                disabled={!isSave}
+                onClick={handleUpload}
               >
-                <FileKey2 />
+                <FileUp />
               </Button>
             </TooltipPro>
-            <TooltipPro description="Private All">
+            <TooltipPro description="Download">
               <Button
                 variant="outline"
                 size="icon"
                 className="h-7 w-7 addIPlustbtn"
-                onClick={handleMakePrivate}
-                disabled={!isSave}
+                onClick={handleDownload}
               >
-                <FileLock2 />
+                <FileDown />
               </Button>
             </TooltipPro>
           </div>
@@ -360,7 +348,7 @@ const DragNDropBox = (props: dndProps) => {
       {/* Show Table Dialog */}
       <ShowGradeDialog
         id="tableDialog"
-        composition={composition}
+        compositionID={composition}
         typeTable="tableDialog"
         onHandleDialog={handleDialog}
         isOpen={openDialog && dialogType === "tableDialog"}
