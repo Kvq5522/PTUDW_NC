@@ -61,7 +61,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
   return (
     <>
       <Draggable draggableId={props.id} index={props.index}>
-        {(provided, snapshot) => (
+        {(provided: DraggableProvided) => (
           <div
             className={
               `dndl-item `
