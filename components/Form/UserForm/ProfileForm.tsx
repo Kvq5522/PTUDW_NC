@@ -120,7 +120,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       phone_number: "",
       address: "",
       age: 0,
-      gender: "",
+      gender: "M",
       avatar: "",
     },
   });
@@ -356,7 +356,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                     <Select
                       disabled={loading}
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      defaultValue={field.value === "" ? "M" : field.value}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Gender" />

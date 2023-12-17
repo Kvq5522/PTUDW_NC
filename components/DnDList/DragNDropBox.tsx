@@ -1,7 +1,16 @@
 "use client";
 
 import { Separator } from "@radix-ui/react-select";
-import { Plus, Table2, X, Save, FileKey2, FileLock2, FileDown, FileUp } from "lucide-react";
+import {
+  Plus,
+  Table2,
+  X,
+  Save,
+  FileKey2,
+  FileLock2,
+  FileDown,
+  FileUp,
+} from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
 import {
@@ -40,16 +49,19 @@ const formSchema = z.object({
   status: z.string(),
 });
 
-interface dndProps {}
+interface dndProps {
+  compositionList: any[];
+  classroomId: string;
+}
 
 const DragNDropBox = (props: dndProps) => {
-  const [itemList, setItemList] = useState(gradeComposition);
+  const [itemList, setItemList] = useState(props.compositionList);
   const [openDialog, setOpenDialog] = useState(false);
   const [composition, setComposition] = useState<string>("");
   const [totalScale, setTotalScale] = useState<string>("0");
   const [isChange, setIsChange] = useState(false);
   const [dialogType, setDialogType] = useState("");
-  const [isSave, setIsSave] = useState(true)
+  const [isSave, setIsSave] = useState(true);
 
   function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
@@ -64,10 +76,11 @@ const DragNDropBox = (props: dndProps) => {
   const calcSum = useCallback(() => {
     let sum = 0;
     for (let i = 0; i < itemList.length; i++) {
-      sum += parseInt(itemList[i].scale, 10) || 0;
+      sum += parseInt(itemList[i].grade_percent, 10) || 0;
     }
     setTotalScale(sum.toString());
   }, [itemList]);
+  
 
   const handleScaleChange = (id: string, newScale: string) => {
     if (parseInt(newScale, 10) > 100) {
@@ -86,7 +99,7 @@ const DragNDropBox = (props: dndProps) => {
     // setIsSave(false);
   };
 
-  const handleStatusChange = (id: string, newStatus: string) => {
+  const handleStatusChange = (id: string, newStatus: boolean) => {
     setItemList((prevItems) =>
       prevItems.map((item) =>
         item.id === id ? { ...item, status: newStatus } : item
@@ -118,6 +131,7 @@ const DragNDropBox = (props: dndProps) => {
     // Update the status property of each item to "public"
     console.log("Upload success");
   };
+
   const handleDownload = () => {
     // Update the status property of each item to "public"
     console.log("Download success");
@@ -125,7 +139,7 @@ const DragNDropBox = (props: dndProps) => {
 
   const handleSaveBox = () => {
     console.log("Success");
-    setIsSave(true)
+    setIsSave(true);
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -143,6 +157,10 @@ const DragNDropBox = (props: dndProps) => {
     setIsSave(false);
   }, [itemList, isChange, calcSum]);
 
+  useEffect(() => {
+    setItemList(props.compositionList);
+  }, [props.compositionList]);
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!values.name) {
       // Nếu không, đặt lỗi vào trường name
@@ -153,10 +171,22 @@ const DragNDropBox = (props: dndProps) => {
       return; // Dừng lại nếu có lỗi
     }
 
+    //check if name is already exist
+    if (
+      itemList.filter((item) => item.name === values.name).length > 0 &&
+      values.id === ""
+    ) {
+      form.setError("name", {
+        type: "manual",
+        message: "Name is already exist",
+      });
+      return;
+    }
+
     const newItem = {
       id: values.id || Date.now().toString(), // Use existing ID or generate a timestamp-based ID
       name: values.name || "",
-      scale: values.scale || "0",
+      scale: values.scale || 0,
       status: values.status || "private",
     };
 
@@ -178,23 +208,24 @@ const DragNDropBox = (props: dndProps) => {
                 {...provided.droppableProps}
                 ref={provided.innerRef}
               >
-                {itemList.map((grade, index) => {
-                  return (
-                    <GradeComposition
-                      key={`${grade.id}-${index}`}
-                      index={index}
-                      id={grade.id}
-                      name={grade.name}
-                      scale={grade.scale}
-                      status={grade.status}
-                      onScaleChange={handleScaleChange}
-                      onNameChange={handleNameChange}
-                      onStatusChange={handleStatusChange}
-                      onRemoveChange={handleDelete}
-                      onOpenTable={handleDialog}
-                    />
-                  );
-                })}
+                {Array.isArray(itemList) &&
+                  itemList.map((grade, index) => {
+                    return (
+                      <GradeComposition
+                        key={`${grade.id}-${index}`}
+                        index={index}
+                        id={String(grade.id)}
+                        name={grade.name}
+                        scale={grade.grade_percent}
+                        status={grade.is_finalized}
+                        onScaleChange={handleScaleChange}
+                        onNameChange={handleNameChange}
+                        onStatusChange={handleStatusChange}
+                        onRemoveChange={handleDelete}
+                        onOpenTable={handleDialog}
+                      />
+                    );
+                  })}
                 {provided.placeholder}
               </div>
             )}
@@ -203,7 +234,7 @@ const DragNDropBox = (props: dndProps) => {
         <Separator className="bg-black h-[2px]" />
         <div className="dndl-tools">
           <div className="flex flex-row dndl-tools-actions">
-            <TooltipPro description="Upload">
+            <TooltipPro description="Upload Student List">
               <Button
                 variant="outline"
                 size="icon"
@@ -213,7 +244,7 @@ const DragNDropBox = (props: dndProps) => {
                 <FileUp />
               </Button>
             </TooltipPro>
-            <TooltipPro description="Download">
+            <TooltipPro description="Download Student List">
               <Button
                 variant="outline"
                 size="icon"
@@ -229,7 +260,7 @@ const DragNDropBox = (props: dndProps) => {
             <div className="block text-[16px] font-bold">Total Scale: </div>
             <input
               type="text"
-              className="w-9 text-center"
+              className="w-9 text-center rounded-sm"
               value={totalScale}
               readOnly
             />
@@ -247,7 +278,7 @@ const DragNDropBox = (props: dndProps) => {
               </Button>
             </TooltipPro>
 
-            <TooltipPro description="Show All">
+            <TooltipPro description="Show Grade Board">
               <Button
                 variant="outline"
                 size="icon"
@@ -258,7 +289,7 @@ const DragNDropBox = (props: dndProps) => {
               </Button>
             </TooltipPro>
 
-            <TooltipPro description="Save This Box">
+            <TooltipPro description="Save Compostions">
               <Button
                 variant="outline"
                 size="icon"
@@ -331,7 +362,7 @@ const DragNDropBox = (props: dndProps) => {
                 )}
               />
             </div>
-            <div className="flex flex-row justify-end gap-1">
+            <div className="flex flex-row justify-end gap-2">
               <Button type="submit">Add</Button>
               <DialogClose asChild>
                 <Button id="closeDia" type="button" variant="destructive">
@@ -352,6 +383,7 @@ const DragNDropBox = (props: dndProps) => {
         typeTable="tableDialog"
         onHandleDialog={handleDialog}
         isOpen={openDialog && dialogType === "tableDialog"}
+        classroomId={props.classroomId}
       />
       {/* <CompositionDialog
         id="tableDialog"

@@ -7,6 +7,9 @@ import * as XLSX from "xlsx";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { gradeComposition, studentGrade } from "@/constants/mockdata";
+import Loader from "../Loader/Loader";
+import { AXIOS } from "@/constants/ApiCall";
+import EmptyState from "../EmptyState";
 
 type StudentGrade = {
   studentId: string;
@@ -25,6 +28,7 @@ interface showGradeProps {
   typeTable: string;
   isOpen: boolean;
   compositionID: string;
+  classroomId: string;
   onHandleDialog: (type: string, comp: string) => void;
 }
 
@@ -32,8 +36,10 @@ let defaultHeaders = ["studentId", "studentEmail"];
 
 const ShowGradeDialog = (props: showGradeProps) => {
   const [isSave, setIsSave] = useState(false);
-  const [studentGrades, setStudentGrades] = useState(studentGrade);
+  const [studentGrades, setStudentGrades] = useState([]);
   const [headers, setHeaders] = useState(defaultHeaders);
+  const [loading, setLoading] = useState(true);
+  const [uri, setUri] = useState("");
 
   const getTableHeader = () => {
     setHeaders(defaultHeaders);
@@ -83,8 +89,105 @@ const ShowGradeDialog = (props: showGradeProps) => {
   const handleDownloadTable = () => {};
 
   useEffect(() => {
-    getTableHeader();
-  }, [props.compositionID])
+    let _uri = ``;
+
+    if (!props.compositionID) return;
+
+    if (props.compositionID === "all") {
+      _uri = `/grade/get-student-grade-board/${props.classroomId}`;
+      setUri(_uri);
+    } else {
+      _uri = `/grade/get-student-grades-by-composition/${props.classroomId}/${props.compositionID}`;
+      setUri(_uri);
+    }
+
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const res = await AXIOS.GET({
+          uri: _uri,
+          token: localStorage.getItem("access-token") ?? "",
+        });
+
+        if (res.statusCode === 200) {
+          const grades = res.metadata.grades;
+
+          if (props.compositionID === "all") {
+            console.log(res.metadata);
+            const compositionNames = res.metadata.grade_compositions;
+
+            const compHeaders = res.metadata.grade_compositions.map(
+              (cmp: any) => {
+                return `Grade ${cmp.name}`;
+              }
+            );
+            let formatGrades = Array.isArray(grades)
+              ? grades.map((item) => {
+                  const mapGrade = compositionNames.map((cmp: any) => {
+                    const grade = item.grades.find(
+                      (x: any) => x.grade_category === cmp.grade_category
+                    );
+
+                    return `Grade ${cmp.name}:${grade?.grade || 0}`;
+                  });
+
+                  const info = {
+                    "Student Name": item.name,
+                    "Student ID": item.student_id,
+                    Email: item.email,
+                  };
+
+                  mapGrade.forEach((grade: any, index: number) => {
+                    const name = grade.split(":")[0];
+                    const value = grade.split(":")[1];
+                    info[name as keyof typeof info] = parseFloat(value) ?? 0;
+                  });
+                  
+                  return info;
+                })
+              : [];
+            
+            console.log(formatGrades)
+
+            setStudentGrades(formatGrades as never[]);
+            setHeaders(["Student Name", "Student ID", "Email", ...compHeaders]);
+          } else {
+            let formatGrades = Array.isArray(grades)
+              ? grades?.map((grade: any) => {
+                  const info = {
+                    "Student Name": grade.student_id_fk.name,
+                    "Student ID": grade.student_id,
+                    Email: grade.student_id_fk.email,
+                    "Student Grade": grade.grade,
+                  };
+
+                  return info;
+                })
+              : [];
+
+            setStudentGrades(formatGrades as never[]);
+
+            setHeaders([
+              "Student Name",
+              "Student ID",
+              "Email",
+              "Student Grade",
+            ]);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [props.compositionID, props.classroomId]);
+
+  if (loading)
+    return <Loader text="Getting grades..." className="w-full h-full" />;
 
   return (
     <CompositionDialog
@@ -99,6 +202,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
           size="icon"
           onClick={() => props.onHandleDialog("tableDialog", "all")}
           className="h-7 w-7 hover:bg-red-500"
+          type="button"
         >
           <X />
         </Button>
@@ -114,6 +218,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
             variant="ghost"
             // onClick={handleUploadTable}
             onClick={() => document.getElementById("fileInput")?.click()}
+            disabled={loading}
           >
             <FileUp className="h-5 w-5" />
             <span>Upload</span>
@@ -130,7 +235,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
             className="bg-blue-300 hover:bg-blue-600 tbNavBtn"
             variant="ghost"
             onClick={() => props.onHandleDialog("tableDialog", "all")}
-            disabled={!isSave}
+            disabled={loading}
           >
             <FileDown className="h-5 w-5" />
             <span>Download</span>
@@ -139,15 +244,29 @@ const ShowGradeDialog = (props: showGradeProps) => {
             className="bg-blue-300 hover:bg-blue-600 tbNavBtn"
             variant="ghost"
             onClick={handleSaveTable}
+            disabled={loading}
           >
             <Save className="h-5 w-5" />
             <span>Save</span>
           </Button>
         </div>
       </div>
-      <div className="table-box">
-        <GradeTable compositionID={props.id} tableHeaders={headers} />
-      </div>
+      {!Array.isArray(studentGrades) || !studentGrades.length ? (
+        <EmptyState
+          title="You haven't upload student grades"
+          subTitle="Please download templates and upload your data"
+        />
+      ) : (
+        <>
+          <div className="table-box h-full">
+            <GradeTable
+              compositionID={props.id}
+              tableHeaders={headers}
+              data={studentGrades}
+            />
+          </div>
+        </>
+      )}
     </CompositionDialog>
   );
 };

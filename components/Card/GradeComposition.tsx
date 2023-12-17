@@ -14,13 +14,14 @@ import {
 
 import CompositionDialog from "../Dialog/CompositionDialog";
 import { useEffect, useState } from "react";
+import TooltipPro from "../TooltipPro";
 
 type gradeComposition = {
   index: number;
   id: string;
   name: string;
   scale: string;
-  status: string;
+  status: boolean;
 };
 
 interface gradeCompositionProps extends gradeComposition {
@@ -28,7 +29,7 @@ interface gradeCompositionProps extends gradeComposition {
   // open: (type: string) => void;
   onScaleChange: (id: string, newScale: string) => void;
   onNameChange: (id: string, newName: string) => void;
-  onStatusChange: (id: string, newStatus: string) => void;
+  onStatusChange: (id: string, newStatus: boolean) => void;
   onRemoveChange: (id: string) => void;
   onOpenTable: (type: string, compositionID: string) => void;
 }
@@ -50,7 +51,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
     handleCloseDialog();
   };
 
-  const handleSelectChange = (value: string) => {
+  const handleSelectChange = (value: boolean) => {
     props.onStatusChange(props.id, value);
     // console.log(props.id, value);
     // console.log(props.id, props.status);
@@ -63,18 +64,14 @@ const GradeComposition = (props: gradeCompositionProps) => {
         {(provided, snapshot) => (
           <div
             className={
-              `dndl-item ` 
+              `dndl-item `
               // + (props.status === "private" ? "bg-red-700" : "bg-blue-700")
             }
             ref={provided.innerRef}
             // {...provided.dragHandleProps}
             {...provided.draggableProps}
           >
-            <div
-              className={
-                `dndl-item-wrapper`
-              }
-            >
+            <div className={`dndl-item-wrapper`}>
               <div
                 ref={provided.innerRef}
                 {...provided.dragHandleProps}
@@ -88,7 +85,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
               <div className="dndliwi">
                 <input
                   type="number"
-                  className="w-12 text-center border-none p-0"
+                  className="w-12 text-center border-none p-0 rounded-sm"
                   value={props.scale}
                   onChange={(e) =>
                     props.onScaleChange(props.id, e.target.value)
@@ -98,7 +95,12 @@ const GradeComposition = (props: gradeCompositionProps) => {
               </div>
 
               <div className="dndshare">
-                <Select value={props.status} onValueChange={handleSelectChange}>
+                <Select
+                  value={props.status ? "true" : "false"}
+                  onValueChange={(value) =>
+                    handleSelectChange(value === "true")
+                  }
+                >
                   <SelectTrigger
                     placeholder="Select state"
                     className="w-[80px] h-[25px]"
@@ -106,8 +108,8 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="public">Public</SelectItem>
-                    <SelectItem value="private">Private</SelectItem>
+                    <SelectItem value="true">Public</SelectItem>
+                    <SelectItem value="false">Private</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -118,34 +120,40 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   className="bg-slate-600 m-1"
                 />
                 <div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 rounded-xl"
-                    onClick={handleOpenDialog}
-                  >
-                    <Pencil className="h-5 w-5 text-blue-800" />
-                  </Button>
+                  <TooltipPro description="Edit composition name">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 rounded-xl"
+                      onClick={handleOpenDialog}
+                    >
+                      <Pencil className="h-5 w-5 text-blue-800" />
+                    </Button>
+                  </TooltipPro>
                 </div>
                 <div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 rounded-xl"
-                    onClick={() => props.onOpenTable("tableDialog", props.id)}
-                  >
-                    <ClipboardEdit className="h-5 w-5 text-green-800" />
-                  </Button>
+                  <TooltipPro description="Show compostion grade">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 rounded-xl"
+                      onClick={() => props.onOpenTable("tableDialog", props.id)}
+                    >
+                      <ClipboardEdit className="h-5 w-5 text-green-800" />
+                    </Button>
+                  </TooltipPro>
                 </div>
                 <div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-6 w-6 rounded-xl"
-                    onClick={() => props.onRemoveChange(props.id)}
-                  >
-                    <Trash2 className="h-5 w-5 text-red-800" />
-                  </Button>
+                  <TooltipPro description="Delete composition">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 rounded-xl"
+                      onClick={() => props.onRemoveChange(props.id)}
+                    >
+                      <Trash2 className="h-5 w-5 text-red-800" />
+                    </Button>
+                  </TooltipPro>
                 </div>
               </div>
             </div>
@@ -171,7 +179,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
             onChange={(e) => setInputText(e.target.value)}
           />
         </div>
-        <div className="flex justify-end">
+        <div className="flex justify-end gap-2">
           <Button variant="default" onClick={handleSave}>
             Save
           </Button>

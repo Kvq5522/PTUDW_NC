@@ -68,9 +68,10 @@ export default function AuthLayout({
                         <Link
                           data-te-ripple-init
                           data-te-ripple-color="light"
-                          href={`/classroom/${classroomId}/grade`}
+                          href={`/classroom/${classroomId}/grade/transcript`}
                           className={cn(
-                            "inline-block rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-primary transition duration-150 ease-in-out hover:bg-neutral-100 hover:text-primary-600 focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700"
+                            "inline-block rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-primary transition duration-150 ease-in-out hover:bg-neutral-100 hover:text-primary-600 focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700",
+                            currentRoute === "grade" ? "border-b-[3px] border-green-300" : ""
                           )}
                         >
                           Grade

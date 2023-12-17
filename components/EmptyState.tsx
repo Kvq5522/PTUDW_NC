@@ -3,21 +3,24 @@
 import { useRouter } from "next/navigation";
 import Heading from "@/components/Heading/Heading";
 import IconButton from "@/components/Button/IconButton";
+import { cn } from "@/lib/utils";
 interface EmptyStateProps {
   title?: string;
   subTitle?: string;
   showReset?: boolean;
+  className?: string;
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({
   title = "No results found",
   subTitle = "Try adjusting your search or filter to find what you're looking for",
   showReset,
+  className,
 }) => {
   const router = useRouter();
 
   return (
-    <div className="h-[100%] w-[100%] flex flex-col gap-2 justify-center items-center">
+    <div className={cn("h-[100%] w-[100%] flex flex-col gap-2 justify-center items-center ", className)}>
       <Heading title={title} subTitle={subTitle} center />
 
       <div className="w-48 mt-4">

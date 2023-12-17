@@ -11,46 +11,53 @@ import { Input } from "../ui/input";
 import { invoices, studentGrade } from "@/constants/mockdata";
 import { useEffect } from "react";
 
+import { v4 as uuidv4 } from "uuid";
 
 type StudentGrade = {
   studentId: string;
   studentEmail: string;
-}
+};
 
 interface gradeTableProps {
   compositionID: string;
   tableHeaders: string[];
+  data: any[];
 }
 
 const GradeTable = (props: gradeTableProps) => {
   return (
     <Table className="min-h-[26rem]">
-      <div className="min-h-full flex flex-col">
-        <TableHeader className="bg-slate-300">
-          <TableRow>
-            {props.tableHeaders.map((header, index) => (
-              <TableHead key={index} className="min-w-[13rem]">
-                {header}
-              </TableHead>
-            ))}
-          </TableRow>
-        </TableHeader>
-        <TableBody className="">
-          {studentGrade.map((student, index) => (
-            <TableRow key={student.studentId} className="w-full">
+      <TableHeader className="bg-slate-300">
+        <TableRow>
+          {props.tableHeaders.map((header, index) => (
+            <TableHead key={uuidv4()} className="min-w-[13rem]">
+              {header}
+            </TableHead>
+          ))}
+        </TableRow>
+      </TableHeader>
+      <TableBody className="overflow-y-auto">
+        {Array.isArray(props.data) &&
+          props.data.length > 0 &&
+          props.data.map((student, index) => (
+            <TableRow key={uuidv4()} className="w-full">
               {props.tableHeaders.map((header, index) => (
-                <TableCell key={index} className="font-medium h-3 bg-slate-500">
-                  {student[header as keyof StudentGrade]}
+                <TableCell
+                  key={index}
+                  className={`font-medium h-3 w-[${
+                    100 / props.tableHeaders.length
+                  }%]`}
+                >
+                  {student[header]}
                 </TableCell>
               ))}
             </TableRow>
           ))}
-        </TableBody>
-      </div>
+      </TableBody>
 
       <TableFooter className="fixed bottom-0 left-0 right-0 h-[2.5rem] flex items-center">
         <TableRow>
-          <TableCell colSpan={props.tableHeaders.length-1}>Total</TableCell>
+          <TableCell colSpan={props.tableHeaders.length - 1}>Total</TableCell>
           <TableCell className="text-right">$2,500.00</TableCell>
         </TableRow>
       </TableFooter>

@@ -10,7 +10,6 @@ const Transcript = () => {
   const [ openTable, setOpenTable ] = useState<boolean>(false);
   const [ tableType, setTableType ] = useState<string>("all");
   
-
   function handleOpenTable(type: string) {
     setOpenTable((current) => !current);
     if (openTable === true) setTableType(type);

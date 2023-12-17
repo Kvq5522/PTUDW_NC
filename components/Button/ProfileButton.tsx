@@ -54,7 +54,7 @@ export const ProfileButton: React.FC<ProfileButtonProps> = (
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <Link href="dashboard/user-info">Profile</Link>
+          <Link href="/dashboard/user-info">Profile</Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Button onClick={signOutHandler}>Sign Out</Button>

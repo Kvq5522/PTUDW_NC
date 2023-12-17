@@ -2,7 +2,7 @@
   position: relative;
   display: flex;
   margin: 0 auto;
-  min-height: 100%;
+  min-height: 90%;
   height: 80%;
   width: calc(100% - 2 * 0.5rem);
   z-index: auto;
