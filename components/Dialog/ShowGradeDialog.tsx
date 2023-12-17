@@ -78,7 +78,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
           const sheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(sheet);
           const newHeaders = jsonData;
-          console.log(newHeaders);
         }
       };
 
@@ -86,7 +85,50 @@ const ShowGradeDialog = (props: showGradeProps) => {
     }
   };
 
-  const handleDownloadTable = () => {};
+  const handleDownloadTable = () => {
+    const fetchData = async () => {
+      const _params = {
+        classroom_id: parseInt(props.classroomId),
+      };
+      const _uri =
+        props.compositionID === "all"
+          ? "/grade/download-student-grade-board"
+          : "/grade/download-student-grade-by-composition";
+      const downloadName = props.compositionID === "all" ? "student-grade-board-template.xlsx" : "student-grade-composition-template.xlsx";
+
+      if (props.compositionID !== "all") {
+        _params["composition_id" as keyof typeof _params] = parseInt(
+          props.compositionID
+        );
+      }
+
+      try {
+        const res = await AXIOS.POST_DOWNLOAD_FILE({
+          uri: _uri,
+          token: localStorage.getItem("access-token") ?? "",
+          params: _params,
+        });
+
+        const blob = new Blob([res]);
+
+        //create a link for download res
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", downloadName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // Clean up the URL object
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  };
 
   useEffect(() => {
     let _uri = ``;
@@ -114,7 +156,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
           const grades = res.metadata.grades;
 
           if (props.compositionID === "all") {
-            console.log(res.metadata);
             const compositionNames = res.metadata.grade_compositions;
 
             const compHeaders = res.metadata.grade_compositions.map(
@@ -143,12 +184,10 @@ const ShowGradeDialog = (props: showGradeProps) => {
                     const value = grade.split(":")[1];
                     info[name as keyof typeof info] = parseFloat(value) ?? 0;
                   });
-                  
+
                   return info;
                 })
               : [];
-            
-            console.log(formatGrades)
 
             setStudentGrades(formatGrades as never[]);
             setHeaders(["Student Name", "Student ID", "Email", ...compHeaders]);
@@ -225,7 +264,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
             <Input
               id="fileInput"
               type="file"
-              accept=".xlsx, .xls"
+              accept=".xlsx"
               style={{ display: "none" }}
               onChange={handleUploadTable}
             />
@@ -234,7 +273,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
           <Button
             className="bg-blue-300 hover:bg-blue-600 tbNavBtn"
             variant="ghost"
-            onClick={() => props.onHandleDialog("tableDialog", "all")}
+            onClick={handleDownloadTable}
             disabled={loading}
           >
             <FileDown className="h-5 w-5" />

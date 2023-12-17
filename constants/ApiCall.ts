@@ -69,6 +69,35 @@ export const AXIOS = {
     }
   },
 
+  POST_DOWNLOAD_FILE: async ({
+    uri,
+    params,
+    token,
+    hasFile,
+  }: {
+    uri: string;
+    params?: object;
+    token?: string | undefined;
+    hasFile?: boolean;
+  }) => {
+    try {
+      const res = await API.post(uri, params, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+          Accept: "application/*",
+        },
+        responseType: "blob",
+      });
+
+      console.log(res.data);
+
+      return res.data;
+    } catch (error: any) {
+      return error.response;
+    }
+  },
+
   PUT: async ({
     uri,
     params,

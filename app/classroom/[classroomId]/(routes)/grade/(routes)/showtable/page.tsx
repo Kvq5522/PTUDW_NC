@@ -13,7 +13,7 @@ const ShowTable = () => {
           <Button variant="ghost" size="icon"><Delete /></Button>
         </div>
         <div>
-          <GradeTable compositionID="all" tableHeaders={[]}/>
+          <GradeTable compositionID="all" tableHeaders={[]} data={[]}/>
         </div>
       </div>
     </div>
