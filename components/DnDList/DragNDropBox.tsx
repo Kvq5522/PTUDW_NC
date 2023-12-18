@@ -85,10 +85,15 @@ const DragNDropBox = (props: dndProps) => {
   function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
 
-    const items = Array.from(itemList);
+    let items = Array.from(itemList);
     const [reorderedItem] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, reorderedItem);
 
+    //re index
+    for (let i = 0; i < items.length; i++) {
+      items[i].index = i;
+    }
+    
     setItemList(items);
   }
 
@@ -101,11 +106,9 @@ const DragNDropBox = (props: dndProps) => {
   }, [itemList]);
 
   const handleScaleChange = (id: string, newScale: number) => {
-    console.log(id, newScale);
-    setIsChange(true);
     setItemList((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, scale: newScale } : item
+        item.id === parseInt(id) ? { ...item, grade_percent: newScale } : item
       )
     );
   };
@@ -113,7 +116,7 @@ const DragNDropBox = (props: dndProps) => {
   const handleStatusChange = (id: string, newStatus: boolean) => {
     setItemList((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, status: newStatus } : item
+        item.id === parseInt(id) ? { ...item, is_finalized: newStatus } : item
       )
     );
   };
@@ -189,7 +192,48 @@ const DragNDropBox = (props: dndProps) => {
       return;
     }
 
-    setIsSave(true);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await AXIOS.POST({
+          uri: "/grade/edit-composition",
+          token: localStorage.getItem("access-token") ?? "",
+          params: {
+            classroom_id: parseInt(props.classroomId),
+            grade_compositions: itemList.map((item) => {
+              return {
+                id: item.id,
+                name: item.name,
+                grade_percent: item.grade_percent,
+                is_finalized: item.is_finalized,
+                index: item.index,
+              };
+            }),
+          },
+        });
+
+        if (res.statusCode === 200) {
+          toast.toast({
+            title: "Success",
+            description: "Class created successfully",
+            className: "top-[-85vh] bg-green-500 text-white",
+          });
+        } else {
+          throw new Error(res.message as string);
+        }
+      } catch (error: any) {
+        toast.toast({
+          title: "Error",
+          description: error.message ?? "Something went wrong",
+          variant: "destructive",
+          className: "top-[-85vh]",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   };
 
   const checkNameDuplicate = (name: string) => {

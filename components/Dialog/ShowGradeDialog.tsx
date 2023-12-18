@@ -11,18 +11,6 @@ import Loader from "../Loader/Loader";
 import { AXIOS } from "@/constants/ApiCall";
 import EmptyState from "../EmptyState";
 
-type StudentGrade = {
-  studentId: string;
-  studentEmail: string;
-};
-
-type gradeTable = {
-  id: string;
-  typeTable: string;
-  isOpen: boolean;
-  composition: string;
-};
-
 interface showGradeProps {
   id: string;
   typeTable: string;
@@ -32,31 +20,29 @@ interface showGradeProps {
   onHandleDialog: (type: string, comp: string) => void;
 }
 
-let defaultHeaders = ["studentId", "studentEmail"];
-
 const ShowGradeDialog = (props: showGradeProps) => {
   const [isSave, setIsSave] = useState(false);
   const [studentGrades, setStudentGrades] = useState([]);
-  const [headers, setHeaders] = useState(defaultHeaders);
+  const [headers, setHeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [uri, setUri] = useState("");
 
-  const getTableHeader = () => {
-    setHeaders(defaultHeaders);
-    if (props.compositionID === "all") {
-      setHeaders((current) => [
-        ...current,
-        ...gradeComposition.map((cmp) => cmp.name),
-      ]);
-    } else {
-      const selectedComp = gradeComposition.find(
-        (cmp) => cmp.id === props.compositionID
-      );
-      if (selectedComp) {
-        setHeaders((current) => [...current, selectedComp.name]);
-      }
-    }
-  };
+  // const getTableHeader = () => {
+  //   setHeaders(defaultHeaders);
+  //   if (props.compositionID === "all") {
+  //     setHeaders((current) => [
+  //       ...current,
+  //       ...gradeComposition.map((cmp) => cmp.name),
+  //     ]);
+  //   } else {
+  //     const selectedComp = gradeComposition.find(
+  //       (cmp) => cmp.id === props.compositionID
+  //     );
+  //     if (selectedComp) {
+  //       setHeaders((current) => [...current, selectedComp.name]);
+  //     }
+  //   }
+  // };
 
   const handleSaveTable = () => {
     setIsSave((current) => !current);
@@ -94,7 +80,10 @@ const ShowGradeDialog = (props: showGradeProps) => {
         props.compositionID === "all"
           ? "/grade/download-student-grade-board"
           : "/grade/download-student-grade-by-composition";
-      const downloadName = props.compositionID === "all" ? "student-grade-board-template.xlsx" : "student-grade-composition-template.xlsx";
+      const downloadName =
+        props.compositionID === "all"
+          ? "student-grade-board-template.xlsx"
+          : "student-grade-composition-template.xlsx";
 
       if (props.compositionID !== "all") {
         _params["composition_id" as keyof typeof _params] = parseInt(
@@ -170,7 +159,9 @@ const ShowGradeDialog = (props: showGradeProps) => {
                       (x: any) => x.grade_category === cmp.grade_category
                     );
 
-                    return `Grade ${cmp.name}:${grade?.grade || 0}`;
+                    return `Grade ${cmp.name}:${grade?.grade || 0}:${
+                      grade?.grade_percent || 0
+                    }`;
                   });
 
                   const info = {
@@ -179,18 +170,36 @@ const ShowGradeDialog = (props: showGradeProps) => {
                     Email: item.email,
                   };
 
+                  const totalGrade = mapGrade.reduce(
+                    (acc: number, cur: string) => {
+                      const grade = parseFloat(cur.split(":")[1]) ?? 0;
+                      const percent = parseFloat(cur.split(":")[2]) ?? 0;
+
+                      return acc + grade * (percent / 100);
+                    },
+                    0
+                  );
+
                   mapGrade.forEach((grade: any, index: number) => {
                     const name = grade.split(":")[0];
                     const value = grade.split(":")[1];
                     info[name as keyof typeof info] = parseFloat(value) ?? 0;
                   });
 
+                  info["Total Grade" as keyof typeof info] = totalGrade;
+
                   return info;
                 })
               : [];
 
             setStudentGrades(formatGrades as never[]);
-            setHeaders(["Student Name", "Student ID", "Email", ...compHeaders]);
+            setHeaders([
+              "Student Name",
+              "Student ID",
+              "Email",
+              ...compHeaders,
+              "Total Grade",
+            ] as never[]);
           } else {
             let formatGrades = Array.isArray(grades)
               ? grades?.map((grade: any) => {
@@ -212,7 +221,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
               "Student ID",
               "Email",
               "Student Grade",
-            ]);
+            ] as never[]);
           }
         }
       } catch (error) {
