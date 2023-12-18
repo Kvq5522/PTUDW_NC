@@ -110,7 +110,6 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     props.onScaleChange(props.id, parseFloat(e.target.value))
                   }
                   max={100}
-                  readOnly={isStudent}
                 />
               </div>
 

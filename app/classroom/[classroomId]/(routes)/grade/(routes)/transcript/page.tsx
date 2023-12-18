@@ -39,9 +39,11 @@ const Transcript = () => {
             uri: `/grade/get-compositions/${params.classroomId}`,
             token: localStorage.getItem("access-token") ?? "",
           });
-          
+
           if (res.statusCode === 200) {
-            setCompositionList(res.metadata);
+            const _compositionList = res.metadata;
+            _compositionList.sort((a: any, b: any) => a.index - b.index);
+            setCompositionList(_compositionList);
           }
         } catch (error) {
           console.log(error);
