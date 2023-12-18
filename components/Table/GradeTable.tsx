@@ -12,6 +12,13 @@ import { useEffect } from "react";
 
 import { v4 as uuidv4 } from "uuid";
 
+import { useAppSelector } from "@/redux/store";
+
+type StudentGrade = {
+  studentId: string;
+  studentEmail: string;
+};
+
 interface gradeTableProps {
   compositionID: string;
   tableHeaders: string[];
@@ -24,6 +31,12 @@ interface gradeTableProps {
 }
 
 const GradeTable = (props: gradeTableProps) => {
+
+  const userInClass = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.user
+  );
+  const isStudent = userInClass?.member_role < 2;
+
   return (
     <div className="min-h-full">
       <Table className="min-h-[26rem]">
