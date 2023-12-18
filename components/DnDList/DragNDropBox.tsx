@@ -215,7 +215,7 @@ const DragNDropBox = (props: dndProps) => {
         if (res.statusCode === 200) {
           toast.toast({
             title: "Success",
-            description: "Class created successfully",
+            description: "Save grade compositions successfully",
             className: "top-[-85vh] bg-green-500 text-white",
           });
         } else {

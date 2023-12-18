@@ -41,14 +41,16 @@ const GradeComposition = (props: gradeCompositionProps) => {
   const [inputText, setInputText] = useState(props.name);
   const [error, setError] = useState("");
 
-  function handleOpenDialog() {
+  const handleOpenDialog = () => {
     setOpenDialog(true);
   }
+
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setError("");
     setInputText(props.name);
   };
+
   const handleSave = () => {
     if (
       inputText.length < 1 ||

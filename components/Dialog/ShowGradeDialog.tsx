@@ -234,6 +234,23 @@ const ShowGradeDialog = (props: showGradeProps) => {
     fetchData();
   }, [props.compositionID, props.classroomId]);
 
+  const handleInputChange = (
+    value: string | number,
+    studentID: string,
+    header: string
+  ) => {
+    setStudentGrades(
+      (current) =>
+        current.map((item: any) => {
+          if (item["Student ID"] === studentID) {
+            item["Student Grade"] = value;
+          }
+
+          return item;
+        }) as never[]
+    );
+  };
+
   if (loading)
     return <Loader text="Getting grades..." className="w-full h-full" />;
 
@@ -308,7 +325,8 @@ const ShowGradeDialog = (props: showGradeProps) => {
         <>
           <div className="table-box h-full">
             <GradeTable
-              compositionID={props.id}
+              compositionID={props.compositionID}
+              onInputChange={handleInputChange}
               tableHeaders={headers}
               data={studentGrades}
             />
