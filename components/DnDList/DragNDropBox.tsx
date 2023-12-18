@@ -27,12 +27,6 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
@@ -43,7 +37,6 @@ import { useForm, FormProvider } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose } from "../ui/dialog";
-import GradeTable from "../Table/GradeTable";
 
 import { gradeComposition } from "@/constants/mockdata";
 import ShowGradeDialog from "../Dialog/ShowGradeDialog";
@@ -52,6 +45,8 @@ import { AXIOS } from "@/constants/ApiCall";
 import { useToast } from "../ui/use-toast";
 import { DeleteCompositionModal } from "../Modal/DeleteCompositionModal";
 import { useSaveCompositionModal } from "@/hooks/save-composition-modal";
+
+import { useAppSelector } from "@/redux/store";
 
 const formSchema = z.object({
   id: z.string(),
@@ -209,15 +204,6 @@ const DragNDropBox = (props: dndProps) => {
     },
   });
 
-  useEffect(() => {
-    calcSum();
-    setIsSave(false);
-  }, [itemList, isChange, calcSum]);
-
-  useEffect(() => {
-    setItemList(props.compositionList);
-  }, [props.compositionList]);
-
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!values.name) {
       form.setError("name", {
@@ -226,7 +212,6 @@ const DragNDropBox = (props: dndProps) => {
       });
       return;
     }
-
     //check if name is already exist
     if (
       itemList.filter((item) => item.name === values.name).length > 0 &&
@@ -294,6 +279,20 @@ const DragNDropBox = (props: dndProps) => {
     fetchData();
   };
 
+  const userInClass = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.user
+  );
+  const isStudent = userInClass?.member_role < 2;
+
+  useEffect(() => {
+    calcSum();
+    setIsSave(false);
+  }, [itemList, isChange, calcSum]);
+
+  useEffect(() => {
+    setItemList(props.compositionList);
+  }, [props.compositionList]);
+
   return (
     <div className="dnd-list-container">
       <div className="dnd-list-wrapper">
@@ -337,23 +336,27 @@ const DragNDropBox = (props: dndProps) => {
         <Separator className="bg-black h-[2px]" />
         <div className="dndl-tools">
           <div className="flex flex-row dndl-tools-actions">
-            <TooltipPro description="Upload Student List">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-7 w-7 addIPlustbtn"
-                onClick={() => document.getElementById("studentInput")?.click()}
-              >
-                <FileUp />
-                <Input
-                  id="studentInput"
-                  type="file"
-                  accept=".xlsx, .xls"
-                  style={{ display: "none" }}
-                  onChange={handleUpload}
-                />
-              </Button>
-            </TooltipPro>
+            {!isStudent && (
+              <TooltipPro description="Upload Student List">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-7 w-7 addIPlustbtn"
+                  onClick={() =>
+                    document.getElementById("studentInput")?.click()
+                  }
+                >
+                  <FileUp />
+                  <Input
+                    id="studentInput"
+                    type="file"
+                    accept=".xlsx, .xls"
+                    style={{ display: "none" }}
+                    onChange={handleUpload}
+                  />
+                </Button>
+              </TooltipPro>
+            )}
             <TooltipPro description="Download Student List">
               <Button
                 variant="outline"
@@ -378,38 +381,55 @@ const DragNDropBox = (props: dndProps) => {
           </div>
 
           <div className="flex flex-row gap-1 dndl-tools-actions">
-            <TooltipPro description="Add Composition">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-7 w-7 addIPlustbtn"
-                onClick={() => handleDialog("addDialog", "all")}
-              >
-                <Plus />
-              </Button>
-            </TooltipPro>
+            {!isStudent ? (
+              <>
+                <TooltipPro description="Add Composition">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-7 w-7 addIPlustbtn"
+                    onClick={() => handleDialog("addDialog", "all")}
+                  >
+                    <Plus />
+                  </Button>
+                </TooltipPro>
 
-            <TooltipPro description="Show Grade Board">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-7 w-7 createTbtn"
-                onClick={() => handleDialog("tableDialog", "all")}
-              >
-                <Table2 />
-              </Button>
-            </TooltipPro>
+                <TooltipPro description="Show Grade Board">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-7 w-7 createTbtn"
+                    onClick={() => handleDialog("tableDialog", "all")}
+                  >
+                    <Table2 />
+                  </Button>
+                </TooltipPro>
 
-            <TooltipPro description="Save Compostions">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-7 w-7 saveTbtn"
-                onClick={handleSaveBox}
-              >
-                <Save />
-              </Button>
-            </TooltipPro>
+                <TooltipPro description="Save Compostions">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-7 w-7 saveTbtn"
+                    onClick={handleSaveBox}
+                  >
+                    <Save />
+                  </Button>
+                </TooltipPro>
+              </>
+            ) : (
+              <>
+                <TooltipPro description="Show Grade Board">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-7 w-7 createTbtn"
+                    onClick={() => handleDialog("tableDialog", "all")}
+                  >
+                    <Table2 />
+                  </Button>
+                </TooltipPro>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -506,34 +526,6 @@ const DragNDropBox = (props: dndProps) => {
         isOpen={openDialog && dialogType === "tableDialog"}
         classroomId={props.classroomId}
       />
-      {/* <CompositionDialog
-        id="tableDialog"
-        isOpen={openDialog && dialogType === "tableDialog"}
-        onClose={() => handleDialog("tableDialog", "all")}
-        classname="tableDialog"
-      >
-        <div className="table-nav">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => handleDialog("tableDialog", "all")}
-          >
-            <X />
-          </Button>
-          <input type="text" value={composition} />
-          <Button
-            className=" bg-blue-300 hover:bg-blue-600 text-[16px] font-bold text-gray-800"
-            variant="ghost"
-            onClick={() => handleDialog("tableDialog", "all")}
-          >
-            <Save />
-            Save
-          </Button>
-        </div>
-        <div className="table-box">
-          <GradeTable composition={composition} />
-        </div>
-      </CompositionDialog> */}
     </div>
   );
 };

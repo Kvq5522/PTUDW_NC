@@ -16,6 +16,8 @@ import CompositionDialog from "../Dialog/CompositionDialog";
 import { useEffect, useState } from "react";
 import TooltipPro from "../TooltipPro";
 
+import { useAppSelector } from "@/redux/store";
+
 type gradeComposition = {
   index: number;
   id: string;
@@ -68,6 +70,11 @@ const GradeComposition = (props: gradeCompositionProps) => {
     props.onStatusChange(props.id, value);
   };
 
+  const userInClass = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.user
+  );
+  const isStudent = userInClass?.member_role < 2;
+
   return (
     <>
       <Draggable draggableId={props.id} index={props.index}>
@@ -82,13 +89,15 @@ const GradeComposition = (props: gradeCompositionProps) => {
             {...provided.draggableProps}
           >
             <div className={`dndl-item-wrapper`}>
-              <div
-                ref={provided.innerRef}
-                {...provided.dragHandleProps}
-                className="mr-1"
-              >
-                <GripHorizontal />
-              </div>
+              {!isStudent && (
+                <div
+                  ref={provided.innerRef}
+                  {...provided.dragHandleProps}
+                  className="mr-1"
+                >
+                  <GripHorizontal />
+                </div>
+              )}
 
               <div className="dndlina">{newName}</div>
 
@@ -101,15 +110,17 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     props.onScaleChange(props.id, parseFloat(e.target.value))
                   }
                   max={100}
+                  readOnly={isStudent}
                 />
               </div>
 
               <div className="dndshare">
                 <Select
-                  value={props.status ? "true" : "false"}
+                  value={(props.status ? "true" : "false")}
                   onValueChange={(value) =>
-                    handleSelectChange(value === "true")
+                    !isStudent && handleSelectChange(value === "true")
                   }
+                  disabled={isStudent}
                 >
                   <SelectTrigger
                     placeholder="Select state"
@@ -129,7 +140,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   orientation="vertical"
                   className="bg-slate-600 m-1"
                 />
-                <div>
+                <div hidden={isStudent}>
                   <TooltipPro description="Edit composition name">
                     <Button
                       variant="ghost"
@@ -153,7 +164,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     </Button>
                   </TooltipPro>
                 </div>
-                <div>
+                <div hidden={isStudent}>
                   <TooltipPro description="Delete composition">
                     <Button
                       variant="ghost"

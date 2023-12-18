@@ -11,6 +11,8 @@ import Loader from "../Loader/Loader";
 import { AXIOS } from "@/constants/ApiCall";
 import EmptyState from "../EmptyState";
 
+import { useAppSelector } from "@/redux/store";
+
 type StudentGrade = {
   studentId: string;
   studentEmail: string;
@@ -225,6 +227,11 @@ const ShowGradeDialog = (props: showGradeProps) => {
     fetchData();
   }, [props.compositionID, props.classroomId]);
 
+  const userInClass = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.user
+  );
+  const isStudent = userInClass?.member_role < 2;
+
   if (loading)
     return <Loader text="Getting grades..." className="w-full h-full" />;
 
@@ -258,6 +265,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
             // onClick={handleUploadTable}
             onClick={() => document.getElementById("fileInput")?.click()}
             disabled={loading}
+            hidden={isStudent}
           >
             <FileUp className="h-5 w-5" />
             <span>Upload</span>
@@ -284,6 +292,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
             variant="ghost"
             onClick={handleSaveTable}
             disabled={loading}
+            hidden={isStudent}
           >
             <Save className="h-5 w-5" />
             <span>Save</span>
