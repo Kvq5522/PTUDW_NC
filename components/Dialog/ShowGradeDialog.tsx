@@ -13,18 +13,6 @@ import EmptyState from "../EmptyState";
 
 import { useAppSelector } from "@/redux/store";
 
-type StudentGrade = {
-  studentId: string;
-  studentEmail: string;
-};
-
-type gradeTable = {
-  id: string;
-  typeTable: string;
-  isOpen: boolean;
-  composition: string;
-};
-
 interface showGradeProps {
   id: string;
   typeTable: string;
