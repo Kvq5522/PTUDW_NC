@@ -21,7 +21,7 @@ type StudentGrade = {
 interface gradeTableProps {
   compositionID: string;
   tableHeaders: string[];
-  data: any[];
+  data?: any[];
 }
 
 const GradeTable = (props: gradeTableProps) => {

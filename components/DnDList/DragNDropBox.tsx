@@ -12,7 +12,12 @@ import {
   FileUp,
 } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { DragDropContext, DropResult, Droppable } from "react-beautiful-dnd";
+import {
+  DragDropContext,
+  DropResult,
+  Droppable,
+  DroppableProvided,
+} from "react-beautiful-dnd";
 import {
   Form,
   FormControl,
@@ -163,12 +168,11 @@ const DragNDropBox = (props: dndProps) => {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     if (!values.name) {
-      // Nếu không, đặt lỗi vào trường name
       form.setError("name", {
         type: "manual",
         message: "Name is required",
       });
-      return; // Dừng lại nếu có lỗi
+      return;
     }
 
     //check if name is already exist
@@ -201,8 +205,8 @@ const DragNDropBox = (props: dndProps) => {
     <div className="dnd-list-container">
       <div className="dnd-list-wrapper">
         <DragDropContext onDragEnd={handleOnDragEnd}>
-          <Droppable droppableId="itemlist">
-            {(provided) => (
+          <Droppable droppableId="list-container">
+            {(provided: DroppableProvided) => (
               <div
                 className="dndl-content"
                 {...provided.droppableProps}
@@ -239,9 +243,16 @@ const DragNDropBox = (props: dndProps) => {
                 variant="outline"
                 size="icon"
                 className="h-7 w-7 addIPlustbtn"
-                onClick={handleUpload}
+                onClick={() => document.getElementById("studentInput")?.click()}
               >
                 <FileUp />
+                <Input
+                  id="studentInput"
+                  type="file"
+                  accept=".xlsx, .xls"
+                  style={{ display: "none" }}
+                  onChange={handleUpload}
+                />
               </Button>
             </TooltipPro>
             <TooltipPro description="Download Student List">
