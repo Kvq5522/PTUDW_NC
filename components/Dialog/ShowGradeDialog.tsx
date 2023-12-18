@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import CompositionDialog from "./CompositionDialog";
 import { Button } from "../ui/button";
 import GradeTable from "../Table/GradeTable";
@@ -14,6 +14,13 @@ import EmptyState from "../EmptyState";
 type StudentGrade = {
   studentId: string;
   studentEmail: string;
+};
+
+type gradeTable = {
+  id: string;
+  typeTable: string;
+  isOpen: boolean;
+  composition: string;
 };
 
 interface showGradeProps {
@@ -34,7 +41,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
   const [loading, setLoading] = useState(true);
   const [uri, setUri] = useState("");
 
-  const getTableHeader = useCallback(() => {
+  const getTableHeader = () => {
     setHeaders(defaultHeaders);
     if (props.compositionID === "all") {
       setHeaders((current) => [
@@ -49,7 +56,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
         setHeaders((current) => [...current, selectedComp.name]);
       }
     }
-  }, [props.compositionID]);
+  };
 
   const handleSaveTable = () => {
     setIsSave((current) => !current);

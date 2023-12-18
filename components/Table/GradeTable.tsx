@@ -8,7 +8,6 @@ import {
   TableFooter,
 } from "@/components/ui/table";
 import { Input } from "../ui/input";
-import { invoices, studentGrade } from "@/constants/mockdata";
 import { useEffect } from "react";
 
 import { v4 as uuidv4 } from "uuid";

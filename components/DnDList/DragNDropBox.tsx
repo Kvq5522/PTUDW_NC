@@ -11,12 +11,14 @@ import {
   FileDown,
   FileUp,
 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   DragDropContext,
   DropResult,
   Droppable,
+  DroppableProps,
   DroppableProvided,
+  DroppableStateSnapshot,
 } from "react-beautiful-dnd";
 import {
   Form,
@@ -46,11 +48,18 @@ import GradeTable from "../Table/GradeTable";
 import { gradeComposition } from "@/constants/mockdata";
 import ShowGradeDialog from "../Dialog/ShowGradeDialog";
 import TooltipPro from "../TooltipPro";
+import { AXIOS } from "@/constants/ApiCall";
+import { useToast } from "../ui/use-toast";
+import { DeleteCompositionModal } from "../Modal/DeleteCompositionModal";
+import { useSaveCompositionModal } from "@/hooks/save-composition-modal";
 
 const formSchema = z.object({
   id: z.string(),
   name: z.string().min(1, { message: "Name is required" }),
-  scale: z.string(),
+  scale: z.preprocess(
+    (value: any) => (value === "" ? 0 : Number(value)),
+    z.number().min(0).max(100)
+  ),
   status: z.string(),
 });
 
@@ -63,10 +72,15 @@ const DragNDropBox = (props: dndProps) => {
   const [itemList, setItemList] = useState(props.compositionList);
   const [openDialog, setOpenDialog] = useState(false);
   const [composition, setComposition] = useState<string>("");
-  const [totalScale, setTotalScale] = useState<string>("0");
+  const [totalScale, setTotalScale] = useState(0);
   const [isChange, setIsChange] = useState(false);
   const [dialogType, setDialogType] = useState("");
   const [isSave, setIsSave] = useState(true);
+  const toast = useToast();
+  const [loading, setLoading] = useState(false);
+  const [hasDeleted, setHasDeleted] = useState(false);
+  const [deleteId, setDeleteId] = useState(-1);
+  const saveCompositionModal = useSaveCompositionModal();
 
   function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
@@ -81,27 +95,19 @@ const DragNDropBox = (props: dndProps) => {
   const calcSum = useCallback(() => {
     let sum = 0;
     for (let i = 0; i < itemList.length; i++) {
-      sum += parseInt(itemList[i].grade_percent, 10) || 0;
+      sum += parseFloat(itemList[i].grade_percent) || 0;
     }
-    setTotalScale(sum.toString());
+    setTotalScale(sum);
   }, [itemList]);
-  
 
-  const handleScaleChange = (id: string, newScale: string) => {
-    if (parseInt(newScale, 10) > 100) {
-      newScale = "100";
-    }
-    if (parseInt(newScale, 10) <= 0 || newScale === "") {
-      newScale = "0";
-    }
+  const handleScaleChange = (id: string, newScale: number) => {
+    console.log(id, newScale);
     setIsChange(true);
     setItemList((prevItems) =>
       prevItems.map((item) =>
         item.id === id ? { ...item, scale: newScale } : item
       )
     );
-    setIsChange(false);
-    // setIsSave(false);
   };
 
   const handleStatusChange = (id: string, newStatus: boolean) => {
@@ -110,7 +116,6 @@ const DragNDropBox = (props: dndProps) => {
         item.id === id ? { ...item, status: newStatus } : item
       )
     );
-    // setIsSave(false);
   };
 
   const handleNameChange = (id: string, newName: string) => {
@@ -121,8 +126,17 @@ const DragNDropBox = (props: dndProps) => {
     );
   };
 
-  const handleDelete = (id: string) => {
-    setItemList(itemList.filter((item) => item.id != id));
+  const showAlert = (id: string) => {
+    saveCompositionModal.onOpen();
+    setDeleteId(parseInt(id));
+  };
+
+  const handleDelete = (id: number) => {
+    //delete composition has id = id
+    const _itemList = [...itemList];
+    const _index = _itemList.findIndex((item) => item.id === id);
+    _itemList.splice(_index, 1);
+    setItemList(_itemList);
   };
 
   const handleDialog = (type: string, compoID: string) => {
@@ -138,13 +152,51 @@ const DragNDropBox = (props: dndProps) => {
   };
 
   const handleDownload = () => {
-    // Update the status property of each item to "public"
-    console.log("Download success");
+    const fetchData = async () => {
+      try {
+        const res = await AXIOS.POST_DOWNLOAD_FILE({
+          uri: "/grade/download-student-list",
+          token: localStorage.getItem("access-token") ?? "",
+          params: {
+            classroom_id: parseInt(props.classroomId),
+          },
+        });
+
+        const blob = new Blob([res]);
+
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "student-list-template.xlsx");
+        document.body.appendChild(link);
+        link.click();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
   };
 
   const handleSaveBox = () => {
-    console.log("Success");
+    if (totalScale !== 100.0) {
+      toast.toast({
+        title: "Error",
+        description: "Please check grade scale again",
+        variant: "destructive",
+        className: "top-[-85vh]",
+      });
+      return;
+    }
+
     setIsSave(true);
+  };
+
+  const checkNameDuplicate = (name: string) => {
+    if (itemList.some((item) => item.name === name)) {
+      return true;
+    }
+    return false;
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -152,7 +204,7 @@ const DragNDropBox = (props: dndProps) => {
     defaultValues: {
       id: "",
       name: "",
-      scale: "0",
+      scale: 0,
       status: "private",
     },
   });
@@ -187,18 +239,59 @@ const DragNDropBox = (props: dndProps) => {
       return;
     }
 
-    const newItem = {
-      id: values.id || Date.now().toString(), // Use existing ID or generate a timestamp-based ID
-      name: values.name || "",
-      scale: values.scale || 0,
-      status: values.status || "private",
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const res = await AXIOS.POST({
+          uri: "/grade/add-composition",
+          token: localStorage.getItem("access-token") ?? "",
+          params: {
+            classroom_id: parseInt(props.classroomId),
+            grade_compositions: [
+              {
+                name: values.name,
+                grade_percent: values.scale,
+                is_finalized: values.status,
+                index: itemList.length - 1,
+              },
+            ],
+          },
+        });
+
+        if (res.statusCode === 200) {
+          toast.toast({
+            title: "Success",
+            description: "Class created successfully",
+            className: "top-[-85vh] bg-green-500 text-white",
+          });
+
+          const metadata = res.metadata;
+
+          console.log(metadata);
+
+          const newItem = {
+            id: metadata.id,
+            name: metadata.name,
+            grade_percent: metadata.grade_percent,
+            status: metadata.is_finalized,
+          };
+
+          setItemList((prevItems) => [...prevItems, newItem]);
+          handleDialog("addDialog", newItem.id);
+        }
+      } catch (error) {
+        toast.toast({
+          title: "Error",
+          description: "Something went wrong",
+          variant: "destructive",
+          className: "top-[-85vh]",
+        });
+      } finally {
+        setLoading(false);
+      }
     };
 
-    // Update the itemList state with the new item
-    setItemList((prevItems) => [...prevItems, newItem]);
-
-    // Close the composition dialog
-    handleDialog("addDialog", newItem.id);
+    fetchData();
   };
 
   return (
@@ -222,14 +315,20 @@ const DragNDropBox = (props: dndProps) => {
                         name={grade.name}
                         scale={grade.grade_percent}
                         status={grade.is_finalized}
+                        checkNameDuplicate={checkNameDuplicate}
                         onScaleChange={handleScaleChange}
                         onNameChange={handleNameChange}
                         onStatusChange={handleStatusChange}
-                        onRemoveChange={handleDelete}
+                        onRemoveChange={showAlert}
                         onOpenTable={handleDialog}
                       />
                     );
                   })}
+                <DeleteCompositionModal
+                  compositionId={deleteId}
+                  classroomId={parseInt(props.classroomId)}
+                  onAgree={(e: number) => handleDelete(e)}
+                />
                 {provided.placeholder}
               </div>
             )}
@@ -261,6 +360,7 @@ const DragNDropBox = (props: dndProps) => {
                 size="icon"
                 className="h-7 w-7 addIPlustbtn"
                 onClick={handleDownload}
+                type="button"
               >
                 <FileDown />
               </Button>
@@ -324,6 +424,9 @@ const DragNDropBox = (props: dndProps) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <div className="p-1 mb-3 mt-3 flex gap-3 flex-col h-[10rem] w-full">
+              <h1 className="font-bold text-lg">Add new Composition!</h1>
+              {loading && <h6>Adding...</h6>}
+
               <FormField
                 control={form.control}
                 name="name"
@@ -373,10 +476,17 @@ const DragNDropBox = (props: dndProps) => {
                 )}
               />
             </div>
-            <div className="flex flex-row justify-end gap-2">
-              <Button type="submit">Add</Button>
+            <div className="flex flex-row justify-end gap-2 pt-2">
+              <Button type="submit" disabled={loading}>
+                Add
+              </Button>
               <DialogClose asChild>
-                <Button id="closeDia" type="button" variant="destructive">
+                <Button
+                  id="closeDia"
+                  type="button"
+                  variant="destructive"
+                  disabled={loading}
+                >
                   Close
                 </Button>
               </DialogClose>

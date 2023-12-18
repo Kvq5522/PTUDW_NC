@@ -89,9 +89,7 @@ export const AXIOS = {
         },
         responseType: "blob",
       });
-
-      console.log(res.data);
-
+      
       return res.data;
     } catch (error: any) {
       return error.response;

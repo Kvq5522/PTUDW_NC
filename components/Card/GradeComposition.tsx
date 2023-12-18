@@ -22,12 +22,13 @@ type gradeComposition = {
   name: string;
   scale: string;
   status: boolean;
+  checkNameDuplicate: (name: string) => boolean;
 };
 
 interface gradeCompositionProps extends gradeComposition {
   // onRemove: () => void;
   // open: (type: string) => void;
-  onScaleChange: (id: string, newScale: string) => void;
+  onScaleChange: (id: string, newScale: number) => void;
   onNameChange: (id: string, newName: string) => void;
   onStatusChange: (id: string, newStatus: boolean) => void;
   onRemoveChange: (id: string) => void;
@@ -38,24 +39,33 @@ const GradeComposition = (props: gradeCompositionProps) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [newName, setNewName] = useState(props.name);
   const [inputText, setInputText] = useState(props.name);
+  const [error, setError] = useState("");
 
   function handleOpenDialog() {
     setOpenDialog(true);
   }
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setError("");
+    setInputText(props.name);
   };
   const handleSave = () => {
+    if (
+      inputText.length < 1 ||
+      (props.checkNameDuplicate(inputText) && inputText !== props.name)
+    ) {
+      setError("Name is invalid");
+      return;
+    }
+
     setNewName(inputText);
+    setError("");
     props.onNameChange(props.id, newName);
     handleCloseDialog();
   };
 
   const handleSelectChange = (value: boolean) => {
     props.onStatusChange(props.id, value);
-    // console.log(props.id, value);
-    // console.log(props.id, props.status);
-    // props.status = value;
   };
 
   return (
@@ -88,7 +98,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   className="w-12 text-center border-none p-0 rounded-sm"
                   value={props.scale}
                   onChange={(e) =>
-                    props.onScaleChange(props.id, e.target.value)
+                    props.onScaleChange(props.id, parseFloat(e.target.value))
                   }
                   max={100}
                 />
@@ -179,6 +189,9 @@ const GradeComposition = (props: gradeCompositionProps) => {
             onChange={(e) => setInputText(e.target.value)}
           />
         </div>
+
+        {error.length > 0 && <h1 className="text-red-500 italic">{error}</h1>}
+
         <div className="flex justify-end gap-2">
           <Button variant="default" onClick={handleSave}>
             Save
