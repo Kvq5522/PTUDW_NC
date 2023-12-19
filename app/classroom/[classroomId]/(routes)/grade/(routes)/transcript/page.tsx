@@ -10,7 +10,9 @@ import { useParams } from "next/navigation";
 import { AXIOS } from "@/constants/ApiCall";
 import Loader from "@/components/Loader/Loader";
 
-import { useAppSelector } from "@/redux/store";
+import { AppDispatch, useAppSelector } from "@/redux/store";
+import { useDispatch } from "react-redux";
+import { setCurrentClassroom } from "@/redux/slices/classroom-info-slice";
 
 const Transcript = () => {
   const params = useParams();
@@ -18,12 +20,12 @@ const Transcript = () => {
   const [tableType, setTableType] = useState<string>("all");
   const [compositionList, setCompositionList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
 
   function handleOpenTable(type: string) {
     setOpenTable((current) => !current);
     if (openTable === true) setTableType(type);
     else setTableType("");
-    console.log("Open success");
   }
 
   const userInClass = useAppSelector(
@@ -33,7 +35,33 @@ const Transcript = () => {
 
   useEffect(() => {
     if (params.classroomId) {
-      const fetchData = async () => {
+      const fetchCurrentClassroom = async () => {
+        setLoading(true);
+
+        try {
+          const res = await AXIOS.GET({
+            uri: `/classroom/info/${params.classroomId}`,
+            token: localStorage.getItem("access-token") ?? "",
+          });
+
+          console.log(res, res?.statusCode === 200);
+
+          if (res.statusCode && res.statusCode === 200) {
+            dispatch(setCurrentClassroom(res.metadata));
+            return;
+          }
+
+          if (res && (res.status >= 400 || res.statusCode >= 400)) {
+            throw new Error(res.message);
+          }
+        } catch (error) {
+          // setError(true);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      const fetchCompositions = async () => {
         try {
           const res = await AXIOS.GET({
             uri: `/grade/get-compositions/${params.classroomId}`,
@@ -52,9 +80,10 @@ const Transcript = () => {
         }
       };
 
-      fetchData();
+      fetchCurrentClassroom();
+      fetchCompositions();
     }
-  }, [params]);
+  }, [params, dispatch]);
 
   if (loading)
     return (

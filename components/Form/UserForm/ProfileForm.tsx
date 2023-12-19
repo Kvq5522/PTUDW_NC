@@ -42,6 +42,7 @@ import { useAppSelector } from "@/redux/store";
 import { useDispatch } from "react-redux";
 import { setUserInfo } from "@/redux/slices/user-info-slice";
 import { AppDispatch } from "@/redux/store";
+import { useToast } from "@/components/ui/use-toast";
 
 const isAgePositiveInteger = (value: number | undefined) => {
   return value ? /^(150|[1-9][0-9]?)$/.test(value.toString()) : true;
@@ -65,6 +66,7 @@ const formSchema = z.object({
     })
   ),
   gender: z.string().optional(),
+  student_id: z.string().min(1).max(10).optional(),
   avatar: z
     .any()
     .optional()
@@ -96,18 +98,49 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
   const [file, setFile] = useState<File | null>(null);
   const [avatar, setAvatar] = useState<string>("");
   const dispatch = useDispatch<AppDispatch>();
+  const toast = useToast();
   const userProfile = useAppSelector(
     (state: any) => state.userInfoReducer.value?.userInfo
   );
 
   useEffect(() => {
-    setAvatar(userProfile?.avatar ?? "");
-    setValue("first_name", userProfile?.first_name ?? "");
-    setValue("last_name", userProfile?.last_name ?? "");
-    setValue("phone_number", userProfile?.phone_number ?? "");
-    setValue("address", userProfile?.address ?? "");
-    setValue("age", userProfile?.age ?? 0);
-    setValue("gender", userProfile?.gender ?? "");
+    const fetchUserData = async () => {
+      try {
+        setLoading(true);
+
+        const res = await AXIOS.GET({
+          uri: "/user/get-info",
+          token: localStorage.getItem("access-token") ?? "",
+        });
+
+        if (res.statusCode === 200) {
+          dispatch(setUserInfo(res.metadata));
+          const _userProfile = res.metadata;
+
+          setAvatar(_userProfile?.avatar ?? "");
+          setValue("first_name", _userProfile?.first_name ?? "");
+          setValue("last_name", _userProfile?.last_name ?? "");
+          setValue("phone_number", _userProfile?.phone_number ?? "");
+          setValue("address", _userProfile?.address ?? "");
+          setValue("age", _userProfile?.age ?? 0);
+          setValue("gender", _userProfile?.gender ?? "");
+          setValue("student_id", _userProfile?.student_id ?? "");
+          return;
+        }
+      } catch (error) {}
+    };
+
+    if (!userProfile) fetchUserData();
+    else {
+      setAvatar(userProfile?.avatar ?? "");
+      setValue("first_name", userProfile?.first_name ?? "");
+      setValue("last_name", userProfile?.last_name ?? "");
+      setValue("phone_number", userProfile?.phone_number ?? "");
+      setValue("address", userProfile?.address ?? "");
+      setValue("age", userProfile?.age ?? 0);
+      setValue("gender", userProfile?.gender ?? "");
+      setValue("student_id", userProfile?.student_id ?? "");
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -121,6 +154,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       address: "",
       age: 0,
       gender: "M",
+      student_id: "",
       avatar: "",
     },
   });
@@ -151,8 +185,34 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       hasFile: true,
     });
 
-    if (res.statusCode && res.statusCode === 200) {
-      dispatch(setUserInfo(res.metadata));
+    if (res && res.statusCode === 200) {
+      dispatch(setUserInfo(res.metadata.userProfile));
+      const _userProfile = res.metadata.userProfile;
+
+      setAvatar(_userProfile?.avatar ?? "");
+      setValue("first_name", _userProfile?.first_name ?? "");
+      setValue("last_name", _userProfile?.last_name ?? "");
+      setValue("phone_number", _userProfile?.phone_number ?? "");
+      setValue("address", _userProfile?.address ?? "");
+      setValue("age", _userProfile?.age ?? 0);
+      setValue("gender", _userProfile?.gender ?? "");
+      setValue("student_id", _userProfile?.student_id ?? "");
+
+      toast.toast({
+        title: "Success",
+        description: "Update profile successfully!",
+        className: "top-[-85vh] bg-green-500 text-white",
+      });
+
+      if (!res.metadata.isUpdateStudentId) {
+        toast.toast({
+          title: "Error",
+          description: "Student Id is already existed!",
+          variant: "destructive",
+          className: "top-[-65vh]",
+        });
+      }
+
       setError("");
       setLoading(false);
       return;
@@ -238,7 +298,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
               ></FormField>
             </div>
 
-            <div className="w-[50%]">
+            <div className="w-[50%] space-y-4">
               <FormField
                 control={form.control}
                 name="first_name"
@@ -257,6 +317,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name="last_name"
@@ -267,6 +328,25 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                       <Input
                         {...field}
                         placeholder="Last Name"
+                        disabled={loading}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="student_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className=" truncate">Student ID</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        placeholder="Student ID"
                         disabled={loading}
                       />
                     </FormControl>

@@ -25,7 +25,7 @@ import { AXIOS } from "@/constants/ApiCall";
 import toast from "react-hot-toast";
 
 const isAlphanumericWithUppercase = (value: string) => {
-  return /^[0-9a-zA-Z]+$/.test(value) && /[A-Z]/.test(value);
+  return /[A-Z]/.test(value) && /[0-9]/.test(value);
 };
 
 const formSchema = z
