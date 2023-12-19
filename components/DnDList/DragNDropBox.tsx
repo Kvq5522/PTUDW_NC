@@ -344,7 +344,7 @@ const DragNDropBox = (props: dndProps) => {
       try {
         setLoading(true);
         const res = await AXIOS.POST({
-          uri: "/grade/add-composition",
+          uri: `/grade/add-composition`,
           token: localStorage.getItem("access-token") ?? "",
           params: {
             classroom_id: parseInt(props.classroomId),
@@ -571,7 +571,7 @@ const DragNDropBox = (props: dndProps) => {
       >
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="p-1 mb-3 mt-3 flex gap-3 flex-col h-[10rem] w-full">
+            <div className="p-1 mb-3 mt-3 flex gap-3 flex-col h-[12rem] w-full">
               <h1 className="font-bold text-lg">Add new Composition!</h1>
               {loading && <h6>Adding...</h6>}
 

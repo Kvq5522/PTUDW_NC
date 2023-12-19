@@ -5,8 +5,7 @@ import GradeTable from "../Table/GradeTable";
 import { X, Save, FileUp, FileDown } from "lucide-react";
 import * as XLSX from "xlsx";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
-import { gradeComposition, studentGrade } from "@/constants/mockdata";
+
 import Loader from "../Loader/Loader";
 import { AXIOS } from "@/constants/ApiCall";
 import EmptyState from "../EmptyState";
@@ -373,7 +372,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
                     Email: grade.student_id_fk.email,
                     "Student Grade": grade.grade,
                   };
-
                   return info;
                 })
               : [];
@@ -513,12 +511,20 @@ const ShowGradeDialog = (props: showGradeProps) => {
 
       {(!Array.isArray(studentGrades) || !studentGrades.length) && !loading ? (
         <EmptyState
-          title="You haven't uploaded student grades"
-          subTitle="Please download templates and upload your data"
+          title={
+            isStudent
+              ? "Your grade hasn't been published"
+              : "You haven't upload student grades"
+          }
+          subTitle={
+            isStudent
+              ? "Please wait until your teacher announces you"
+              : "Please download templates and upload your data"
+          }
         />
       ) : (
         <>
-          <div className="table-box h-full">
+          <div className="table-box">
             <GradeTable
               compositionID={props.compositionID}
               onInputChange={handleInputChange}

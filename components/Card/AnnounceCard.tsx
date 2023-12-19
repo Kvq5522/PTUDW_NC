@@ -1,8 +1,9 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import AnnounceForm from "../Form/AnnounceForm";
-import { ArrowLeftRight } from "lucide-react";
+import Image from "next/image";
+
+import { useAppSelector } from "@/redux/store";
 
 interface announceCardProps {
   isTeacher?: boolean;
@@ -11,20 +12,33 @@ interface announceCardProps {
 const AnnounceCard = (props: announceCardProps) => {
   const [isActive, setIsActive] = useState(false);
 
+  const avatar = useAppSelector(
+    (state: any) => state.userInfoReducer.value?.userInfo?.avatar
+  );
+
   const handleClick = () => {
     setIsActive((current) => !current);
+    console.log(isActive);
   };
 
   return (
     <div className="announce-box">
       <div className="announceCard-content">
         <div
-          className={"inactive-announceContent " + (isActive ? "hidden" : "")}
+          className={"inactive-announceContent"}
+          style={{ display: isActive ? "none" : "" }}
         >
           <div className="announce-avt">
             <Avatar>
-              <AvatarImage src="https://github.com/shadcn.png" />
-              <AvatarFallback>CN</AvatarFallback>
+              <AvatarImage src={avatar} className="object-cover" />
+              <AvatarFallback>
+                <Image
+                  src="/images/user-default-avatar.png"
+                  fill
+                  className="w-full h-full"
+                  alt="User Avatar"
+                />
+              </AvatarFallback>
             </Avatar>
           </div>
           <div className="iaAnnounce-text" onClick={handleClick}>
@@ -33,11 +47,8 @@ const AnnounceCard = (props: announceCardProps) => {
         </div>
 
         <div
-          className={
-            isActive
-              ? "active-announceContent"
-              : "active-announceContent hidden"
-          }
+          className={"active-announceContent"}
+          style={{ display: isActive ? "" : "none" }}
         >
           <AnnounceForm onCancel={handleClick} />
         </div>

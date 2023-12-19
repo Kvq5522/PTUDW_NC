@@ -104,7 +104,7 @@ aside {
 /* Upcoming card for deco */
 .upcoming-card {
   background-color: white;
-  border: 1px solid rgb(127, 127, 127);
+  border: 1px solid rgb(222, 222, 222);
   border-radius: 9px;
   width: 11.6rem;
   margin-right: 1rem;
@@ -174,7 +174,8 @@ main {
   display: flex;
   align-items: center;
   height: 100%;
-  z-index: 0;
+  width: 100%;
+  z-index: auto;
 }
 .inactive-announceContent {
   display: flex;
@@ -202,17 +203,64 @@ main {
 .active-announceContent {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   height: 100%;
+  width: 100%;
+  background-color: rgb(255, 255, 255);
+  padding: 1.3rem;
 }
 .announce-txtarea {
-  flex: 1 1 auto;
+  background-color: #efefef;
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  padding-top: 1rem;
-  overflow-y: auto;
-  margin-bottom: 1.5rem;
-  padding: 0 1.5rem;
+  padding: 0.5rem;
+  position: relative;
+}
+.lbtxtareaa {
+  position: absolute;
+  left: 0.6rem;
+  top: 1.5rem;
+  transition: top 0.3s ease, font-size 0.3s ease; /* Add a smooth transition effect for top and font-size */
+  pointer-events: none;
+}
+.txtareaa {
+  margin-top: 1rem;
+  background-color: #efefef;
+  min-height: 6rem;
+  padding: 0;
+  border-radius: 0;
+}
+.txtareaa:focus {
+  outline: none;
+  border: none;
+  border-style: none;
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+}
+.announce-txtarea:hover + .txtareaa:hover {
+  background-color: #e5e5e5;
+}
+.txtareaa:focus + .lbtxtareaa,
+.announce-txtarea:focus-within .lbtxtareaa {
+  top: 0.3rem; /* Adjust the top position when in focus */
+  font-size: 14px;
 }
 
+.announce-footer {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.announce-action-buttons, .announce-upload-buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+}
 
 
 /* Dialog */
@@ -332,6 +380,7 @@ main {
   outline: none;
   padding: 0;
 }
+
 
 /* Search Result */
 .search-result {
