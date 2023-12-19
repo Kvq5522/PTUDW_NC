@@ -13,6 +13,7 @@ import EmptyState from "../EmptyState";
 
 import { useAppSelector } from "@/redux/store";
 import { useToast } from "../ui/use-toast";
+import { Modal } from "../Modal/Modal";
 
 interface showGradeProps {
   id: string;
@@ -29,6 +30,8 @@ const ShowGradeDialog = (props: showGradeProps) => {
   const [headers, setHeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("Getting data...");
+  const [openErrorModal, setOpenErrorModal] = useState(false);
+  const [errorModalChildren, setErrorModalChildren] = useState(<></>);
   const [uri, setUri] = useState("");
   const toast = useToast();
 
@@ -47,7 +50,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
       return;
     } else if (props.compositionID === "all") {
       //check duplicate student id
-
       const studentIDs = studentGrades.map((item: any) => item["Student ID"]);
 
       const isDuplicate = studentIDs.some(
@@ -76,19 +78,36 @@ const ShowGradeDialog = (props: showGradeProps) => {
             ? "/grade/map-student-id-in-grade-board"
             : "/grade/edit-student-grade-by-composition";
 
-        const data = studentGrades.map((item: any) => {
-          const info = {
-            name: item["Student Name"],
-            student_id: item["Student ID"],
-            email: item["Email"],
-          };
+        let data: any[] = [];
 
-          if (props.compositionID !== "all") {
-            info["grade" as keyof typeof info] = item["Student Grade"];
-          }
+        if (props.compositionID === "all") {
+          data = studentGrades.map((item: any) => {
+            return {
+              name: item["Student Name"],
+              student_id: item["Student ID"],
+              email: item["Email"],
+            };
+          });
+        } else {
+          data = studentGrades.map((item: any) => {
+            const info = {
+              name: item["Student Name"],
+              student_id: item["Student ID"],
+              email: item["Email"],
+            };
 
-          return info;
-        });
+            if (props.compositionID !== "all") {
+              info["grade" as keyof typeof info] = item["Student Grade"];
+            }
+
+            return info;
+          });
+        }
+
+        const _data =
+          props.compositionID === "all"
+            ? { student_ids: data }
+            : { student_grades: data };
 
         const res = await AXIOS.POST({
           uri: updateURI,
@@ -96,18 +115,41 @@ const ShowGradeDialog = (props: showGradeProps) => {
           params: {
             classroom_id: parseInt(props.classroomId),
             grade_category: parseInt(props.compositionID),
-            student_grades: data,
+            ..._data,
           },
         });
 
         if (res.statusCode === 200) {
           toast.toast({
             title: "Success",
-            description: "Update student grades successfully",
+            description:
+              props.compositionID === "all"
+                ? "Update student Ids successfully"
+                : "Update student grades successfully",
             className: "top-[-85vh] bg-green-500 text-white",
           });
 
+          const failedData = res.metadata.failed;
+
+          if (Array.isArray(failedData) && failedData.length > 0) {
+            setOpenErrorModal(true);
+            setErrorModalChildren(
+              <div className="overflow-auto">
+                {failedData.map((item: any, index: number) => {
+                  return (
+                    <div key={index} className="flex justify-between gap-8">
+                      <p>Student Name: {item.name}</p>
+                      <p>Reason: {item.reason}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+
           await fetchData(uri);
+        } else {
+          throw new Error("Something went wrong");
         }
       } catch (error: any) {
         console.log(error);
@@ -160,7 +202,27 @@ const ShowGradeDialog = (props: showGradeProps) => {
             className: "top-[-85vh] bg-green-500 text-white",
           });
 
+          const failedData = res.metadata.failed;
+
+          if (Array.isArray(failedData) && failedData.length > 0) {
+            setOpenErrorModal(true);
+            setErrorModalChildren(
+              <div className="overflow-auto">
+                {failedData.map((item: any, index: number) => {
+                  return (
+                    <div key={index} className="flex justify-between gap-8">
+                      <p>Student Name: {item.name}</p>
+                      <p>Reason: {item.reason}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
+
           await fetchData(uri);
+        } else {
+          throw new Error("Please ensure your file matches the template");
         }
       } catch (error: any) {
         toast.toast({
@@ -171,6 +233,8 @@ const ShowGradeDialog = (props: showGradeProps) => {
         });
       } finally {
         setLoading(false);
+        //flush event files
+        event.target.value = "";
       }
     };
 
@@ -346,105 +410,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
       setUri(_uri);
     }
 
-    // const fetchData = async (uri: string) => {
-    //   try {
-    //     setLoading(true);
-
-    //     const res = await AXIOS.GET({
-    //       uri: uri,
-    //       token: localStorage.getItem("access-token") ?? "",
-    //     });
-
-    //     if (res.statusCode === 200) {
-    //       const grades = res.metadata.grades;
-
-    //       if (props.compositionID === "all") {
-    //         const compositionNames = res.metadata.grade_compositions;
-
-    //         const compHeaders = res.metadata.grade_compositions.map(
-    //           (cmp: any) => {
-    //             return `Grade ${cmp.name}`;
-    //           }
-    //         );
-    //         let formatGrades = Array.isArray(grades)
-    //           ? grades.map((item) => {
-    //               const mapGrade = compositionNames.map((cmp: any) => {
-    //                 const grade = item.grades.find(
-    //                   (x: any) => x.grade_category === cmp.grade_category
-    //                 );
-
-    //                 return `Grade ${cmp.name}:${grade?.grade || 0}:${
-    //                   grade?.grade_percent || 0
-    //                 }`;
-    //               });
-
-    //               const info = {
-    //                 "Student Name": item.name,
-    //                 "Student ID": item.student_id,
-    //                 Email: item.email,
-    //               };
-
-    //               const totalGrade = mapGrade.reduce(
-    //                 (acc: number, cur: string) => {
-    //                   const grade = parseFloat(cur.split(":")[1]) ?? 0;
-    //                   const percent = parseFloat(cur.split(":")[2]) ?? 0;
-
-    //                   return acc + grade * (percent / 100);
-    //                 },
-    //                 0
-    //               );
-
-    //               mapGrade.forEach((grade: any, index: number) => {
-    //                 const name = grade.split(":")[0];
-    //                 const value = grade.split(":")[1];
-    //                 info[name as keyof typeof info] = parseFloat(value) ?? 0;
-    //               });
-
-    //               info["Total Grade" as keyof typeof info] = totalGrade;
-
-    //               return info;
-    //             })
-    //           : [];
-
-    //         setStudentGrades(formatGrades as never[]);
-    //         setHeaders([
-    //           "Student Name",
-    //           "Student ID",
-    //           "Email",
-    //           ...compHeaders,
-    //           "Total Grade",
-    //         ] as never[]);
-    //       } else {
-    //         let formatGrades = Array.isArray(grades)
-    //           ? grades?.map((grade: any) => {
-    //               const info = {
-    //                 "Student Name": grade.student_id_fk.name,
-    //                 "Student ID": grade.student_id,
-    //                 Email: grade.student_id_fk.email,
-    //                 "Student Grade": grade.grade,
-    //               };
-
-    //               return info;
-    //             })
-    //           : [];
-
-    //         setStudentGrades(formatGrades as never[]);
-
-    //         setHeaders([
-    //           "Student Name",
-    //           "Student ID",
-    //           "Email",
-    //           "Student Grade",
-    //         ] as never[]);
-    //       }
-    //     }
-    //   } catch (error) {
-    //     console.log(error);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
-
     fetchData(_uri);
   }, [props.compositionID, props.classroomId, fetchData]);
 
@@ -454,8 +419,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
     compositionID: string,
     header: string
   ) => {
-    console.log(value, compareValue, header);
-
     setStudentGrades(
       (current) =>
         current.map((item: any) => {
@@ -550,7 +513,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
 
       {(!Array.isArray(studentGrades) || !studentGrades.length) && !loading ? (
         <EmptyState
-          title="You haven't upload student grades"
+          title="You haven't uploaded student grades"
           subTitle="Please download templates and upload your data"
         />
       ) : (
@@ -565,6 +528,16 @@ const ShowGradeDialog = (props: showGradeProps) => {
           </div>
         </>
       )}
+
+      {/* Show fail list */}
+      <Modal
+        title="Fail list"
+        description="The following data is failed to update, please check again"
+        isOpen={openErrorModal}
+        onClose={() => setOpenErrorModal((current) => !current)}
+      >
+        {errorModalChildren}
+      </Modal>
     </CompositionDialog>
   );
 };

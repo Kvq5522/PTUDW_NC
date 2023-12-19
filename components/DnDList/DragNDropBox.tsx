@@ -1,30 +1,13 @@
 "use client";
 
 import { Separator } from "@radix-ui/react-select";
-import {
-  Plus,
-  Table2,
-  X,
-  Save,
-  FileKey2,
-  FileLock2,
-  FileDown,
-  FileUp,
-} from "lucide-react";
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { Plus, Table2, Save, FileDown, FileUp } from "lucide-react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import {
   DragDropContext,
   DropResult,
   Droppable,
-  DroppableProps,
   DroppableProvided,
-  DroppableStateSnapshot,
 } from "react-beautiful-dnd";
 import {
   Form,
@@ -44,7 +27,6 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { DialogClose } from "../ui/dialog";
 
-import { gradeComposition } from "@/constants/mockdata";
 import ShowGradeDialog from "../Dialog/ShowGradeDialog";
 import TooltipPro from "../TooltipPro";
 import { AXIOS } from "@/constants/ApiCall";
@@ -52,6 +34,7 @@ import { useToast } from "../ui/use-toast";
 import { DeleteCompositionModal } from "../Modal/DeleteCompositionModal";
 import { useSaveCompositionModal } from "@/hooks/save-composition-modal";
 import Loader from "../Loader/Loader";
+import { Modal } from "../Modal/Modal";
 
 import { useAppSelector } from "@/redux/store";
 
@@ -82,6 +65,8 @@ const DragNDropBox = (props: dndProps) => {
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [deleteId, setDeleteId] = useState(-1);
+  const [openErrorModal, setOpenErrorModal] = useState(false);
+  const [errorModalChildren, setErrorModalChildren] = useState(<></>);
   const saveCompositionModal = useSaveCompositionModal();
 
   function handleOnDragEnd(result: DropResult) {
@@ -151,9 +136,9 @@ const DragNDropBox = (props: dndProps) => {
     setComposition(compoID);
   };
 
-  const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
     // Update the status property of each item to "public"
-    const file = e.target.files?.[0];
+    const file = event.target.files?.[0];
 
     if (!file) {
       toast.toast({
@@ -185,18 +170,38 @@ const DragNDropBox = (props: dndProps) => {
             description: "Upload student list successfully",
             className: "top-[-85vh] bg-green-500 text-white",
           });
+
+          const failedData = res.metadata.failed;
+
+          if (Array.isArray(failedData) && failedData.length > 0) {
+            setOpenErrorModal(true);
+            setErrorModalChildren(
+              <div className="overflow-auto">
+                {failedData.map((item: any, index: number) => {
+                  return (
+                    <div key={index} className="flex justify-between gap-8">
+                      <p>Student Name: {item.name}</p>
+                      <p>Reason: {item.reason}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          }
         } else {
           throw new Error(res.message as string);
         }
       } catch (error: any) {
         toast.toast({
           title: "Error",
-          description: error.message ?? "Something went wrong",
+          description: "Please ensure your file matches the template",
           variant: "destructive",
           className: "top-[-85vh]",
         });
       } finally {
         setLoading(false);
+        //flush event file
+        event.target.value = "";
       }
     };
 
@@ -647,6 +652,15 @@ const DragNDropBox = (props: dndProps) => {
         isOpen={openDialog && dialogType === "tableDialog"}
         classroomId={props.classroomId}
       />
+
+      <Modal
+        title="Fail list"
+        description="The following data is failed to update, please check again"
+        isOpen={openErrorModal}
+        onClose={() => setOpenErrorModal((current) => !current)}
+      >
+        {errorModalChildren}
+      </Modal>
     </div>
   );
 };

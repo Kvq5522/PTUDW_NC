@@ -53,10 +53,7 @@ const GradeTable = (props: gradeTableProps) => {
           {Array.isArray(props.data) &&
             props.data.length > 0 &&
             props.data.map((student, index) => (
-              <TableRow
-                key={`${student["Student ID"]} - ${student["Email"]} - ${index}`}
-                className="w-full"
-              >
+              <TableRow key={`${index}`} className="w-full">
                 {props.tableHeaders.map((header, _index) => {
                   if (
                     props.compositionID !== "all" &&
@@ -64,7 +61,7 @@ const GradeTable = (props: gradeTableProps) => {
                   ) {
                     return (
                       <TableCell
-                        key={`${student["Student ID"]} - ${student["Email"]} - ${index} - ${_index}`}
+                        key={`${index} - ${_index}`}
                         className={`font-medium whitespace-normal h-3 w-[${
                           100 / props.tableHeaders.length
                         }%] min-w-[15rem]`}
@@ -95,7 +92,7 @@ const GradeTable = (props: gradeTableProps) => {
                   ) {
                     return (
                       <TableCell
-                        key={`${student["Student ID"]} - ${student["Email"]} - ${index} - ${_index}`}
+                        key={`${index} - ${_index}`}
                         className={`font-medium whitespace-normal h-3 w-[${
                           100 / props.tableHeaders.length
                         }%] min-w-[15rem]`}
@@ -109,7 +106,7 @@ const GradeTable = (props: gradeTableProps) => {
                             if (value.length > 10) value = value.slice(0, 10);
 
                             props.onInputChange(
-                              e.target.value,
+                              value,
                               student["Email"],
                               props.compositionID,
                               header
@@ -122,7 +119,7 @@ const GradeTable = (props: gradeTableProps) => {
 
                   return (
                     <TableCell
-                      key={`${student["Student ID"]} - ${student["Email"]} - ${index} - ${_index}`}
+                      key={`${index} - ${_index}`}
                       className={`font-medium whitespace-normal h-3 w-[${
                         100 / props.tableHeaders.length
                       }%] min-w-[15rem]`}
