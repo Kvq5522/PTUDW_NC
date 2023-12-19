@@ -32,7 +32,7 @@ import ShowResult from "../InviteStudent/ShowResult";
 import SearchWithEmail from "../InviteStudent/SearchWithEmail";
 import { Label } from "../ui/label";
 
-
+import { AppDispatch, useAppSelector } from "@/redux/store";
 
 const ClassroomMenu: React.FC = () => {
   const classcode = "0123456789"; // Tối đa 10 ký tự
@@ -41,6 +41,10 @@ const ClassroomMenu: React.FC = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(classcode);
   };
+
+  const invitations = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.invitations
+  );
 
   return (
     <>
@@ -66,7 +70,9 @@ const ClassroomMenu: React.FC = () => {
             <DropdownMenuSeparator className="bg-gray-300" />
             <DropdownMenuLabel className="flex items-center justify-between h-9">
               <span className="block text-center mr-0">Class Code: </span>
-              <span className="text-center font-light">{classcode}</span>
+              <span className="text-center font-light">
+                {invitations.student_invite_code}
+              </span>
               <Button variant="ghost" size="icon" onClick={copyToClipboard}>
                 <Scan className="w-4 h-4" />
               </Button>
@@ -91,7 +97,7 @@ const ClassroomMenu: React.FC = () => {
                   <Input
                     id="classlink"
                     className="font-extralight"
-                    defaultValue={classlink}
+                    defaultValue={`http://localhost:3000/classroom/invite?uri=${invitations.student_invite_uri_code}`}
                     readOnly
                   />
                   <Button

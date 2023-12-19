@@ -26,6 +26,11 @@ const StreamContent = () => {
   const params = useParams();
   const toast = useToast();
 
+  const userInClass = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.user
+  );
+  const isStudent = userInClass?.member_role < 2;
+
   useEffect(() => {
     const fetchCurrentClassroom = async () => {
       setLoading(true);
@@ -73,7 +78,7 @@ const StreamContent = () => {
           <div className="stream-header-label">
             <div className="main-label">CLASSROOM&lsquo;S NAME</div>
             <div className="sub-label">Advanced Web Programming</div>
-            {true && isNecessary ? (
+            {!isStudent && isNecessary ? (
               <div className="change-theme-btn">
                 <Button variant="link" className="text-white text-xs">
                   Select Theme
@@ -86,7 +91,7 @@ const StreamContent = () => {
               <></>
             )}
           </div>
-          {true ? (
+          {!isStudent ? (
             <div className="classroom-sharing">
               <ClassroomMenu />
             </div>

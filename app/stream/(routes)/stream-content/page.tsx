@@ -21,12 +21,17 @@ const StreamContent = () => {
     (state) => state.classroomInfoReducer.value?.currentClassroom
   );
 
-  console.log(params, currentClassroom)
+  const userInClass = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom?.user
+  );
+  const isStudent = userInClass?.member_role < 2;
+
+  console.log(params, currentClassroom);
 
   if (!currentClassroom) {
     const fetchCurrentClassroom = async () => {
       setLoading(true);
-      
+
       try {
         const res = AXIOS.GET({
           uri: `/classroom/info/${params.classroomId}`,
@@ -35,9 +40,7 @@ const StreamContent = () => {
 
         console.log(res);
       } catch (error) {
-        
-      }
-      finally {
+      } finally {
         setLoading(false);
       }
     };
@@ -53,7 +56,7 @@ const StreamContent = () => {
           <div className="stream-header-label">
             <div className="main-label">CLASSROOM&lsquo;S NAME</div>
             <div className="sub-label">Advanced Web Programming</div>
-            {true && isNecessary ? (
+            {!isStudent && isNecessary ? (
               <div className="change-theme-btn">
                 <Button variant="link" className="text-white text-xs">
                   Select Theme
@@ -66,7 +69,7 @@ const StreamContent = () => {
               <></>
             )}
           </div>
-          {true ? (
+          {!isStudent ? (
             <div className="classroom-sharing">
               <ClassroomMenu />
             </div>
