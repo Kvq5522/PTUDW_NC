@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import CompositionDialog from "./CompositionDialog";
 import { Button } from "../ui/button";
 import GradeTable from "../Table/GradeTable";
@@ -12,6 +12,7 @@ import { AXIOS } from "@/constants/ApiCall";
 import EmptyState from "../EmptyState";
 
 import { useAppSelector } from "@/redux/store";
+import { useToast } from "../ui/use-toast";
 
 interface showGradeProps {
   id: string;
@@ -27,73 +28,181 @@ const ShowGradeDialog = (props: showGradeProps) => {
   const [studentGrades, setStudentGrades] = useState([]);
   const [headers, setHeaders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMessage, setLoadingMessage] = useState("Getting data...");
   const [uri, setUri] = useState("");
-
-  // const getTableHeader = () => {
-  //   setHeaders(defaultHeaders);
-  //   if (props.compositionID === "all") {
-  //     setHeaders((current) => [
-  //       ...current,
-  //       ...gradeComposition.map((cmp) => cmp.name),
-  //     ]);
-  //   } else {
-  //     const selectedComp = gradeComposition.find(
-  //       (cmp) => cmp.id === props.compositionID
-  //     );
-  //     if (selectedComp) {
-  //       setHeaders((current) => [...current, selectedComp.name]);
-  //     }
-  //   }
-  // };
+  const toast = useToast();
 
   const handleSaveTable = () => {
-    setIsSave((current) => !current);
+    if (
+      props.compositionID !== "all" &&
+      !studentGrades.every((item: any) => !isNaN(item["Student Grade"]))
+    ) {
+      toast.toast({
+        title: "Error",
+        description: "Please input number only",
+        variant: "destructive",
+        className: "top-[-85vh]",
+      });
+
+      return;
+    } else if (props.compositionID === "all") {
+      //check duplicate student id
+
+      const studentIDs = studentGrades.map((item: any) => item["Student ID"]);
+
+      const isDuplicate = studentIDs.some(
+        (item: any, index: number) => studentIDs.indexOf(item) !== index
+      );
+
+      if (isDuplicate) {
+        toast.toast({
+          title: "Error",
+          description: "Student ID is duplicated",
+          variant: "destructive",
+          className: "top-[-85vh]",
+        });
+
+        return;
+      }
+    }
+
+    const updateData = async () => {
+      try {
+        setLoadingMessage("Updating data...");
+        setLoading(true);
+
+        const updateURI =
+          props.compositionID === "all"
+            ? "/grade/map-student-id-in-grade-board"
+            : "/grade/edit-student-grade-by-composition";
+
+        const data = studentGrades.map((item: any) => {
+          const info = {
+            name: item["Student Name"],
+            student_id: item["Student ID"],
+            email: item["Email"],
+          };
+
+          if (props.compositionID !== "all") {
+            info["grade" as keyof typeof info] = item["Student Grade"];
+          }
+
+          return info;
+        });
+
+        const res = await AXIOS.POST({
+          uri: updateURI,
+          token: localStorage.getItem("access-token") ?? "",
+          params: {
+            classroom_id: parseInt(props.classroomId),
+            grade_category: parseInt(props.compositionID),
+            student_grades: data,
+          },
+        });
+
+        if (res.statusCode === 200) {
+          toast.toast({
+            title: "Success",
+            description: "Update student grades successfully",
+            className: "top-[-85vh] bg-green-500 text-white",
+          });
+
+          await fetchData(uri);
+        }
+      } catch (error: any) {
+        console.log(error);
+        toast.toast({
+          title: "Error",
+          description: error.message ?? "Something went wrong",
+          variant: "destructive",
+          className: "top-[-85vh]",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    updateData();
   };
 
-  const handleUploadTable = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleUploadTable = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-        const data = e.target?.result;
-
-        if (typeof data === "string") {
-          let list: string[] = [];
-          const workbook = XLSX.read(data, { type: "binary" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const jsonData = XLSX.utils.sheet_to_json(sheet);
-          const newHeaders = jsonData;
-        }
-      };
-
-      reader.readAsBinaryString(file);
+    if (!file) {
+      toast.toast({
+        title: "Error",
+        description: "Please choose a file",
+        variant: "destructive",
+        className: "top-[-85vh]",
+      });
+      return;
     }
+
+    const uploadData = async () => {
+      try {
+        setLoading(true);
+
+        const res = await AXIOS.POST({
+          uri: `/grade/upload-student-grade-by-composition`,
+          token: localStorage.getItem("access-token") ?? "",
+          params: {
+            classroom_id: parseInt(props.classroomId),
+            composition_id: parseInt(props.compositionID),
+            excel: file,
+          },
+          hasFile: true,
+        });
+
+        if (res.statusCode === 200) {
+          toast.toast({
+            title: "Success",
+            description: "Upload student list successfully",
+            className: "top-[-85vh] bg-green-500 text-white",
+          });
+
+          await fetchData(uri);
+        }
+      } catch (error: any) {
+        toast.toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
+          className: "top-[-85vh]",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    uploadData();
   };
 
   const handleDownloadTable = () => {
     const fetchData = async () => {
-      const _params = {
-        classroom_id: parseInt(props.classroomId),
-      };
-      const _uri =
-        props.compositionID === "all"
-          ? "/grade/download-student-grade-board"
-          : "/grade/download-student-grade-by-composition";
-      const downloadName =
-        props.compositionID === "all"
-          ? "student-grade-board-template.xlsx"
-          : "student-grade-composition-template.xlsx";
-
-      if (props.compositionID !== "all") {
-        _params["composition_id" as keyof typeof _params] = parseInt(
-          props.compositionID
-        );
-      }
-
       try {
+        setLoadingMessage("Downloading data...");
+        setLoading(true);
+
+        const _params = {
+          classroom_id: parseInt(props.classroomId),
+        };
+
+        const _uri =
+          props.compositionID === "all"
+            ? "/grade/download-student-grade-board"
+            : "/grade/download-student-grade-by-composition";
+
+        const downloadName =
+          props.compositionID === "all"
+            ? "student-grade-board-template.xlsx"
+            : "student-grade-composition-template.xlsx";
+
+        if (props.compositionID !== "all") {
+          _params["composition_id" as keyof typeof _params] = parseInt(
+            props.compositionID
+          );
+        }
+
         const res = await AXIOS.POST_DOWNLOAD_FILE({
           uri: _uri,
           token: localStorage.getItem("access-token") ?? "",
@@ -121,25 +230,14 @@ const ShowGradeDialog = (props: showGradeProps) => {
     fetchData();
   };
 
-  useEffect(() => {
-    let _uri = ``;
-
-    if (!props.compositionID) return;
-
-    if (props.compositionID === "all") {
-      _uri = `/grade/get-student-grade-board/${props.classroomId}`;
-      setUri(_uri);
-    } else {
-      _uri = `/grade/get-student-grades-by-composition/${props.classroomId}/${props.compositionID}`;
-      setUri(_uri);
-    }
-
-    const fetchData = async () => {
+  const fetchData = useCallback(
+    async (uri: string) => {
       try {
+        setLoadingMessage("Getting data...");
         setLoading(true);
 
         const res = await AXIOS.GET({
-          uri: _uri,
+          uri: uri,
           token: localStorage.getItem("access-token") ?? "",
         });
 
@@ -231,21 +329,140 @@ const ShowGradeDialog = (props: showGradeProps) => {
       } finally {
         setLoading(false);
       }
-    };
+    },
+    [props.compositionID]
+  );
 
-    fetchData();
-  }, [props.compositionID, props.classroomId]);
+  useEffect(() => {
+    let _uri = ``;
+
+    if (!props.compositionID) return;
+
+    if (props.compositionID === "all") {
+      _uri = `/grade/get-student-grade-board/${props.classroomId}`;
+      setUri(_uri);
+    } else {
+      _uri = `/grade/get-student-grades-by-composition/${props.classroomId}/${props.compositionID}`;
+      setUri(_uri);
+    }
+
+    // const fetchData = async (uri: string) => {
+    //   try {
+    //     setLoading(true);
+
+    //     const res = await AXIOS.GET({
+    //       uri: uri,
+    //       token: localStorage.getItem("access-token") ?? "",
+    //     });
+
+    //     if (res.statusCode === 200) {
+    //       const grades = res.metadata.grades;
+
+    //       if (props.compositionID === "all") {
+    //         const compositionNames = res.metadata.grade_compositions;
+
+    //         const compHeaders = res.metadata.grade_compositions.map(
+    //           (cmp: any) => {
+    //             return `Grade ${cmp.name}`;
+    //           }
+    //         );
+    //         let formatGrades = Array.isArray(grades)
+    //           ? grades.map((item) => {
+    //               const mapGrade = compositionNames.map((cmp: any) => {
+    //                 const grade = item.grades.find(
+    //                   (x: any) => x.grade_category === cmp.grade_category
+    //                 );
+
+    //                 return `Grade ${cmp.name}:${grade?.grade || 0}:${
+    //                   grade?.grade_percent || 0
+    //                 }`;
+    //               });
+
+    //               const info = {
+    //                 "Student Name": item.name,
+    //                 "Student ID": item.student_id,
+    //                 Email: item.email,
+    //               };
+
+    //               const totalGrade = mapGrade.reduce(
+    //                 (acc: number, cur: string) => {
+    //                   const grade = parseFloat(cur.split(":")[1]) ?? 0;
+    //                   const percent = parseFloat(cur.split(":")[2]) ?? 0;
+
+    //                   return acc + grade * (percent / 100);
+    //                 },
+    //                 0
+    //               );
+
+    //               mapGrade.forEach((grade: any, index: number) => {
+    //                 const name = grade.split(":")[0];
+    //                 const value = grade.split(":")[1];
+    //                 info[name as keyof typeof info] = parseFloat(value) ?? 0;
+    //               });
+
+    //               info["Total Grade" as keyof typeof info] = totalGrade;
+
+    //               return info;
+    //             })
+    //           : [];
+
+    //         setStudentGrades(formatGrades as never[]);
+    //         setHeaders([
+    //           "Student Name",
+    //           "Student ID",
+    //           "Email",
+    //           ...compHeaders,
+    //           "Total Grade",
+    //         ] as never[]);
+    //       } else {
+    //         let formatGrades = Array.isArray(grades)
+    //           ? grades?.map((grade: any) => {
+    //               const info = {
+    //                 "Student Name": grade.student_id_fk.name,
+    //                 "Student ID": grade.student_id,
+    //                 Email: grade.student_id_fk.email,
+    //                 "Student Grade": grade.grade,
+    //               };
+
+    //               return info;
+    //             })
+    //           : [];
+
+    //         setStudentGrades(formatGrades as never[]);
+
+    //         setHeaders([
+    //           "Student Name",
+    //           "Student ID",
+    //           "Email",
+    //           "Student Grade",
+    //         ] as never[]);
+    //       }
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //   } finally {
+    //     setLoading(false);
+    //   }
+    // };
+
+    fetchData(_uri);
+  }, [props.compositionID, props.classroomId, fetchData]);
 
   const handleInputChange = (
     value: string | number,
-    studentID: string,
+    compareValue: string,
+    compositionID: string,
     header: string
   ) => {
+    console.log(value, compareValue, header);
+
     setStudentGrades(
       (current) =>
         current.map((item: any) => {
-          if (item["Student ID"] === studentID) {
-            item["Student Grade"] = value;
+          if (compositionID !== "all" && item["Student ID"] === compareValue) {
+            item[header] = value;
+          } else if (item["Email"] === compareValue) {
+            item[header] = value;
           }
 
           return item;
@@ -258,9 +475,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
   );
   const isStudent = userInClass?.member_role < 2;
 
-  if (loading)
-    return <Loader text="Getting grades..." className="w-full h-full" />;
-
   return (
     <CompositionDialog
       id="tableDialog"
@@ -268,6 +482,12 @@ const ShowGradeDialog = (props: showGradeProps) => {
       onClose={() => props.onHandleDialog("tableDialog", "all")}
       classname="table-dialog"
     >
+      {loading && (
+        <Loader
+          text={loadingMessage}
+          className="absolute w-screen h-screen z-[1000] opacity-70 bg-white"
+        />
+      )}
       <div className="table-nav">
         <Button
           variant="ghost"
@@ -285,24 +505,26 @@ const ShowGradeDialog = (props: showGradeProps) => {
           readOnly
         />
         <div className="flex flex-row gap-1 items-center">
-          <Button
-            className="bg-blue-300 hover:bg-blue-600 tbNavBtn tbUploadBtn"
-            variant="ghost"
-            // onClick={handleUploadTable}
-            onClick={() => document.getElementById("fileInput")?.click()}
-            disabled={loading}
-            hidden={isStudent}
-          >
-            <FileUp className="h-5 w-5" />
-            <span>Upload</span>
-            <Input
-              id="fileInput"
-              type="file"
-              accept=".xlsx"
-              style={{ display: "none" }}
-              onChange={handleUploadTable}
-            />
-          </Button>
+          {props.compositionID !== "all" && (
+            <Button
+              className="bg-blue-300 hover:bg-blue-600 tbNavBtn tbUploadBtn"
+              variant="ghost"
+              // onClick={handleUploadTable}
+              onClick={() => document.getElementById("fileInput")?.click()}
+              disabled={loading}
+              hidden={isStudent}
+            >
+              <FileUp className="h-5 w-5" />
+              <span>Upload</span>
+              <Input
+                id="fileInput"
+                type="file"
+                accept=".xlsx"
+                style={{ display: "none" }}
+                onChange={handleUploadTable}
+              />
+            </Button>
+          )}
 
           <Button
             className="bg-blue-300 hover:bg-blue-600 tbNavBtn"
@@ -325,7 +547,8 @@ const ShowGradeDialog = (props: showGradeProps) => {
           </Button>
         </div>
       </div>
-      {!Array.isArray(studentGrades) || !studentGrades.length ? (
+
+      {(!Array.isArray(studentGrades) || !studentGrades.length) && !loading ? (
         <EmptyState
           title="You haven't upload student grades"
           subTitle="Please download templates and upload your data"

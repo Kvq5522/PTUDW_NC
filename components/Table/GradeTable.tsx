@@ -24,14 +24,14 @@ interface gradeTableProps {
   tableHeaders: string[];
   onInputChange: (
     value: string | number,
-    studentID: string,
+    compareValue: string,
+    compositionID: string,
     header: string
   ) => void;
   data?: any[];
 }
 
 const GradeTable = (props: gradeTableProps) => {
-
   const userInClass = useAppSelector(
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
@@ -54,17 +54,17 @@ const GradeTable = (props: gradeTableProps) => {
             props.data.length > 0 &&
             props.data.map((student, index) => (
               <TableRow
-                key={`${student["Student ID"]} - ${student["Email"]}`}
+                key={`${student["Student ID"]} - ${student["Email"]} - ${index}`}
                 className="w-full"
               >
-                {props.tableHeaders.map((header, index) => {
+                {props.tableHeaders.map((header, _index) => {
                   if (
                     props.compositionID !== "all" &&
                     header.includes("Grade")
                   ) {
                     return (
                       <TableCell
-                        key={index}
+                        key={`${student["Student ID"]} - ${student["Email"]} - ${index} - ${_index}`}
                         className={`font-medium whitespace-normal h-3 w-[${
                           100 / props.tableHeaders.length
                         }%] min-w-[15rem]`}
@@ -82,6 +82,7 @@ const GradeTable = (props: gradeTableProps) => {
                             props.onInputChange(
                               value,
                               student["Student ID"],
+                              props.compositionID,
                               header
                             );
                           }}
@@ -94,7 +95,7 @@ const GradeTable = (props: gradeTableProps) => {
                   ) {
                     return (
                       <TableCell
-                        key={index}
+                        key={`${student["Student ID"]} - ${student["Email"]} - ${index} - ${_index}`}
                         className={`font-medium whitespace-normal h-3 w-[${
                           100 / props.tableHeaders.length
                         }%] min-w-[15rem]`}
@@ -103,9 +104,14 @@ const GradeTable = (props: gradeTableProps) => {
                           type="text"
                           value={student[header]}
                           onChange={(e) => {
+                            let value = e.target.value;
+
+                            if (value.length > 10) value = value.slice(0, 10);
+
                             props.onInputChange(
                               e.target.value,
-                              student["Student ID"],
+                              student["Email"],
+                              props.compositionID,
                               header
                             );
                           }}
@@ -116,12 +122,14 @@ const GradeTable = (props: gradeTableProps) => {
 
                   return (
                     <TableCell
-                      key={index}
+                      key={`${student["Student ID"]} - ${student["Email"]} - ${index} - ${_index}`}
                       className={`font-medium whitespace-normal h-3 w-[${
                         100 / props.tableHeaders.length
                       }%] min-w-[15rem]`}
                     >
-                      {student[header]}
+                      {typeof student[header] === "number"
+                        ? Math.round(student[header] * 100) / 100
+                        : student[header]}
                     </TableCell>
                   );
                 })}

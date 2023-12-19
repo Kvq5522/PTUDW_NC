@@ -11,7 +11,13 @@ import {
   FileDown,
   FileUp,
 } from "lucide-react";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   DragDropContext,
   DropResult,
@@ -45,6 +51,7 @@ import { AXIOS } from "@/constants/ApiCall";
 import { useToast } from "../ui/use-toast";
 import { DeleteCompositionModal } from "../Modal/DeleteCompositionModal";
 import { useSaveCompositionModal } from "@/hooks/save-composition-modal";
+import Loader from "../Loader/Loader";
 
 import { useAppSelector } from "@/redux/store";
 
@@ -73,7 +80,7 @@ const DragNDropBox = (props: dndProps) => {
   const [isSave, setIsSave] = useState(true);
   const toast = useToast();
   const [loading, setLoading] = useState(false);
-  const [hasDeleted, setHasDeleted] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [deleteId, setDeleteId] = useState(-1);
   const saveCompositionModal = useSaveCompositionModal();
 
@@ -88,7 +95,7 @@ const DragNDropBox = (props: dndProps) => {
     for (let i = 0; i < items.length; i++) {
       items[i].index = i;
     }
-    
+
     setItemList(items);
   }
 
@@ -144,14 +151,64 @@ const DragNDropBox = (props: dndProps) => {
     setComposition(compoID);
   };
 
-  const handleUpload = () => {
+  const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
     // Update the status property of each item to "public"
-    console.log("Upload success");
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      toast.toast({
+        title: "Error",
+        description: "Please choose a file",
+        variant: "destructive",
+        className: "top-[-85vh]",
+      });
+    }
+
+    const uploadData = async () => {
+      try {
+        setLoadingMessage("Updating data...");
+        setLoading(true);
+
+        const res = await AXIOS.POST({
+          uri: "/grade/upload-student-list",
+          token: localStorage.getItem("access-token") ?? "",
+          params: {
+            classroom_id: parseInt(props.classroomId),
+            excel: file,
+          },
+          hasFile: true,
+        });
+
+        if (res.statusCode === 200) {
+          toast.toast({
+            title: "Success",
+            description: "Upload student list successfully",
+            className: "top-[-85vh] bg-green-500 text-white",
+          });
+        } else {
+          throw new Error(res.message as string);
+        }
+      } catch (error: any) {
+        toast.toast({
+          title: "Error",
+          description: error.message ?? "Something went wrong",
+          variant: "destructive",
+          className: "top-[-85vh]",
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    uploadData();
   };
 
   const handleDownload = () => {
     const fetchData = async () => {
       try {
+        setLoadingMessage("Downloading data...");
+        setLoading(true);
+
         const res = await AXIOS.POST_DOWNLOAD_FILE({
           uri: "/grade/download-student-list",
           token: localStorage.getItem("access-token") ?? "",
@@ -170,6 +227,14 @@ const DragNDropBox = (props: dndProps) => {
         link.click();
       } catch (error) {
         console.log(error);
+        toast.toast({
+          title: "Error",
+          description: "Something went wrong",
+          variant: "destructive",
+          className: "top-[-85vh]",
+        });
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -189,7 +254,9 @@ const DragNDropBox = (props: dndProps) => {
 
     const fetchData = async () => {
       try {
+        setLoadingMessage("Updating data...");
         setLoading(true);
+
         const res = await AXIOS.POST({
           uri: "/grade/edit-composition",
           token: localStorage.getItem("access-token") ?? "",
@@ -340,6 +407,12 @@ const DragNDropBox = (props: dndProps) => {
   return (
     <div className="dnd-list-container">
       <div className="dnd-list-wrapper">
+        {loading && (
+          <Loader
+            text="Updating"
+            className="w-full h-full z-[1000] opacity-70 bg-transparent"
+          />
+        )}
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="list-container">
             {(provided: DroppableProvided) => (
@@ -394,9 +467,11 @@ const DragNDropBox = (props: dndProps) => {
                   <Input
                     id="studentInput"
                     type="file"
-                    accept=".xlsx, .xls"
+                    accept=".xlsx"
                     style={{ display: "none" }}
                     onChange={handleUpload}
+                    disabled={loading}
+                    multiple={false}
                   />
                 </Button>
               </TooltipPro>
@@ -407,6 +482,7 @@ const DragNDropBox = (props: dndProps) => {
                 size="icon"
                 className="h-7 w-7 addIPlustbtn"
                 onClick={handleDownload}
+                disabled={loading}
                 type="button"
               >
                 <FileDown />
@@ -433,6 +509,7 @@ const DragNDropBox = (props: dndProps) => {
                     size="icon"
                     className="h-7 w-7 addIPlustbtn"
                     onClick={() => handleDialog("addDialog", "all")}
+                    disabled={loading}
                   >
                     <Plus />
                   </Button>
@@ -444,6 +521,7 @@ const DragNDropBox = (props: dndProps) => {
                     size="icon"
                     className="h-7 w-7 createTbtn"
                     onClick={() => handleDialog("tableDialog", "all")}
+                    disabled={loading}
                   >
                     <Table2 />
                   </Button>
@@ -455,6 +533,7 @@ const DragNDropBox = (props: dndProps) => {
                     size="icon"
                     className="h-7 w-7 saveTbtn"
                     onClick={handleSaveBox}
+                    disabled={loading}
                   >
                     <Save />
                   </Button>
@@ -468,6 +547,7 @@ const DragNDropBox = (props: dndProps) => {
                     size="icon"
                     className="h-7 w-7 createTbtn"
                     onClick={() => handleDialog("tableDialog", "all")}
+                    disabled={loading}
                   >
                     <Table2 />
                   </Button>
@@ -477,7 +557,6 @@ const DragNDropBox = (props: dndProps) => {
           </div>
         </div>
       </div>
-
       {/* Add Dialog */}
       <CompositionDialog
         id="addDialog"
@@ -558,9 +637,7 @@ const DragNDropBox = (props: dndProps) => {
           </form>
         </Form>
       </CompositionDialog>
-
       {/* ---------------------------------------------------------- */}
-
       {/* Show Table Dialog */}
       <ShowGradeDialog
         id="tableDialog"
