@@ -18,9 +18,6 @@ import Loader from "@/components/Loader/Loader";
 import EmptyState from "@/components/EmptyState";
 import { streamDataItems } from "@/constants/mockdata";
 
-import StreamDirectMessCard from "@/components/Card/StreamDirectMessCard";
-import StreamCardtoGrade from "@/components/Card/StreamCardtoGrade";
-import StreamCardtoDetail from "@/components/Card/StreamCardtoDetail";
 import StreamItemCard from "@/components/Card/StreamItemCard";
 
 const StreamContent = () => {
@@ -129,9 +126,9 @@ const StreamContent = () => {
                 streamItems.map((itemS, index) => (
                   itemS.type === "grade-material"? (
                     // <StreamCardtoGrade key={itemS.id}/>
-                    <StreamItemCard key={itemS.id} itemType="grade-material" />
+                    <StreamItemCard key={itemS.id} idCard={itemS.id} itemType="grade-material" />
                   ) : (
-                    <StreamItemCard key={itemS.id} itemType="detail-material" />
+                    <StreamItemCard key={itemS.id} idCard={itemS.id} itemType="detail-material" />
                   )
                 ))
               )}
