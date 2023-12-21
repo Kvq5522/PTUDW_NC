@@ -15,8 +15,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-
-export type Account = {
+export type Classroom = {
   id: string;
   name: string;
   email: string;
@@ -25,7 +24,7 @@ export type Account = {
   status: string;
 };
 
-export const columns: ColumnDef<Account>[] = [
+export const columns: ColumnDef<Classroom>[] = [
   {
     id: "select",
     header: ({ table }) => {
@@ -52,6 +51,20 @@ export const columns: ColumnDef<Account>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Class Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
     accessorKey: "email",
     header: ({ column }) => {
       return (
@@ -60,20 +73,6 @@ export const columns: ColumnDef<Account>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Email
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );

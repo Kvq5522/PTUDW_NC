@@ -41,13 +41,13 @@ const AdminSideBar = () => {
         <SmallSidebarItem
           Icon={Home}
           title="Home"
-          url="/dashboard"
+          url="/admin"
         ></SmallSidebarItem>
         <div className="border"></div>
         <SmallSidebarItem
           Icon={Users}
           title="teach"
-          url="/dashboard"
+          url="/admin/classroommanage"
         ></SmallSidebarItem>
         <div className="border"></div>
 
@@ -72,17 +72,16 @@ const AdminSideBar = () => {
           <FirstNavbarSection />
         </div>
         <LargeSidebarSection>
-          <LargeSidebarItem
-            isActive
-            Icon={Home}
-            title="Account"
-            url="/dashboard"
-          />
+          <LargeSidebarItem isActive Icon={Home} title="Account" url="/admin" />
 
           <hr></hr>
 
           <LargeSidebarSection visibleItemCount={1}>
-            <LargeSidebarItem Icon={Users} title="Teaching" url="/dashboard" />
+            <LargeSidebarItem
+              Icon={Users}
+              title="Teaching"
+              url="/admin/classroommanage"
+            />
           </LargeSidebarSection>
           <hr></hr>
 

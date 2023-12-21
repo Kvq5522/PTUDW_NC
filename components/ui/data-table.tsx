@@ -1,6 +1,18 @@
 "use client";
 
 import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Copy } from "lucide-react";
+import {
   ColumnDef,
   flexRender,
   getPaginationRowModel,
@@ -19,7 +31,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -31,6 +42,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Label } from "@/components/ui/label";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -44,6 +56,8 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
+  const [rowSelection, setRowSelection] = useState({});
+
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
@@ -54,6 +68,7 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       columnVisibility,
+      rowSelection,
     },
     getSortedRowModel: getSortedRowModel(),
     getCoreRowModel: getCoreRowModel(),
@@ -61,6 +76,7 @@ export function DataTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     getFilteredRowModel: getFilteredRowModel(),
+    onRowSelectionChange: setRowSelection,
   });
 
   return (
@@ -77,6 +93,42 @@ export function DataTable<TData, TValue>({
             className="max-w-sm"
           />
         </div>
+        <div className="pl-2">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">Add Admin</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md">
+              <DialogHeader>
+                <DialogTitle>Add admin</DialogTitle>
+                <DialogDescription>
+                  Please input the admin email
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Label htmlFor="link" className="sr-only">
+                    Admin
+                  </Label>
+                  <Input
+                    id="link"
+                    defaultValue="Hahuynhduchuy@gmail.com"
+                    readOnly
+                  />
+                </div>
+              </div>
+              <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
+                  <Button type="button" variant="secondary">
+                    Close
+                  </Button>
+                </DialogClose>
+                <Button type="button">Add</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
@@ -173,6 +225,10 @@ export function DataTable<TData, TValue>({
         >
           Next
         </Button>
+      </div>
+      <div className="flex-1 text-sm text-muted-foreground">
+        {table.getSelectedRowModel().rows.length} of{" "}
+        {table.getFilteredRowModel().rows.length} row(s) selected
       </div>
     </div>
   );
