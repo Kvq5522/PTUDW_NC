@@ -32,6 +32,9 @@ const Transcript = () => {
   const userInClass = useAppSelector(
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
+  const currentClassroom = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom
+  );
   const isStudent = userInClass?.member_role < 2;
 
   useEffect(() => {
@@ -68,13 +71,12 @@ const Transcript = () => {
             uri: `/grade/get-compositions/${params.classroomId}`,
             token: localStorage.getItem("access-token") ?? "",
           });
-          
+
           if (res.statusCode === 200) {
             const _compositionList = res.metadata;
             _compositionList.sort((a: any, b: any) => a.index - b.index);
             setCompositionList(_compositionList);
           }
-          
         } catch (error) {
           console.log("Error: ", error);
         } finally {
@@ -82,10 +84,10 @@ const Transcript = () => {
         }
       };
 
-      fetchCurrentClassroom();
+      if (!currentClassroom.user.classroom_id) fetchCurrentClassroom();
       fetchCompositions();
     }
-  }, [params, dispatch]);
+  }, [params, dispatch, currentClassroom]);
 
   if (loading)
     return (

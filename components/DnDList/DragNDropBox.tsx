@@ -37,6 +37,8 @@ import Loader from "../Loader/Loader";
 import { Modal } from "../Modal/Modal";
 
 import { useAppSelector } from "@/redux/store";
+import GradeReviewModal from "../Modal/GradeReviewModal";
+import { useGradeReviewModal } from "@/hooks/grade-review-modal";
 
 const formSchema = z.object({
   id: z.string(),
@@ -68,6 +70,14 @@ const DragNDropBox = (props: dndProps) => {
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [errorModalChildren, setErrorModalChildren] = useState(<></>);
   const saveCompositionModal = useSaveCompositionModal();
+  const gradeReviewModal = useGradeReviewModal();
+  const [gradeReviewSpecs, setGradeReviewSpecs] = useState<any>({
+    classroomId: parseInt(props.classroomId),
+    gradeCategory: 0,
+    gradeCategoryName: "",
+    status: false,
+    userId: 0,
+  });
 
   function handleOnDragEnd(result: DropResult) {
     if (!result.destination) return;
@@ -310,6 +320,23 @@ const DragNDropBox = (props: dndProps) => {
     return false;
   };
 
+  const handleOpenGradeReview = (compositionID: string) => {
+    const composition = itemList.find(
+      (item) => item.id === parseInt(compositionID)
+    );
+
+    if (!composition) return;
+
+    setGradeReviewSpecs({
+      ...gradeReviewSpecs,
+      gradeCategory: composition.id,
+      gradeCategoryName: composition.name,
+      status: composition.is_finalized,
+    });
+
+    gradeReviewModal.onOpen();
+  };
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -436,12 +463,14 @@ const DragNDropBox = (props: dndProps) => {
                         name={grade.name}
                         scale={grade.grade_percent}
                         status={grade.is_finalized}
+                        classroomId={parseInt(props.classroomId)}
                         checkNameDuplicate={checkNameDuplicate}
                         onScaleChange={handleScaleChange}
                         onNameChange={handleNameChange}
                         onStatusChange={handleStatusChange}
                         onRemoveChange={showAlert}
                         onOpenTable={handleDialog}
+                        onOpenReview={handleOpenGradeReview}
                       />
                     );
                   })}
@@ -481,18 +510,21 @@ const DragNDropBox = (props: dndProps) => {
                 </Button>
               </TooltipPro>
             )}
-            <TooltipPro description="Download Student List">
-              <Button
-                variant="outline"
-                size="icon"
-                className="h-7 w-7 addIPlustbtn"
-                onClick={handleDownload}
-                disabled={loading}
-                type="button"
-              >
-                <FileDown />
-              </Button>
-            </TooltipPro>
+
+            {!isStudent && (
+              <TooltipPro description="Download Student List">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="h-7 w-7 addIPlustbtn"
+                  onClick={handleDownload}
+                  disabled={loading}
+                  type="button"
+                >
+                  <FileDown />
+                </Button>
+              </TooltipPro>
+            )}
           </div>
 
           <div className="flex flex-row gap-1 items-center justify-between p-0">
@@ -653,6 +685,7 @@ const DragNDropBox = (props: dndProps) => {
         classroomId={props.classroomId}
       />
 
+      {/* Modal that show list of data failed to update */}
       <Modal
         title="Fail list"
         description="The following data is failed to update, please check again"
@@ -661,6 +694,14 @@ const DragNDropBox = (props: dndProps) => {
       >
         {errorModalChildren}
       </Modal>
+
+      {/*  */}
+      <GradeReviewModal
+        classroomId={gradeReviewSpecs.classroomId}
+        gradeCategory={gradeReviewSpecs.gradeCategory}
+        gradeCategoryName={gradeReviewSpecs.gradeCategoryName}
+        status={gradeReviewSpecs.status}
+      />
     </div>
   );
 };

@@ -1,4 +1,11 @@
-import { GripHorizontal, ClipboardEdit, Pencil, Trash2 } from "lucide-react";
+import {
+  GripHorizontal,
+  ClipboardEdit,
+  Pencil,
+  Trash2,
+  PencilIcon,
+  AlertCircle,
+} from "lucide-react";
 import { Draggable, DraggableProvided } from "react-beautiful-dnd";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
@@ -24,6 +31,7 @@ type gradeComposition = {
   name: string;
   scale: string;
   status: boolean;
+  classroomId: number;
   checkNameDuplicate: (name: string) => boolean;
 };
 
@@ -35,6 +43,7 @@ interface gradeCompositionProps extends gradeComposition {
   onStatusChange: (id: string, newStatus: boolean) => void;
   onRemoveChange: (id: string) => void;
   onOpenTable: (type: string, compositionID: string) => void;
+  onOpenReview: (compositionID: string) => void;
 }
 
 const GradeComposition = (props: gradeCompositionProps) => {
@@ -45,7 +54,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
-  }
+  };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
@@ -118,24 +127,26 @@ const GradeComposition = (props: gradeCompositionProps) => {
               </div>
 
               <div className="dndshare">
-                <Select
-                  value={(props.status ? "true" : "false")}
-                  onValueChange={(value) =>
-                    !isStudent && handleSelectChange(value === "true")
-                  }
-                  disabled={isStudent}
-                >
-                  <SelectTrigger
-                    placeholder="Select state"
-                    className="w-[80px] h-[25px]"
+                {!isStudent && (
+                  <Select
+                    value={props.status ? "true" : "false"}
+                    onValueChange={(value) =>
+                      !isStudent && handleSelectChange(value === "true")
+                    }
+                    disabled={isStudent}
                   >
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="true">Public</SelectItem>
-                    <SelectItem value="false">Private</SelectItem>
-                  </SelectContent>
-                </Select>
+                    <SelectTrigger
+                      placeholder="Select state"
+                      className="w-[80px] h-[25px]"
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="true">Public</SelectItem>
+                      <SelectItem value="false">Private</SelectItem>
+                    </SelectContent>
+                  </Select>
+                )}
               </div>
 
               <div className="dndl-item-actions">
@@ -143,6 +154,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   orientation="vertical"
                   className="bg-slate-600 m-1"
                 />
+                {/* Teacher function */}
                 <div hidden={isStudent}>
                   <TooltipPro description="Edit composition name">
                     <Button
@@ -155,7 +167,8 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     </Button>
                   </TooltipPro>
                 </div>
-                <div>
+
+                <div hidden={isStudent}>
                   <TooltipPro description="Show compostion grade">
                     <Button
                       variant="ghost"
@@ -167,6 +180,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                     </Button>
                   </TooltipPro>
                 </div>
+
                 <div hidden={isStudent}>
                   <TooltipPro description="Delete composition">
                     <Button
@@ -176,6 +190,21 @@ const GradeComposition = (props: gradeCompositionProps) => {
                       onClick={() => props.onRemoveChange(props.id)}
                     >
                       <Trash2 className="h-5 w-5 text-red-800" />
+                    </Button>
+                  </TooltipPro>
+                </div>
+
+                {/* Student functions */}
+
+                <div hidden={!isStudent}>
+                  <TooltipPro description="Create grade review">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-6 w-6 rounded-xl"
+                      onClick={() => props.onOpenReview(props.id)}
+                    >
+                      <AlertCircle className="h-5 w-5" />
                     </Button>
                   </TooltipPro>
                 </div>
