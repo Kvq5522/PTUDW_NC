@@ -29,7 +29,7 @@ const AnnounceCard = (props: announceCardProps) => {
           style={{ display: isActive ? "none" : "" }}
         >
           <div className="announce-avt">
-            <Avatar>
+            <Avatar className="h-[36px] w-[36px]">
               <AvatarImage src={avatar} className="object-cover" />
               <AvatarFallback>
                 <Image

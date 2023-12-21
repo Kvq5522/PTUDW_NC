@@ -16,10 +16,13 @@ import "@/Styles/stream.css";
 import { toast, useToast } from "@/components/ui/use-toast";
 import Loader from "@/components/Loader/Loader";
 import EmptyState from "@/components/EmptyState";
+import { streamDataItems } from "@/constants/mockdata";
+
+import StreamItemCard from "@/components/Card/StreamItemCard";
 
 const StreamContent = () => {
   const isNecessary = false;
-
+  const [streamItems, setStreamItems] = useState(streamDataItems);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -66,7 +69,11 @@ const StreamContent = () => {
   if (error)
     return (
       <div className="w-[100%] h-[100%]">
-        <EmptyState title="No result found" subTitle="Something's wrong :(" showReset />
+        <EmptyState
+          title="No result found"
+          subTitle="Something's wrong :("
+          showReset
+        />
       </div>
     );
 
@@ -113,7 +120,18 @@ const StreamContent = () => {
           <section role="section" id="streamContent">
             <div className="streamContent-wrapper">
               <AnnounceCard />
-              <div className=" announce-box">StreamStack</div>
+              {streamItems.length === 0 ? (
+                <div className=" announce-box">Default</div>
+              ) : (
+                streamItems.map((itemS, index) => (
+                  itemS.type === "grade-material"? (
+                    // <StreamCardtoGrade key={itemS.id}/>
+                    <StreamItemCard key={itemS.id} idCard={itemS.id} itemType="grade-material" />
+                  ) : (
+                    <StreamItemCard key={itemS.id} idCard={itemS.id} itemType="detail-material" />
+                  )
+                ))
+              )}
             </div>
           </section>
         </main>

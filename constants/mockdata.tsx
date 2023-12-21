@@ -204,3 +204,38 @@ export const studentGrade = [
     studentEmail:"20127061@gmail.com",
   },
 ];
+
+export const streamDataItems = [
+  {
+    id: "0001",
+    classId: "2",
+    creatorId: "sdasdf1f",
+    type: "direct-message",
+    content: "",
+    daytime:"",
+  },
+  {
+    id: "0002",
+    classId: "2",
+    creatorId: "sdasdf1f",
+    type: "grade-material",
+    content: "",
+    daytime:"",
+  },
+  {
+    id: "0003",
+    classId: "2",
+    creatorId: "sdasdf1f",
+    type: "detail-material",
+    content: "",
+    daytime:"",
+    
+  },
+];
+
+export const streamComments = [
+  {
+    creatorId: "",
+    classId: "",
+  }
+];
