@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Image from "next/image";
@@ -19,6 +19,7 @@ import { MoreVertical } from "lucide-react";
 import { Button } from "../ui/button";
 
 interface streamItemCardProps {
+  idCard: string;
   itemType: string;
 }
 
@@ -31,6 +32,13 @@ const StreamItemCard = (props: streamItemCardProps) => {
     );
   const linkTo =
     props.itemType === "grade-material" ? "/grade" : "/stream-detail";
+  const [isOpen, setIsOpen] = useState(false)
+  const handleOpenDialog = () => {
+    setIsOpen(true);
+  }
+  const handleCloseDialog = () => {
+    setIsOpen(false);
+  }
   return (
     <div className="announce-box-  hover:bg-[#e6f4ea]">
       <div className="announceCard-content">
@@ -62,7 +70,7 @@ const StreamItemCard = (props: streamItemCardProps) => {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-30">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleOpenDialog}>
               Copy Link
             </DropdownMenuItem>
           </DropdownMenuContent>
