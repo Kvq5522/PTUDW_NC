@@ -87,3 +87,47 @@
 .stream-detail-comment {
   border-top: 0.125rem rgb(181, 181, 181) solid;
 }
+.comment-count {
+  display: flex;
+  flex-direction: row;
+  padding-top: 1rem;
+  letter-spacing: 0.01785714em;
+  font-family: "Google Sans", Roboto, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  color: #3c4043;
+}
+.comment-show + .comment-box {
+  padding-top: 1rem;
+}
+.comment-box {
+  padding: 0 0.5rem 1rem 0;
+}
+.comment-box-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+.cmtbavt {
+  /* padding: 0.375rem 0; */
+  align-self: start;
+  margin-right: 1rem; 
+  vertical-align: middle;
+}
+.comment-chatbox {
+  max-width: calc(100% - 4.63rem);
+  border: 0.0625rem solid rgb(218, 220, 224);
+  border-radius: 1.5rem;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin: 0.0625rem;
+}
+.chatbox-send {
+  align-self: flex-end;
+  margin-right: 0.25rem;
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
