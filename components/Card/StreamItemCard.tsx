@@ -61,6 +61,7 @@ const StreamItemCard = (props: streamItemCardProps) => {
             </div>
           </div>
         </Link>
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="announce-actions">

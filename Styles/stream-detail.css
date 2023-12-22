@@ -1,0 +1,89 @@
+.stream-detail-container {
+  display: flex;
+  justify-content: center;
+  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+  background-color: lightgray;
+}
+.stream-detail-icon {
+  height: 2.369rem;
+  width: 2.369rem;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin-right: 1rem;
+  border-radius: 50%;
+
+  flex-shrink: 0;
+  font-size: 1rem;
+
+  line-height: 2rem;
+  text-align: center;
+}
+
+.stream-detail-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  max-width: 47.5rem;
+  min-width: 0;
+}
+
+.stream-detail-header {
+  border-bottom: 1.5px solid rgb(30, 142, 62);
+  margin-bottom: 1rem;
+  position: relative;
+}
+.stream-detail-label {
+  align-items: center;
+  display: flex;
+  margin-bottom: 0.25rem;
+  color: rgb(19, 115, 51);
+  fill: rgb(19, 115, 51);
+  overflow: hidden;
+  word-wrap: break-word;
+  font-size: 2rem;
+  font-weight: 400;
+  line-height: 2.5rem;
+}
+.detail-actions {
+  margin-left: 3rem;
+}
+.stream-detail-sublabel {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  letter-spacing: 0.01428571em;
+  font-size: 0.963rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  color: #3f6369;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+.detail-creator,
+.detail-daytime {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: block;
+}
+.stream-detail-description {
+  min-height: 0rem;
+  margin-bottom: 1rem;
+  overflow: hidden;
+  word-wrap: break-word;
+  letter-spacing: 0.01428571em;
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.25rem;
+  color: #000000;
+}
+.stream-detail-files {
+  min-height: 0rem;
+  display: flex;
+  flex-direction: column;
+}
+.stream-detail-comment {
+  border-top: 0.125rem rgb(181, 181, 181) solid;
+}
