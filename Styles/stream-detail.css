@@ -2,7 +2,6 @@
   display: flex;
   justify-content: center;
   padding: 1.25rem 1.5rem 1.5rem 1.5rem;
-  background-color: lightgray;
 }
 .stream-detail-icon {
   height: 2.369rem;
@@ -30,7 +29,7 @@
 
 .stream-detail-header {
   border-bottom: 1.5px solid rgb(30, 142, 62);
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
   position: relative;
 }
 .stream-detail-label {
@@ -69,6 +68,7 @@
 }
 .stream-detail-description {
   min-height: 0rem;
+  margin-top: 1rem;
   margin-bottom: 1rem;
   overflow: hidden;
   word-wrap: break-word;

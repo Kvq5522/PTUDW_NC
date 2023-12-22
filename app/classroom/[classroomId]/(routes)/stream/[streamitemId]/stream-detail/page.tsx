@@ -3,25 +3,31 @@
 import React, { useState } from "react";
 import "@/Styles/stream-detail.css";
 
+import { useParams } from "next/navigation";
+
 import { RiFileListLine } from "react-icons/ri";
 import { GrScorecard } from "react-icons/gr";
 import { MoreVertical, Dot } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 import { Button } from "@/components/ui/button";
 import CommentArea from "@/components/CommentArea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-interface streamDetailProps {
-  classID: string;
-  itemId: string;
-  itemType: string;
-}
-
-const StreamContentDetail = (props: streamDetailProps) => {
+const StreamContentDetail = () => {
   const [description, setDescription] = useState("");
-
   const [files, setFiles] = useState([]);
+
+  const params = useParams();
+
+  const [itemType, setItemType] = useState("detail-material");
   const itemIcon =
-    props.itemType === "grade-material" ? (
+    itemType === "grade-material" ? (
       <GrScorecard size={20} color="white" />
     ) : (
       <RiFileListLine size={20} color="white" />
@@ -40,11 +46,22 @@ const StreamContentDetail = (props: streamDetailProps) => {
           <div className="stream-detail-header">
             <div className="stream-detail-label">
               <span>GA01 - Authentication (Dealine 10pm Jan 04)</span>
-              <div className="detail-actions">
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <MoreVertical />
-                </Button>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="detail-actions">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full"
+                    >
+                      <MoreVertical />
+                    </Button>
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-30">
+                  <DropdownMenuItem>Copy Link</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
             <div className="stream-detail-sublabel">
               <div className="detail-creator">Lưu Minh Phát</div>
