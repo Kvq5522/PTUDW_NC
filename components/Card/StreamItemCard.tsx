@@ -19,26 +19,28 @@ import { MoreVertical } from "lucide-react";
 import { Button } from "../ui/button";
 
 interface streamItemCardProps {
-  idCard: string;
+  idCard: number;
   itemType: string;
+  title: string;
+  createdAt: string;
+  commentCount: number;
+  classroomId: number;
 }
 
 const StreamItemCard = (props: streamItemCardProps) => {
-  const itemIcon =
-    props.itemType === "grade-material" ? (
-      <GrScorecard size={20} color="white" />
-    ) : (
-      <RiFileListLine size={20} color="white" />
-    );
   const linkTo =
-    props.itemType === "grade-material" ? "/grade" : "/stream-detail";
-  const [isOpen, setIsOpen] = useState(false)
+    props.itemType === "GRADE_REVIEW"
+      ? `/classroom/${props.classroomId}/stream/stream-content?id=${props.idCard}`
+      : props.itemType === "GRADE_ANNOUNCEMENT"
+      ? `/classroom/${props.classroomId}/grade/transcript`
+      : "";
+  const [isOpen, setIsOpen] = useState(false);
   const handleOpenDialog = () => {
     setIsOpen(true);
-  }
+  };
   const handleCloseDialog = () => {
     setIsOpen(false);
-  }
+  };
   return (
     <div className="announce-box-  hover:bg-[#e6f4ea]">
       <div className="announceCard-content">
@@ -48,16 +50,24 @@ const StreamItemCard = (props: streamItemCardProps) => {
               <Avatar className="h-[36px] w-[36px]">
                 <AvatarImage className="object-cover" />
                 <AvatarFallback className=" bg-[#3e9e3e]">
-                  {itemIcon}
+                  {(() => {
+                    switch (props.itemType) {
+                      case "GRADE_REVIEW":
+                        return <GrScorecard size={20} color="white" />;
+                      case "GRADE_ANNOUNCEMENT":
+                        return <RiFileListLine size={20} color="white" />;
+                      default:
+                        return null;
+                    }
+                  })()}
                 </AvatarFallback>
               </Avatar>
             </div>
             <div className="announce-txt">
-              <div className="announce-content">
-                announce-actionsKhánh Nguyễn Huy posted a new material: Midterm
-                project Deadline Nov 15 10pm
+              <div className="announce-content">{props.title}</div>
+              <div className="daytime-created">
+                {new Date(props.createdAt).toDateString()}
               </div>
-              <div className="daytime-created">Dec 21</div>
             </div>
           </div>
         </Link>
@@ -78,7 +88,7 @@ const StreamItemCard = (props: streamItemCardProps) => {
       </div>
 
       <div className="announce-comments hover:underline">
-        <span className="ml-[1.3rem]">1 class comments</span>
+        <span className="ml-[1.3rem]">{props.commentCount} class comments</span>
       </div>
     </div>
   );

@@ -22,7 +22,11 @@ export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
     const accessToken = localStorage.getItem("access-token");
 
     if (!accessToken) {
-      router.push(`/sign-in?callback-url=${encodeURIComponent(pathname + '?' + query.toString())}`);
+      router.push(
+        `/sign-in?callback-url=${encodeURIComponent(
+          pathname + "?" + query.toString()
+        )}`
+      );
       return;
     }
 
@@ -44,13 +48,17 @@ export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
         router.push("/sign-in");
         localStorage.removeItem("access-token");
       }
-    };  
+    };
 
     checkToken();
-  }, [router, pathname]);
+  }, [router, pathname, query]);
 
   if (isLoading)
-    return <div className="w-[100vw] h-[100vh]"><Loader className="w-[100%] h-[100%]" text="Loading..." /></div>;
+    return (
+      <div className="w-[100vw] h-[100vh]">
+        <Loader className="w-[100%] h-[100%]" text="Checking authority..." />
+      </div>
+    );
 
   return <div className="w-[100%] h-[100%]">{props.children}</div>;
 };

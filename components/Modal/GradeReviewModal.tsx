@@ -88,7 +88,7 @@ export const GradeReviewModal: React.FC<GradeReviewModalProps> = ({
       if (res.statusCode === 201) {
         toast.toast({
           title: "Success",
-          description: "Upload student list successfully",
+          description: "Create grade review successfully",
           className: "top-[-85vh] bg-green-500 text-white",
         });
         
