@@ -20,9 +20,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const StreamContentDetail = () => {
-  const [description, setDescription] = useState(
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-  );
+  const [description, setDescription] = useState("");
   const [files, setFiles] = useState([]);
 
   const params = useParams();
@@ -60,10 +58,8 @@ const StreamContentDetail = () => {
                     </Button>
                   </div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-36">
+                <DropdownMenuContent className="w-30">
                   <DropdownMenuItem>Copy Link</DropdownMenuItem>
-                  <DropdownMenuItem>Edit</DropdownMenuItem>
-                  <DropdownMenuItem>Delete</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>

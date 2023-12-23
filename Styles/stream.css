@@ -378,6 +378,7 @@ main {
 }
 .classlink-area input:focus {
   outline: none;
+  box-shadow: none;
   -webkit-box-shadow: none;
 }
 .inv-dialog-content {
