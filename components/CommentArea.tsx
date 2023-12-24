@@ -62,7 +62,13 @@ const CommentArea = () => {
           <div className="comment-show"></div>
         </>
       )} */}
-      <div className="comment-show"></div>
+      <div className="comment-show">
+        {
+          commentItems.map(({commentID, classId, streamitemId, creatorId}) => (
+            <div key={commentID} className="">NOi dung</div>
+          ))
+        }
+      </div>
 
       <div className="comment-box">
         <Form {...form}>
@@ -79,13 +85,14 @@ const CommentArea = () => {
               name="comment"
               render={({ field }) => (
                 <FormItem className="comment-chatbox">
-                  <FormControl>
+                  <FormControl className="min-h-[20px]">
                     <Textarea
                       placeholder="Add class comment"
-                      className="chatbox resize-none"
+                      className="chatbox"
                       {...field}
                     />
                   </FormControl>
+                  
                 </FormItem>
               )}
             />
