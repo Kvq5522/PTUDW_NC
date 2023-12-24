@@ -70,8 +70,6 @@ const StreamContent = () => {
           token: localStorage.getItem("access-token") ?? "",
         });
 
-        console.log(res);
-
         if (res.statusCode === 200) {
           setStreamItems(res.metadata);
         } else {

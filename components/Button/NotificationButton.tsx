@@ -79,6 +79,19 @@ export const NotificationButton: React.FC<ProfileButtonProps> = (
         {Array.isArray(notifications) &&
           notifications.length > 0 &&
           notifications.map((item, index) => {
+            let url = "";
+
+            switch (item.type) {
+              case "GRADE_REVIEW":
+                url = `/classroom/${item.classroom_id}/stream/${item.announcement_id}/stream-detail`;
+                break;
+              case "GRADE_ANNOUNCEMENT":
+                url = `/classroom/${item.classroom_id}/grade/transcript`;
+                break;
+              default:
+                break;
+            }
+
             return (
               <DropdownMenuItem
                 className={cn(
@@ -89,7 +102,7 @@ export const NotificationButton: React.FC<ProfileButtonProps> = (
                 )}
                 key={index}
               >
-                <Link href="/dashboard/user-info" className="w-full">
+                <Link href={url} className="w-full">
                   <h1
                     className={cn(
                       "text-lg break-words w-full border-b-2 mb-2",
@@ -115,9 +128,11 @@ interface Notification {
   to_members: string;
   createdAt: string;
   updatedAt: string;
+  classroom_id: number;
   classroom_fk: {
     name: string;
   };
+  announcement_id: number;
   has_seen: string;
   type: string;
 }

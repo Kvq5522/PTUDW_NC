@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "@/Styles/stream-detail.css";
 
 import { useParams } from "next/navigation";
@@ -18,10 +18,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { AXIOS } from "@/constants/ApiCall";
 
 const StreamContentDetail = () => {
   const [description, setDescription] = useState("");
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState();
 
   const params = useParams();
 
@@ -32,6 +35,29 @@ const StreamContentDetail = () => {
     ) : (
       <RiFileListLine size={20} color="white" />
     );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const res = await AXIOS.GET({
+          uri: `/announcement/get-announcement/${params.classroomId}/detail/${params.streamItemId}`,
+          token: localStorage.getItem("access-token") ?? "",
+        });
+
+        if (res.statusCode && res.statusCode === 200) {
+          setData(res.metadata);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [params.classroomId, params.streamItemId]);
 
   return (
     <div className="stream-detail-container">

@@ -30,7 +30,7 @@ interface streamItemCardProps {
 const StreamItemCard = (props: streamItemCardProps) => {
   const linkTo =
     props.itemType === "GRADE_REVIEW"
-      ? `/classroom/${props.classroomId}/stream/stream-content?id=${props.idCard}`
+      ? `/classroom/${props.classroomId}/stream/${props.idCard}/stream-detail`
       : props.itemType === "GRADE_ANNOUNCEMENT"
       ? `/classroom/${props.classroomId}/grade/transcript`
       : "";

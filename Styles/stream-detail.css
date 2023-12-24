@@ -125,7 +125,7 @@
   margin: 0.0625rem;
 }
 .chatbox-send {
-  align-self: flex-end;
+  /* align-self: flex-end; */
   margin-right: 0.25rem;
   align-items: center;
   display: flex;
