@@ -33,7 +33,7 @@ const CommentArea = () => {
             <AvatarImage className="object-cover" />
             <AvatarFallback className=" bg-[#3e9e3e]"></AvatarFallback>
           </Avatar>
-          <Input className="comment-chatbox" />
+          <Input placeholder="Add class comment ..." className="comment-chatbox" />
           <Button variant="ghost" size="icon" className="chatbox-send">
             <Send />
           </Button>
