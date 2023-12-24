@@ -29,7 +29,22 @@ const formSchema = z.object({
 
 const CommentArea = () => {
   const [dmCount, setDmCount] = useState();
-  const [commentItems, setCommentItems] = useState([]);
+  const [commentItems, setCommentItems] = useState([
+    {
+      commentId: "1203",
+      creatorId: "12e01d",
+      classId: "12",
+      streamitemId: "1212e",
+      comment: "Hello this is for testing",
+    },
+    {
+      commentId: "1203",
+      creatorId: "12e01d",
+      classId: "12",
+      streamitemId: "1212e",
+      comment: "Hello this is for testing",
+    },
+  ]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -63,11 +78,24 @@ const CommentArea = () => {
         </>
       )} */}
       <div className="comment-show">
-        {
-          commentItems.map(({commentID, classId, streamitemId, creatorId}) => (
-            <div key={commentID} className="">NOi dung</div>
-          ))
-        }
+        {commentItems.map(
+          ({ commentId, classId, streamitemId, creatorId, comment }) => (
+            <div key={commentId} className="flex flex-row items-center mt-3">
+              <Avatar className="h-[2rem] w-[2rem] cmtbavt">
+                <AvatarImage className="object-cover" />
+                <AvatarFallback className="bg-[#3e9e3e]"></AvatarFallback>
+              </Avatar>
+              <div className="cmtmain">
+                <div className="cmtlabel text-[14px]">
+                  Luu Minh Phat - <span className="text-[12px] text-gray-600">Dec 24</span>
+                </div>
+                <div className="cmtcontent text-[13px] text-gray-700">
+                  {comment}
+                </div>
+              </div>
+            </div>
+          )
+        )}
       </div>
 
       <div className="comment-box">
@@ -92,7 +120,6 @@ const CommentArea = () => {
                       {...field}
                     />
                   </FormControl>
-                  
                 </FormItem>
               )}
             />
