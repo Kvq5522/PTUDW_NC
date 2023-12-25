@@ -85,7 +85,7 @@ const StreamContentDetail = () => {
         </div>
         <div className="stream-detail-files"></div>
         <div className="stream-detail-comment">
-          <CommentArea />
+          {/* <CommentArea /> */}
         </div>
       </div>
     </div>
