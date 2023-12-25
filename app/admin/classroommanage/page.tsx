@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 
 import { columns, Classroom } from "../classroommanage/column";
-import { DataTable } from "@/components/ui/data-table";
+import { DataTable } from "@/components/ui/classroom-data-table";
 
 async function getClassroom(): Promise<Classroom[]> {
   const res = await fetch(
