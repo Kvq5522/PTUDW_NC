@@ -57,7 +57,8 @@ const GradeTable = (props: gradeTableProps) => {
                 {props.tableHeaders.map((header, _index) => {
                   if (
                     props.compositionID !== "all" &&
-                    header.includes("Grade")
+                    header.includes("Grade") &&
+                    !isStudent
                   ) {
                     return (
                       <TableCell
@@ -88,7 +89,8 @@ const GradeTable = (props: gradeTableProps) => {
                     );
                   } else if (
                     props.compositionID === "all" &&
-                    header.includes("ID")
+                    header.includes("ID") &&
+                    !isStudent
                   ) {
                     return (
                       <TableCell
@@ -124,8 +126,11 @@ const GradeTable = (props: gradeTableProps) => {
                         100 / props.tableHeaders.length
                       }%] min-w-[15rem]`}
                     >
+                      {/*  Check type */}
                       {typeof student[header] === "number"
-                        ? Math.round(student[header] * 100) / 100
+                        ? isNaN(student[header])
+                          ? `Not available`
+                          : Math.round(student[header] * 100) / 100
                         : student[header]}
                     </TableCell>
                   );

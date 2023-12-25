@@ -26,6 +26,8 @@ import Link from "next/link";
 
 import { AXIOS } from "@/constants/ApiCall";
 import { useSearchParams } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -51,8 +53,6 @@ export const SignInForm: React.FC<SignInFormProps> = (
       password: "",
     },
   });
-
-  console.log(decodeURIComponent(callbackUrl??""))
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setLoading(true);

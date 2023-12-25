@@ -20,7 +20,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   const router = useRouter();
 
   return (
-    <div className={cn("h-[100%] w-[100%] flex flex-col gap-2 justify-center items-center ", className)}>
+    <div className={cn("w-full h-full flex flex-col gap-2 justify-center items-center ", className)}>
       <Heading title={title} subTitle={subTitle} center />
 
       <div className="w-48 mt-4">

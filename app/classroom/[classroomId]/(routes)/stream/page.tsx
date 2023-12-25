@@ -16,10 +16,13 @@ import "@/Styles/stream.css";
 import { toast, useToast } from "@/components/ui/use-toast";
 import Loader from "@/components/Loader/Loader";
 import EmptyState from "@/components/EmptyState";
+import { streamDataItems } from "@/constants/mockdata";
+
+import StreamItemCard from "@/components/Card/StreamItemCard";
 
 const StreamContent = () => {
   const isNecessary = false;
-
+  const [streamItems, setStreamItems] = useState<ClassroomAnnouncement[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
@@ -30,6 +33,9 @@ const StreamContent = () => {
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
   const isStudent = userInClass?.member_role < 2;
+  const currentClassroom = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.currentClassroom
+  );
 
   useEffect(() => {
     const fetchCurrentClassroom = async () => {
@@ -56,7 +62,27 @@ const StreamContent = () => {
       }
     };
 
-    fetchCurrentClassroom();
+    const fetchAnnouncements = async () => {
+      try {
+        setLoading(true);
+        const res = await AXIOS.GET({
+          uri: `/announcement/get-classroom-announcement/${params.classroomId}`,
+          token: localStorage.getItem("access-token") ?? "",
+        });
+
+        if (res.statusCode === 200) {
+          setStreamItems(res.metadata);
+        } else {
+          throw new Error(res.data.message);
+        }
+      } catch (error) {
+        console.log("Error: ", error);
+      }
+      setLoading(false);
+    };
+
+    if (!currentClassroom.user.classroom_id) fetchCurrentClassroom();
+    fetchAnnouncements();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -66,7 +92,11 @@ const StreamContent = () => {
   if (error)
     return (
       <div className="w-[100%] h-[100%]">
-        <EmptyState title="No result found" subTitle="Something's wrong :(" showReset />
+        <EmptyState
+          title="No result found"
+          subTitle="Something's wrong :("
+          showReset
+        />
       </div>
     );
 
@@ -109,17 +139,64 @@ const StreamContent = () => {
             </div>
           </div>
         </aside>
-        <main className="stream-main">
-          <section role="section" id="streamContent">
-            <div className="streamContent-wrapper">
-              <AnnounceCard />
-              <div className=" announce-box">StreamStack</div>
-            </div>
-          </section>
-        </main>
+        {loading ? (
+          <Loader text="Loading..." />
+        ) : (
+          <main className="stream-main">
+            {streamItems.length > 0 ? (
+              <section role="section" id="streamContent">
+                <div className="streamContent-wrapper">
+                  <AnnounceCard />
+                  {streamItems.length === 0 ? (
+                    <div className=" announce-box">Default</div>
+                  ) : (
+                    streamItems.map((itemS, index) => (
+                      <StreamItemCard
+                        key={index}
+                        title={itemS.title}
+                        idCard={itemS.id}
+                        itemType={itemS.type}
+                        createdAt={itemS.createdAt}
+                        commentCount={itemS?.comment_count}
+                        classroomId={parseInt(params.classroomId as string)}
+                      />
+                    ))
+                  )}
+                </div>
+              </section>
+            ) : (
+              <div className="w-full h-full">
+                <EmptyState
+                  title="You have no announcements"
+                  subTitle="Let's contact more"
+                  className=""
+                />
+              </div>
+            )}
+          </main>
+        )}
       </div>
     </div>
   );
 };
+
+interface ClassroomAnnouncement {
+  id: number;
+  description: string;
+  title: string;
+  created_by: number;
+  grade_category: number;
+  grade_category_fk: {
+    name: string;
+  };
+  created_by_fk: {
+    first_name: string;
+    last_name: string;
+    avatar: string;
+  };
+  type: "GRADE_REVIEW" | "GRADE_ANOUNCEMENT"; // Adjust if there are more types
+  createdAt: string;
+  comment_count: number;
+}
 
 export default StreamContent;

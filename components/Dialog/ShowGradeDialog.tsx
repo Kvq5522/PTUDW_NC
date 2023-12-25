@@ -3,7 +3,6 @@ import CompositionDialog from "./CompositionDialog";
 import { Button } from "../ui/button";
 import GradeTable from "../Table/GradeTable";
 import { X, Save, FileUp, FileDown } from "lucide-react";
-import * as XLSX from "xlsx";
 import { Input } from "../ui/input";
 
 import Loader from "../Loader/Loader";
@@ -29,6 +28,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
   const [headers, setHeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("Getting data...");
+  const [errorMessage, setErrorMessage] = useState("");
   const [openErrorModal, setOpenErrorModal] = useState(false);
   const [errorModalChildren, setErrorModalChildren] = useState(<></>);
   const [uri, setUri] = useState("");
@@ -287,6 +287,8 @@ const ShowGradeDialog = (props: showGradeProps) => {
         URL.revokeObjectURL(url);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -385,6 +387,8 @@ const ShowGradeDialog = (props: showGradeProps) => {
               "Student Grade",
             ] as never[]);
           }
+        } else {
+          setErrorMessage(res.data.message);
         }
       } catch (error) {
         console.log(error);
@@ -394,22 +398,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
     },
     [props.compositionID]
   );
-
-  useEffect(() => {
-    let _uri = ``;
-
-    if (!props.compositionID) return;
-
-    if (props.compositionID === "all") {
-      _uri = `/grade/get-student-grade-board/${props.classroomId}`;
-      setUri(_uri);
-    } else {
-      _uri = `/grade/get-student-grades-by-composition/${props.classroomId}/${props.compositionID}`;
-      setUri(_uri);
-    }
-
-    fetchData(_uri);
-  }, [props.compositionID, props.classroomId, fetchData]);
 
   const handleInputChange = (
     value: string | number,
@@ -435,6 +423,28 @@ const ShowGradeDialog = (props: showGradeProps) => {
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
   const isStudent = userInClass?.member_role < 2;
+
+  useEffect(() => {
+    let _uri = ``;
+
+    if (!props.compositionID) return;
+
+    if (props.compositionID === "all") {
+      _uri = isStudent
+        ? `/grade/get-student-grades/${props.classroomId}`
+        : `/grade/get-student-grade-board/${props.classroomId}`;
+      setUri(_uri);
+    } else {
+      _uri = `/grade/get-student-grades-by-composition/${props.classroomId}/${props.compositionID}`;
+      setUri(_uri);
+    }
+
+    fetchData(_uri);
+  }, [props.compositionID, props.classroomId, fetchData, isStudent]);
+
+  useEffect(() => {
+    console.log(errorMessage);
+  }, [errorMessage]);
 
   return (
     <CompositionDialog
@@ -512,14 +522,18 @@ const ShowGradeDialog = (props: showGradeProps) => {
       {(!Array.isArray(studentGrades) || !studentGrades.length) && !loading ? (
         <EmptyState
           title={
-            isStudent
-              ? "Your grade hasn't been published"
-              : "You haven't upload student grades"
+            !errorMessage
+              ? isStudent
+                ? "Your grade hasn't been published"
+                : "You haven't upload student grades"
+              : "Error"
           }
           subTitle={
-            isStudent
-              ? "Please wait until your teacher announces you"
-              : "Please download templates and upload your data"
+            !errorMessage
+              ? isStudent
+                ? "Please wait until your teacher announces you"
+                : "Please download templates and upload your data"
+              : errorMessage
           }
         />
       ) : (

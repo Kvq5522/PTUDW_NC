@@ -2,7 +2,23 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   value: {
-    userInfo: {},
+    userInfo: {
+      id: 0,
+      created_at: "",
+      updated_at: "",
+      email: "",
+      first_name: "",
+      last_name: "",
+      is_activated: true,
+      is_banned: false,
+      authorization: 0,
+      student_id: null,
+      phone_number: "",
+      address: "",
+      age: 0,
+      gender: "",
+      avatar: "",
+    },
   },
 };
 
