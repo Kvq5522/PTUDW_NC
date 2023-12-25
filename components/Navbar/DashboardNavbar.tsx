@@ -44,12 +44,12 @@ const Navbar = () => {
   );
 
   return (
-    <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">
+    <div className="flex gap-10 lg:gap-20 justify-between items-center pl-3 py-1 pr-9 bg-white">
       <CreateClassModal />
       <JoinClassModal />
       <FirstNavbarSection />
 
-      <div className="flex flex-shrink-0 md:gap-2 justify-end ">
+      <div className="flex flex-shrink-0 md:gap-3 justify-end ">
         {isAdmin ? (
           <Link
             href="/admin"

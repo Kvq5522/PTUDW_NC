@@ -26,7 +26,7 @@ const DashBoardSideBar = () => {
   const { isLargeOpen, isSmallOpen, close } = useSidebarContext();
   const [stateTest, setStateTest] = useState("");
   return (
-    <>
+    <div>
       <aside
         className={`sticky top-0 overflow-y-auto scrollbar-hidden pb-4 flex flex-col ml-1  ${
           isLargeOpen ? "lg:hidden" : "lg:flex"
@@ -69,13 +69,15 @@ const DashBoardSideBar = () => {
       {isSmallOpen && (
         <div
           onClick={close}
-          className="lg:hidden fixed inset-0 z-[999] bg-secondary-dark opacity-50"
+          className="lg:hidden fixed inset-0 z-[999] bg-secondary-dark opacity-30 bg-slate-600"
         />
       )}
       <aside
-        className={`w-56 lg:sticky absolute top-0 overflow-y-auto scrollbar-hidden pb-4 flex-col gap-2 px-2  ${
+        className={`w-[15rem] h-full lg:sticky absolute top-0 overflow-y-auto scrollbar-hidden pb-4 flex-col gap-2 px-2 border-r-[1px] border-[#e3e6e9] ${
           isLargeOpen ? "lg:flex" : "lg:hidden"
-        } ${isSmallOpen ? "flex z-[999] bg-white max-h-screen " : "hidden"}`}
+        } ${
+          isSmallOpen ? "flex z-[999] bg-white max-h-screen" : "hidden"
+        }`}
       >
         <div className=" lg:hidden pt-2 pb-4 sticky top-0 bg-white">
           <FirstNavbarSection />
@@ -122,7 +124,7 @@ const DashBoardSideBar = () => {
           <LargeSidebarItem Icon={Settings} title="Setting" url="/dashboard" />
         </LargeSidebarSection>
       </aside>
-    </>
+    </div>
   );
 };
 

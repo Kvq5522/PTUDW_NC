@@ -6,8 +6,8 @@ const Logo = () => {
     <div>
       <Image
         src="/images/logo/google-classroom.svg"
-        width={50}
-        height={50}
+        width={40}
+        height={40}
         alt="logo"
       />
     </div>

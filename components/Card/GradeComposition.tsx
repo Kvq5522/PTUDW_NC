@@ -96,15 +96,15 @@ const GradeComposition = (props: gradeCompositionProps) => {
               // + (props.status === "private" ? "bg-red-700" : "bg-blue-700")
             }
             ref={provided.innerRef}
-            // {...provided.dragHandleProps}
+            // {... provided.dragHandleProps}
             {...provided.draggableProps}
           >
             <div className={`dndl-item-wrapper`}>
-              {!isStudent && (
+              {!isStudent &&  (
                 <div
                   ref={provided.innerRef}
                   {...provided.dragHandleProps}
-                  className="mr-1"
+                  className="mr-1 hidden lg:block"
                 >
                   <GripHorizontal />
                 </div>

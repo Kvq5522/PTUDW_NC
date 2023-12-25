@@ -37,6 +37,10 @@ const StreamContent = () => {
     (state) => state.classroomInfoReducer.value?.currentClassroom
   );
 
+  const classList = useAppSelector(
+    (state) => state.classroomInfoReducer.value?.classroomList
+  )
+
   useEffect(() => {
     const fetchCurrentClassroom = async () => {
       setLoading(true);
@@ -106,7 +110,9 @@ const StreamContent = () => {
         <div className="wrapper">
           <div className="stream-header-image"></div>
           <div className="stream-header-label">
-            <div className="main-label">CLASSROOM&lsquo;S NAME</div>
+            <div className="main-label">
+              CLASSROOM&lsquo;S NAME
+            </div>
             <div className="sub-label">Advanced Web Programming</div>
             {!isStudent && isNecessary ? (
               <div className="change-theme-btn">

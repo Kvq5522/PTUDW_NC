@@ -13,6 +13,12 @@ import { useAppSelector } from "@/redux/store";
 import { useToast } from "../ui/use-toast";
 import { Modal } from "../Modal/Modal";
 
+type StudentGrade = {
+  name: string;
+  member_id: any;
+  email: any;
+};
+
 interface showGradeProps {
   id: string;
   typeTable: string;
@@ -24,7 +30,7 @@ interface showGradeProps {
 
 const ShowGradeDialog = (props: showGradeProps) => {
   const [isSave, setIsSave] = useState(false);
-  const [studentGrades, setStudentGrades] = useState([]);
+  const [studentGrades, setStudentGrades] = useState<any[]>([]);
   const [headers, setHeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("Getting data...");
@@ -60,7 +66,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
           title: "Error",
           description: "Student ID is duplicated",
           variant: "destructive",
-          className: "top-[-85vh]",
+          className: "top-[-80vh]",
         });
 
         return;
@@ -125,7 +131,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
               props.compositionID === "all"
                 ? "Update student Ids successfully"
                 : "Update student grades successfully",
-            className: "top-[-85vh] bg-green-500 text-white",
+            className: "top-[-80vh] bg-green-500 text-white",
           });
 
           const failedData = res.metadata.failed;
@@ -156,7 +162,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
           title: "Error",
           description: error.message ?? "Something went wrong",
           variant: "destructive",
-          className: "top-[-85vh]",
+          className: "top-[-80vh]",
         });
       } finally {
         setLoading(false);
@@ -174,7 +180,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
         title: "Error",
         description: "Please choose a file",
         variant: "destructive",
-        className: "top-[-85vh]",
+        className: "top-[-80vh]",
       });
       return;
     }
@@ -423,6 +429,20 @@ const ShowGradeDialog = (props: showGradeProps) => {
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
   const isStudent = userInClass?.member_role < 2;
+  // const members = useAppSelector(
+  //   (state) => state.classroomInfoReducer.value?.currentClassroom?.members
+  // );
+  // const studentList = members
+  //   .filter((member: any) => member.member_role < 2)
+  //   .map((student: any) => ({
+  //     name: `${student.member_id_fk.first_name} ${student.member_id_fk.last_name}`,
+  //     member_id: student.member_id,
+  //     email: student.member_id_fk.email,
+  //   }));
+  // useEffect(() => {
+  //   setStudentGrades(studentList)
+  //   // console.log(studentList);
+  // });
 
   useEffect(() => {
     let _uri = ``;

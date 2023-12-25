@@ -155,7 +155,7 @@ const DragNDropBox = (props: dndProps) => {
         title: "Error",
         description: "Please choose a file",
         variant: "destructive",
-        className: "top-[-85vh]",
+        className: "top-[-80vh]",
       });
     }
 
@@ -178,7 +178,7 @@ const DragNDropBox = (props: dndProps) => {
           toast.toast({
             title: "Success",
             description: "Upload student list successfully",
-            className: "top-[-85vh] bg-green-500 text-white",
+            className: "top-[-80vh] bg-green-500 text-white",
           });
 
           const failedData = res.metadata.failed;
@@ -206,7 +206,7 @@ const DragNDropBox = (props: dndProps) => {
           title: "Error",
           description: "Please ensure your file matches the template",
           variant: "destructive",
-          className: "top-[-85vh]",
+          className: "top-[-80vh]",
         });
       } finally {
         setLoading(false);
@@ -246,7 +246,7 @@ const DragNDropBox = (props: dndProps) => {
           title: "Error",
           description: "Something went wrong",
           variant: "destructive",
-          className: "top-[-85vh]",
+          className: "top-[-80vh]",
         });
       } finally {
         setLoading(false);
@@ -262,7 +262,7 @@ const DragNDropBox = (props: dndProps) => {
         title: "Error",
         description: "Please check grade scale again",
         variant: "destructive",
-        className: "top-[-85vh]",
+        className: "top-[-80vh]",
       });
       return;
     }
@@ -293,7 +293,7 @@ const DragNDropBox = (props: dndProps) => {
           toast.toast({
             title: "Success",
             description: "Save grade compositions successfully",
-            className: "top-[-85vh] bg-green-500 text-white",
+            className: "top-[-80vh] bg-green-500 text-white",
           });
         } else {
           throw new Error(res.message as string);
@@ -303,7 +303,7 @@ const DragNDropBox = (props: dndProps) => {
           title: "Error",
           description: error.message ?? "Something went wrong",
           variant: "destructive",
-          className: "top-[-85vh]",
+          className: "top-[-80vh]",
         });
       } finally {
         setLoading(false);
@@ -390,7 +390,7 @@ const DragNDropBox = (props: dndProps) => {
           toast.toast({
             title: "Success",
             description: "Class created successfully",
-            className: "top-[-85vh] bg-green-500 text-white",
+            className: "top-[-80vh] bg-green-500 text-white",
           });
 
           const metadata = res.metadata;
@@ -412,7 +412,7 @@ const DragNDropBox = (props: dndProps) => {
           title: "Error",
           description: "Something went wrong",
           variant: "destructive",
-          className: "top-[-85vh]",
+          className: "top-[-80vh]",
         });
       } finally {
         setLoading(false);
