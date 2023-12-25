@@ -15,7 +15,6 @@ import { Button } from "@/components/ui/button";
 
 import { ProfileButton } from "../Button/ProfileButton";
 
-<<<<<<< HEAD
 import {
   Barcode,
   LayoutDashboard,
@@ -23,9 +22,6 @@ import {
   Plus,
   ShieldCheck,
 } from "lucide-react";
-=======
-import { Menu, Plus, ShieldCheck } from "lucide-react";
->>>>>>> d3ab0afbc336de86434bf55224a30ad48905e114
 import { useSidebarContext } from "../Contexts/SideBarContext";
 import { useAppSelector } from "@/redux/store";
 import { useCreateClassModal } from "@/hooks/create-class-modal";
@@ -53,7 +49,6 @@ const Navbar = () => {
       <JoinClassModal />
       <FirstNavbarSection />
 
-<<<<<<< HEAD
       <div className="flex flex-shrink-0 md:gap-2 justify-end ">
         {isAdmin ? (
           <Link
@@ -72,15 +67,6 @@ const Navbar = () => {
             Dashboard
           </Link>
         )}
-=======
-      <div className="flex flex-shrink-0 gap-2 md:gap-4 justify-end">
-        <Link
-          className="flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
-          href="/admin"
-        >
-          <ShieldCheck />
-        </Link>
->>>>>>> d3ab0afbc336de86434bf55224a30ad48905e114
 
         <NotificationButton />
 
