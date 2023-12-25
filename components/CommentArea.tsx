@@ -19,83 +19,67 @@ import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 import { Bold, Italic, Underline } from "lucide-react";
 
+import { format } from "date-fns";
+import { enUS } from "date-fns/locale";
+
 const formSchema = z.object({
-  commentId: z.string(),
-  creatorId: z.string(),
-  streamitemId: z.string(),
-  classId: z.string(),
-  comment: z.string(),
+  comment: z.string().min(1),
 });
 
-const CommentArea = () => {
-  const [dmCount, setDmCount] = useState();
-  const [commentItems, setCommentItems] = useState([
-    {
-      commentId: "1203",
-      creatorId: "12e01d",
-      classId: "12",
-      streamitemId: "1212e",
-      comment: "Hello this is for testing",
-    },
-    {
-      commentId: "1203",
-      creatorId: "12e01d",
-      classId: "12",
-      streamitemId: "1212e",
-      comment: "Hello this is for testing",
-    },
-  ]);
+interface CommentAreaProps {
+  onSubmitComment: (data: string) => void;
+  loading: boolean;
+  data: Comment[];
+  userAvatar: string;
+}
 
+const CommentArea = (props: CommentAreaProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      commentId: "",
-      creatorId: "",
-      streamitemId: "",
-      classId: "",
       comment: "",
     },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values);
+    props.onSubmitComment(values.comment);
+    form.reset();
   }
 
   return (
     <div className="comment-container">
       <div className="comment-count">
         <Users className="h-5 w-5" />
-        {commentItems.length === 0 ? <></> : <>{commentItems.length}</>}
+        {props.data.length === 0 ? <></> : <>{props.data.length}</>}
         class comment
       </div>
 
-      {/* {commentItems.length === 0 ? (
-        <></>
-      ) : (
-        <>
-          <div className="comment-show"></div>
-        </>
-      )} */}
       <div className="comment-show">
-        {commentItems.map(
-          ({ commentId, classId, streamitemId, creatorId, comment }) => (
-            <div key={commentId} className="flex flex-row items-center mt-3">
-              <Avatar className="h-[2rem] w-[2rem] cmtbavt">
-                <AvatarImage className="object-cover" />
-                <AvatarFallback className="bg-[#3e9e3e]"></AvatarFallback>
-              </Avatar>
-              <div className="cmtmain">
-                <div className="cmtlabel text-[14px]">
-                  Luu Minh Phat - <span className="text-[12px] text-gray-600">Dec 24</span>
-                </div>
-                <div className="cmtcontent text-[13px] text-gray-700">
-                  {comment}
-                </div>
+        {props.data.map((item, index) => (
+          <div key={index} className="flex flex-row items-center mt-3">
+            <Avatar className="h-[2rem] w-[2rem] cmtbavt">
+              <AvatarImage
+                className="object-cover"
+                src={item.user_id_fk.avatar}
+              />
+              <AvatarFallback className="bg-[#3e9e3e]"></AvatarFallback>
+            </Avatar>
+            <div className="cmtmain">
+              <div className="cmtlabel text-[14px]">
+                {`${item?.user_id_fk?.first_name}  ${item?.user_id_fk?.last_name}`}{" "}
+                -{" "}
+                <span className="text-[12px] text-gray-600">
+                  {format(new Date(item.createdAt), "MMM d - HH:mm", {
+                    locale: enUS,
+                  })}
+                </span>
+              </div>
+              <div className="cmtcontent text-[13px] text-gray-700 whitespace-pre-line">
+                {item?.description}
               </div>
             </div>
-          )
-        )}
+          </div>
+        ))}
       </div>
 
       <div className="comment-box">
@@ -105,9 +89,10 @@ const CommentArea = () => {
             className="comment-box-wrapper"
           >
             <Avatar className="h-[2rem] w-[2rem] cmtbavt">
-              <AvatarImage className="object-cover" />
+              <AvatarImage className="object-cover" src={props.userAvatar} />
               <AvatarFallback className="bg-[#3e9e3e]"></AvatarFallback>
             </Avatar>
+
             <FormField
               control={form.control}
               name="comment"
@@ -117,21 +102,29 @@ const CommentArea = () => {
                     <Textarea
                       placeholder="Add class comment"
                       className="chatbox"
+                      disabled={props.loading}
                       {...field}
                     />
                   </FormControl>
+
+                  <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button
-              type="submit"
-              variant="ghost"
-              size="icon"
-              className="chatbox-send top-[-1.5rem]"
-            >
-              <Send />
-            </Button>
+            {props.loading ? (
+              <div className="mx-2 animate-spin rounded-full h-4 w-4 border-t-2 border-b-3 border-gray-900"></div>
+            ) : (
+              <Button
+                type="submit"
+                variant="ghost"
+                size="icon"
+                className="chatbox-send top-[-1.5rem]"
+                disabled={props.loading}
+              >
+                <Send />
+              </Button>
+            )}
           </form>
         </Form>
       </div>
@@ -140,3 +133,16 @@ const CommentArea = () => {
 };
 
 export default CommentArea;
+
+interface Comment {
+  id: number;
+  description: string;
+  user_id: number;
+  user_id_fk: {
+    first_name: string;
+    last_name: string;
+    avatar: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+}

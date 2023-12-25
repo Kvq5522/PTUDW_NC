@@ -169,7 +169,7 @@ const StreamContent = () => {
                 <EmptyState
                   title="You have no announcements"
                   subTitle="Let's contact more"
-                  className="justify-center items-start"
+                  className=""
                 />
               </div>
             )}

@@ -6,6 +6,14 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Loader from "@/components/Loader/Loader";
 
 import { AXIOS } from "@/constants/ApiCall";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { resetUserInfo } from "@/redux/slices/user-info-slice";
+import {
+  resetClasslist,
+  resetClassroomInfo,
+  resetCurrentClassroom,
+} from "@/redux/slices/classroom-info-slice";
 
 interface GuardProps {
   children: React.ReactNode;
@@ -16,6 +24,7 @@ export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
   const pathname = usePathname();
   const query = useSearchParams();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     setIsLoading(true);
@@ -42,16 +51,20 @@ export const AuthGuard: React.FC<GuardProps> = (props: GuardProps) => {
           return;
         }
 
-        router.push("/sign-in");
-        localStorage.removeItem("access-token");
+        throw new Error("Token is invalid");
       } catch (error) {
-        router.push("/sign-in");
+        dispatch(resetUserInfo());
+        dispatch(resetClasslist());
+        dispatch(resetClassroomInfo());
+        dispatch(resetCurrentClassroom());
+
         localStorage.removeItem("access-token");
+        router.push("/sign-in");
       }
     };
 
     checkToken();
-  }, [router, pathname, query]);
+  }, [router, pathname, query, dispatch]);
 
   if (isLoading)
     return (

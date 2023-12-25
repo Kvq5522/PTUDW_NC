@@ -62,6 +62,7 @@ export const NotificationButton: React.FC<ProfileButtonProps> = (
     };
 
     fetchNotifications();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -70,7 +71,7 @@ export const NotificationButton: React.FC<ProfileButtonProps> = (
         <div className="relative" onClick={() => setNewNoti(false)}>
           <Bell />
 
-          <div className="absolute z-[1000] rounded-lg bg-red-500 w-2 h-2 top-[-3px] right-[-3px]"></div>
+          <div className="absolute z-[10] rounded-lg bg-red-500 w-2 h-2 top-[-3px] right-[-3px]"></div>
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[65vw] sm:w-[25vw] md:w-[18vw] overflow-auto">

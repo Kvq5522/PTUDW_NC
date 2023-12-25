@@ -427,6 +427,8 @@ const DragNDropBox = (props: dndProps) => {
   );
   const isStudent = userInClass?.member_role < 2;
 
+  console.log("Is Student:", isStudent);
+
   useEffect(() => {
     calcSum();
     setIsSave(false);

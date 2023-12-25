@@ -50,7 +50,7 @@ export default function AuthLayout({
                             currentRoute === "stream" ? "border-b-[3px] border-green-300" : ""
                           )}
                         >
-                          Announcement
+                          Stream
                         </Link>
 
                         <Link
