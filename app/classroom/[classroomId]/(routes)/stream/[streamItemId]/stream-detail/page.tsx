@@ -25,6 +25,8 @@ import EmptyState from "@/components/EmptyState";
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
 import { useAppSelector } from "@/redux/store";
+import { useGradeReassessmentModal } from "@/hooks/grade-reassessment-modal";
+import GradeReassessmentModal from "@/components/Modal/GradeReassessmentModal";
 
 const StreamContentDetail = () => {
   const [files, setFiles] = useState([]);
@@ -32,9 +34,12 @@ const StreamContentDetail = () => {
   const [loadingComment, setLoadingComment] = useState(false);
   const [detail, setDetail] = useState<ReviewDetail["detail"]>();
   const [comments, setComments] = useState<ReviewDetail["comments"]>([]);
+  const gradeReassessmentModal = useGradeReassessmentModal();
   const params = useParams();
 
-  const currentUser = useAppSelector((state) => state.userInfoReducer.value?.userInfo);
+  const currentUser = useAppSelector(
+    (state) => state.userInfoReducer.value?.userInfo
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,7 +146,11 @@ const StreamContentDetail = () => {
                   </div>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-30">
-                  <DropdownMenuItem>Copy Link</DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <div onClick={() => gradeReassessmentModal.onOpen()}>
+                      Reassess Student Grade
+                    </div>
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -178,10 +187,18 @@ const StreamContentDetail = () => {
                 <span className="space-y-2">
                   <p className="text-lg">Student Information</p>
 
-                  <p className="ml-2">Student ID: {detail?.student_id}</p>
-
                   <p className="ml-2">
                     Student Email: {detail?.student_id_fk?.email}
+                  </p>
+
+                  {detail?.account_student_id != detail?.student_id && (
+                    <p className="ml-2 text-red-500">
+                      Account mapped Student ID: {detail?.account_student_id}
+                    </p>
+                  )}
+
+                  <p className="ml-2">
+                    Student ID in Grade List: {detail?.student_id}
                   </p>
 
                   <p className="ml-2">Current Grade: {detail?.current_grade}</p>
@@ -208,6 +225,15 @@ const StreamContentDetail = () => {
           />
         </div>
       </div>
+
+      <GradeReassessmentModal
+        classroomId={parseInt(params.classroomId as string)}
+        gradeCategoryName={detail.grade_category_fk.name}
+        studentId={detail.student_id}
+        studentName={`${detail.created_by_fk.first_name} ${detail.created_by_fk.last_name}`}
+        email={detail.student_id_fk.email}
+        gradeCategory={detail.grade_category}
+      />
     </div>
   );
 };
@@ -234,7 +260,8 @@ interface ReviewDetail {
       last_name: string;
       avatar: string;
     };
-    student_id: number;
+    account_student_id: string;
+    student_id: string;
     student_id_fk: {
       email: string;
     };

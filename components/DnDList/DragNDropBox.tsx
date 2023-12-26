@@ -120,9 +120,12 @@ const DragNDropBox = (props: dndProps) => {
 
   const handleNameChange = (id: string, newName: string) => {
     setItemList((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id ? { ...item, name: newName } : item
-      )
+      prevItems.map((item) => {
+        console.log(
+          item.id == parseInt(id) ? { ...item, name: newName } : item
+        );
+        return item.id === parseInt(id) ? { ...item, name: newName } : item;
+      })
     );
   };
 
@@ -377,6 +380,7 @@ const DragNDropBox = (props: dndProps) => {
             classroom_id: parseInt(props.classroomId),
             grade_compositions: [
               {
+                id: "",
                 name: values.name,
                 grade_percent: values.scale,
                 is_finalized: values.status,
@@ -395,12 +399,11 @@ const DragNDropBox = (props: dndProps) => {
 
           const metadata = res.metadata;
 
-          console.log(metadata);
-
           const newItem = {
             id: metadata.id,
             name: metadata.name,
             grade_percent: metadata.grade_percent,
+            is_finalized: metadata.is_finalized,
             status: metadata.is_finalized,
           };
 
@@ -426,8 +429,6 @@ const DragNDropBox = (props: dndProps) => {
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
   const isStudent = userInClass?.member_role < 2;
-
-  console.log("Is Student:", isStudent);
 
   useEffect(() => {
     calcSum();

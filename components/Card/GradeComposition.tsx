@@ -73,7 +73,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
 
     setNewName(inputText);
     setError("");
-    props.onNameChange(props.id, newName);
+    props.onNameChange(props.id, inputText);
     handleCloseDialog();
   };
 
