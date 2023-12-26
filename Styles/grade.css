@@ -6,7 +6,6 @@
   height: 80%;
   width: calc(100% - 2 * 0.5rem);
   z-index: auto;
-  background-color: white;
   overflow: hidden;
 }
 
@@ -36,7 +35,8 @@
 .dnd-list-container {
   z-index: 2;
   width: 436px;
-  margin-top: 1rem;
+  max-height: 400px;
+  margin-top: 2rem;
   margin-bottom: 1rem;
   display: block;
   /* border: 2px solid rgb(212, 212, 212); */
@@ -211,11 +211,12 @@
 .table-dialog {
   min-width: 100%;
   width: 100vh;
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgb(255, 255, 255);
+  background-color: rgb(253, 250, 250);
   overflow: hidden;
   margin: 0;
   padding: 0;

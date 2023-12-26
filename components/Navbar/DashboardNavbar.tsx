@@ -15,7 +15,13 @@ import { Button } from "@/components/ui/button";
 
 import { ProfileButton } from "../Button/ProfileButton";
 
-import { Menu, Plus, ShieldCheck } from "lucide-react";
+import {
+  Barcode,
+  LayoutDashboard,
+  Menu,
+  Plus,
+  ShieldCheck,
+} from "lucide-react";
 import { useSidebarContext } from "../Contexts/SideBarContext";
 import { useAppSelector } from "@/redux/store";
 import { useCreateClassModal } from "@/hooks/create-class-modal";
@@ -29,6 +35,8 @@ type PageNavbarSectionProps = {
 };
 
 const Navbar = () => {
+  const isAdmin = true;
+  const [user, isUser] = useState(false);
   const createClassModal = useCreateClassModal();
   const joinClassModal = useJoinClassModal();
   const avatar = useAppSelector(
@@ -36,18 +44,29 @@ const Navbar = () => {
   );
 
   return (
-    <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">
+    <div className="flex gap-10 lg:gap-20 justify-between items-center pl-3 py-1 pr-9 bg-white">
       <CreateClassModal />
       <JoinClassModal />
       <FirstNavbarSection />
 
-      <div className="flex flex-shrink-0 gap-2 md:gap-4 justify-end">
-        <Link
-          className="flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
-          href="/admin"
-        >
-          <ShieldCheck />
-        </Link>
+      <div className="flex flex-shrink-0 md:gap-3 justify-end ">
+        {isAdmin ? (
+          <Link
+            href="/admin"
+            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded flex cursor-default select-none items-center text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
+          >
+            <ShieldCheck />
+            Admin
+          </Link>
+        ) : (
+          <Link
+            href="/dashboard"
+            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded flex cursor-default select-none items-center text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
+          >
+            <LayoutDashboard />
+            Dashboard
+          </Link>
+        )}
 
         <NotificationButton />
 

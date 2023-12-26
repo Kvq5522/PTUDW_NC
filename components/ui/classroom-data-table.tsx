@@ -86,48 +86,13 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between">
         <div className="flex items-center py-4">
           <Input
-            placeholder="Filter email..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
+            placeholder="Filter class name"
+            value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
             onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
+              table.getColumn("name")?.setFilterValue(event.target.value)
             }
             className="max-w-sm"
           />
-        </div>
-        <div className="pl-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline">Add Admin</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
-              <DialogHeader>
-                <DialogTitle>Add admin</DialogTitle>
-                <DialogDescription>
-                  Please input the admin email
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex items-center space-x-2">
-                <div className="grid flex-1 gap-2">
-                  <Label htmlFor="link" className="sr-only">
-                    Admin
-                  </Label>
-                  <Input
-                    id="link"
-                    defaultValue="Hahuynhduchuy@gmail.com"
-                    readOnly
-                  />
-                </div>
-              </div>
-              <DialogFooter className="sm:justify-start">
-                <DialogClose asChild>
-                  <Button type="button" variant="secondary">
-                    Close
-                  </Button>
-                </DialogClose>
-                <Button type="button">Add</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
         </div>
 
         <DropdownMenu>

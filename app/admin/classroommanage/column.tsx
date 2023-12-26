@@ -1,12 +1,4 @@
 "use client";
-import { Input } from "@/components/ui/input";
-
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
-import { Button } from "@/components/ui/button";
-
-import { Checkbox } from "@/components/ui/checkbox";
-
 import {
   Select,
   SelectContent,
@@ -14,20 +6,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+import { Checkbox } from "@/components/ui/checkbox";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-
-export type Account = {
+export type Classroom = {
   id: string;
   name: string;
   email: string;
-  image: string;
-  Mapping: string;
   status: string;
 };
 
-export const columns: ColumnDef<Account>[] = [
+export const columns: ColumnDef<Classroom>[] = [
   {
     id: "select",
     header: ({ table }) => {
@@ -54,6 +48,20 @@ export const columns: ColumnDef<Account>[] = [
     enableHiding: false,
   },
   {
+    accessorKey: "name",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Class Name
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+  },
+  {
     accessorKey: "email",
     header: ({ column }) => {
       return (
@@ -67,32 +75,7 @@ export const columns: ColumnDef<Account>[] = [
       );
     },
   },
-  {
-    accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Name
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      );
-    },
-  },
 
-  {
-    accessorKey: "mapping",
-    header: "Mapping",
-    cell: ({ row }) => {
-      return (
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Input type="email" id="email" placeholder="Student Mapping Email" />
-        </div>
-      );
-    },
-  },
   {
     header: "Status",
     id: "status",
@@ -100,11 +83,11 @@ export const columns: ColumnDef<Account>[] = [
       return (
         <Select>
           <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Unban" />
+            <SelectValue placeholder="Inactive" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="Ban">Ban</SelectItem>
-            <SelectItem value="Unban">Unban</SelectItem>
+            <SelectItem value="Active">Ban</SelectItem>
+            <SelectItem value="Inactive">Unban</SelectItem>
           </SelectContent>
         </Select>
       );
