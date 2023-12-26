@@ -36,11 +36,14 @@ const StreamContent = () => {
   const currentClassroom = useAppSelector(
     (state) => state.classroomInfoReducer.value?.currentClassroom
   );
-
-  const classList = useAppSelector(
+  console.log(currentClassroom)
+  const classroomList = useAppSelector(
     (state) => state.classroomInfoReducer.value?.classroomList
   );
-
+  console.log(params);
+  const classList: Array<any> = Array.isArray(classroomList) ? classroomList : [];
+  const currclr = classList.find(item => item.classroom_id.toString() === params.classroomId);
+  console.log(currclr);
   useEffect(() => {
     const fetchCurrentClassroom = async () => {
       setLoading(true);
@@ -110,8 +113,10 @@ const StreamContent = () => {
         <div className="wrapper">
           <div className="stream-header-image"></div>
           <div className="stream-header-label">
-            <div className="main-label">CLASSROOM&lsquo;S NAME</div>
-            <div className="sub-label">Advanced Web Programming</div>
+            <div className="main-label">
+              {currclr.classroom_id_fk.name}
+            </div>
+            <div className="sub-label"></div>
             {!isStudent && isNecessary ? (
               <div className="change-theme-btn">
                 <Button variant="link" className="text-white text-xs">

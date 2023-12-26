@@ -38,8 +38,8 @@ const GradeTable = (props: gradeTableProps) => {
   const isStudent = userInClass?.member_role < 2;
 
   return (
-    <Table className="h-[100vh]">
-      <TableHeader className="bg-slate-300">
+    <Table className="h-[89vh]">
+      <TableHeader className="bg-slate-300 h-[10%]">
         <TableRow>
           {props.tableHeaders.map((header, index) => (
             <TableHead key={uuidv4()} className="min-w-[13rem]">
@@ -48,11 +48,11 @@ const GradeTable = (props: gradeTableProps) => {
           ))}
         </TableRow>
       </TableHeader>
-      <TableBody className="overflow-y-auto">
+      <TableBody className="overflow-y-auto h-[90%]">
         {Array.isArray(props.data) &&
           props.data.length > 0 &&
           props.data.map((student, index) => (
-            <TableRow key={`${index}`} className="w-full">
+            <TableRow key={`${index}`} className="w-full h-3"> 
               {props.tableHeaders.map((header, _index) => {
                 if (
                   props.compositionID !== "all" &&
@@ -62,7 +62,7 @@ const GradeTable = (props: gradeTableProps) => {
                   return (
                     <TableCell
                       key={`${index} - ${_index}`}
-                      className={`font-medium whitespace-normal h-3 w-[${
+                      className={`font-medium whitespace-normal w-[${
                         100 / props.tableHeaders.length
                       }%] min-w-[15rem]`}
                     >

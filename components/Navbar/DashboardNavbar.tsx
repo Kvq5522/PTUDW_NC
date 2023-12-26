@@ -44,7 +44,7 @@ const Navbar = () => {
   );
 
   return (
-    <div className="flex gap-10 lg:gap-20 justify-between items-center pl-3 py-1 pr-9 bg-white">
+    <div className="flex gap-10 lg:gap-20 justify-between items-center pl-3 py-[0.3rem] pr-9 bg-white">
       <CreateClassModal />
       <JoinClassModal />
       <FirstNavbarSection />
@@ -53,7 +53,7 @@ const Navbar = () => {
         {isAdmin ? (
           <Link
             href="/admin"
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded flex cursor-default select-none items-center text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
+            className="bg-red-700 hover:bg-red-500 text-slate-300 hover:text-white ease-in-out font-bold py-1 px-3 border border-red-700 rounded flex cursor-default select-none items-center text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
           >
             <ShieldCheck />
             Admin
