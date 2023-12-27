@@ -14,6 +14,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Value } from "@radix-ui/react-select";
+import { useState } from "react";
+import { InputForm } from "@/components/ui/editTableCell";
+import { SelectForm } from "@/components/ui/editTableSelect";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -85,29 +89,12 @@ export const columns: ColumnDef<Account>[] = [
   {
     accessorKey: "mapping",
     header: "Mapping",
-    cell: ({ row }) => {
-      return (
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Input type="email" id="email" placeholder="Student Mapping Email" />
-        </div>
-      );
-    },
+
+    cell: InputForm,
   },
   {
     header: "Status",
     id: "status",
-    cell: ({ row }) => {
-      return (
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Unban" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Ban">Ban</SelectItem>
-            <SelectItem value="Unban">Unban</SelectItem>
-          </SelectContent>
-        </Select>
-      );
-    },
+    cell: SelectForm,
   },
 ];
