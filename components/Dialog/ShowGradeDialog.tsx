@@ -29,8 +29,8 @@ interface showGradeProps {
 }
 
 const ShowGradeDialog = (props: showGradeProps) => {
-  const [isSave, setIsSave] = useState(false);
   const [studentGrades, setStudentGrades] = useState<any[]>([]);
+  const [filteredStudentGrades, setFilteredStudentGrades] = useState<any[]>([]);
   const [headers, setHeaders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState("Getting data...");
@@ -39,6 +39,13 @@ const ShowGradeDialog = (props: showGradeProps) => {
   const [errorModalChildren, setErrorModalChildren] = useState(<></>);
   const [uri, setUri] = useState("");
   const toast = useToast();
+
+  const [searchInput, setSearchInput] = useState("");
+
+  const handleDialog = () => {
+    setSearchInput("");
+    props.onHandleDialog("tableDialog", "all");
+  };
 
   const handleSaveTable = () => {
     if (
@@ -405,6 +412,22 @@ const ShowGradeDialog = (props: showGradeProps) => {
     [props.compositionID]
   );
 
+  useEffect(() => {
+    console.log(studentGrades, searchInput);
+    const filtered = studentGrades.filter((grade) =>
+      grade["Student Name"].toLowerCase().includes(searchInput.toLowerCase()) ||
+      grade["Student ID"].toLowerCase().includes(searchInput.toLowerCase()) || 
+      grade["Email"].toLowerCase().includes(searchInput.toLowerCase())
+    );
+    console.log(filtered);
+
+    if (searchInput === "" || filtered === null) {
+      setFilteredStudentGrades(studentGrades);
+    } else {
+      setFilteredStudentGrades(filtered);
+    }
+  }, [searchInput, studentGrades]);
+
   const handleInputChange = (
     value: string | number,
     compareValue: string,
@@ -429,20 +452,6 @@ const ShowGradeDialog = (props: showGradeProps) => {
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
   const isStudent = userInClass?.member_role < 2;
-  // const members = useAppSelector(
-  //   (state) => state.classroomInfoReducer.value?.currentClassroom?.members
-  // );
-  // const studentList = members
-  //   .filter((member: any) => member.member_role < 2)
-  //   .map((student: any) => ({
-  //     name: `${student.member_id_fk.first_name} ${student.member_id_fk.last_name}`,
-  //     member_id: student.member_id,
-  //     email: student.member_id_fk.email,
-  //   }));
-  // useEffect(() => {
-  //   setStudentGrades(studentList)
-  //   // console.log(studentList);
-  // });
 
   useEffect(() => {
     let _uri = ``;
@@ -483,17 +492,19 @@ const ShowGradeDialog = (props: showGradeProps) => {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => props.onHandleDialog("tableDialog", "all")}
+          onClick={handleDialog}
           className="h-7 w-7 hover:bg-red-500"
           type="button"
         >
           <X />
         </Button>
         <input
+          id="search"
           type="text"
-          value={props.compositionID}
+          placeholder="Enter (Student's Name, ID, Email)"
+          value={searchInput}
           className="h-full w-[50%] rounded-sm"
-          readOnly
+          onChange={(e) => setSearchInput(e.target.value)}
         />
         <div className="flex flex-row gap-1 items-center">
           {props.compositionID !== "all" && (
@@ -563,7 +574,7 @@ const ShowGradeDialog = (props: showGradeProps) => {
               compositionID={props.compositionID}
               onInputChange={handleInputChange}
               tableHeaders={headers}
-              data={studentGrades}
+              data={filteredStudentGrades}
             />
           </div>
         </>

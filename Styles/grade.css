@@ -34,7 +34,7 @@
 
 .dnd-list-container {
   z-index: 2;
-  width: 436px;
+  width: 499px;
   max-height: 400px;
   margin-top: 2rem;
   margin-bottom: 1rem;
@@ -55,7 +55,7 @@
 .dndl-content {
   display: block;
   position: relative;
-  height: 84%;
+  height: 74%;
   width: 100%;
   padding: 6px 9px;
   border: none;
@@ -108,11 +108,26 @@
   align-items: center;
   text-align: center;
 }
+.dndshare > button {
+  text-align: center;
+}
+.dndshare > svg {
+  justify-self: end;
+  align-items: end;
+}
 .dndliwi {
   height: 100%;
+  max-width: 70px;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+} 
+.dndliwi > input[type="number"]::-webkit-inner-spin-button,
+.dndliwi > input[type="number"]::-webkit-outer-spin-button {
+  margin: 0;
+  padding: 0;
+  opacity: 0.9;
 }
 .dndl-item-actions {
   display: flex;
@@ -124,9 +139,19 @@
 
 /* --------------------------------------------------------- */
 
+.dndl-header {
+  background-color: #4cb464;
+  height: 11%;
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
 .dndl-tools {
-  background-color: #22c55e;
-  height: 16%;
+  background-color: #4cb464;
+  height: 15%;
   display: flex;
   position: relative;
   align-items: center;
@@ -144,15 +169,20 @@
 }
 .dndl-tools-actions > button {
   border: none;
-  background-color: #bebebe;
+  background-color: #d9d9d9;
 }
 .addIPlustbtn:hover {
   color: #0866ff;
   background-color: white;
   transition: 0.1s ease-in all;
 }
+.saveTbtn:hover {
+  color: #24a667;
+  background-color: white;
+  transition: 0.1s ease-in all;
+}
 .createTbtn:hover {
-  color: #8b5cf6;
+  color: #8358e9;
   background-color: white;
   transition: 0.1s ease-in all;
 }
@@ -231,7 +261,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: #22c55e;
+  background-color: #4cb464;
   padding: 0.3rem;
   height: 8%;
   width: 100%;
