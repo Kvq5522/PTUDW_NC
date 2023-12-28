@@ -11,6 +11,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 import { Checkbox } from "@/components/ui/checkbox";
+import { SelectClassForm } from "@/components/ui/editSelectClass";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -79,18 +80,6 @@ export const columns: ColumnDef<Classroom>[] = [
   {
     header: "Status",
     id: "status",
-    cell: ({ row }) => {
-      return (
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Inactive" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Active">Ban</SelectItem>
-            <SelectItem value="Inactive">Unban</SelectItem>
-          </SelectContent>
-        </Select>
-      );
-    },
+    cell: SelectClassForm,
   },
 ];

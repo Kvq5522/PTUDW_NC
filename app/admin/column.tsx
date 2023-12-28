@@ -17,7 +17,7 @@ import {
 import { Value } from "@radix-ui/react-select";
 import { useState } from "react";
 import { InputForm } from "@/components/ui/editTableCell";
-import { SelectForm } from "@/components/ui/editTableSelect";
+import { SelectAccountForm } from "@/components/ui/editTableSelect";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -57,6 +57,7 @@ export const columns: ColumnDef<Account>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+
   {
     accessorKey: "email",
     header: ({ column }) => {
@@ -86,15 +87,16 @@ export const columns: ColumnDef<Account>[] = [
     },
   },
 
+  // column.tsx
   {
     accessorKey: "mapping",
     header: "Mapping",
-
     cell: InputForm,
   },
+
   {
     header: "Status",
     id: "status",
-    cell: SelectForm,
+    cell: SelectAccountForm,
   },
 ];

@@ -27,7 +27,7 @@ const FormSchema = z.object({
   }),
 });
 
-export function SelectAccountForm() {
+export function SelectClassForm() {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
@@ -52,12 +52,12 @@ export function SelectAccountForm() {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Unban" />
+                    <SelectValue />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  <SelectItem value="true">Ban</SelectItem>
-                  <SelectItem value="false">Unban</SelectItem>
+                  <SelectItem value="true">Disable</SelectItem>
+                  <SelectItem value="false">Able</SelectItem>
                 </SelectContent>
               </Select>
               <FormMessage />

@@ -16,7 +16,7 @@ export default async function Accounts() {
   return (
     <section className="py-8">
       <div className="container">
-        <h1 className="text-3xl font-bold">All Acounts</h1>
+        <h1 className="text-3xl font-bold">All Accounts</h1>
 
         <DataTable columns={columns} data={data} />
       </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { columns, Classroom } from "../classroommanage/column";
 import { DataTable } from "@/components/ui/classroom-data-table";
@@ -16,7 +16,7 @@ export default async function Classroom() {
   return (
     <section className="py-8">
       <div className="container">
-        <h1 className="text-3xl font-bold">All Classroom</h1>
+        <h1 className="text-3xl font-bold">All Classrooms</h1>
 
         <DataTable columns={columns} data={data} />
       </div>
