@@ -3,6 +3,7 @@ import Image from "next/image";
 import LandingPageDashboard from "@/components/Navbar/LandingPageDashboard";
 import Link from "next/link";
 import { Button } from "@mui/material";
+import Carousel from "@/components/ui/carousel";
 
 const page = () => {
   return (
@@ -43,6 +44,7 @@ const page = () => {
           </div>
         </div>
       </section>
+      <Carousel />
     </main>
   );
 };

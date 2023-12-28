@@ -104,7 +104,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                 <div
                   ref={provided.innerRef}
                   {...provided.dragHandleProps}
-                  className="mr-1 hidden lg:block"
+                  className="block"
                 >
                   <GripHorizontal />
                 </div>
@@ -124,6 +124,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   min={0}
                   readOnly={isStudent}
                 />
+                <span className="text-[20px] font-bold ml-[1px]">%</span>
               </div>
 
               <div className="dndshare">
@@ -137,7 +138,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   >
                     <SelectTrigger
                       placeholder="Select state"
-                      className="w-[80px] h-[25px]"
+                      className="w-[70px] h-[25px] p-0 pl-1"
                     >
                       <SelectValue />
                     </SelectTrigger>

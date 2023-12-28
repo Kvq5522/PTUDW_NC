@@ -55,6 +55,7 @@ export const columns: ColumnDef<Account>[] = [
     enableSorting: false,
     enableHiding: false,
   },
+
   {
     accessorKey: "email",
     header: ({ column }) => {
@@ -111,6 +112,7 @@ export const columns: ColumnDef<Account>[] = [
       );
     },
   },
+
   {
     header: "Status",
     id: "status",

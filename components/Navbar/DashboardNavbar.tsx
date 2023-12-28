@@ -51,7 +51,7 @@ const Navbar = () => {
   const isAtAdminRoute = pathname.includes("admin");
 
   return (
-    <div className="flex gap-10 lg:gap-20 justify-between items-center pl-3 py-1 pr-9 bg-white">
+    <div className="flex gap-10 lg:gap-20 justify-between items-center pl-3 py-[0.3rem] pr-9 bg-white">
       <CreateClassModal />
       <JoinClassModal />
       <FirstNavbarSection />

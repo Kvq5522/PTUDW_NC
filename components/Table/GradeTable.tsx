@@ -38,8 +38,8 @@ const GradeTable = (props: gradeTableProps) => {
   const isStudent = userInClass?.member_role < 2;
 
   return (
-    <Table className="h-[100vh]">
-      <TableHeader className="bg-slate-300">
+    <Table className="h-[89vh]">
+      <TableHeader className="bg-slate-300 h-[10%]">
         <TableRow>
           {props.tableHeaders.map((header, index) => (
             <TableHead key={uuidv4()} className="min-w-[13rem]">
@@ -48,11 +48,28 @@ const GradeTable = (props: gradeTableProps) => {
           ))}
         </TableRow>
       </TableHeader>
-      <TableBody className="overflow-y-auto">
+      {props.data?.length === 0 ? (
+        <TableRow
+          key={`empty`}
+          className="w-full max-h-[3rem] p-0 bg-slate-100 hover:bg-slate-200"
+        >
+          <TableCell colSpan={props.tableHeaders.length}>
+            
+              Can&rsquo;t found student
+            
+          </TableCell>
+        </TableRow>
+      ) : (
+        <></>
+      )}
+      <TableBody className="overflow-y-auto h-[90%] bg-white">
         {Array.isArray(props.data) &&
           props.data.length > 0 &&
           props.data.map((student, index) => (
-            <TableRow key={`${index}`} className="w-full">
+            <TableRow
+              key={`${index}`}
+              className="w-full max-h-[3rem] p-0 bg-slate-100 hover:bg-slate-200"
+            >
               {props.tableHeaders.map((header, _index) => {
                 if (
                   props.compositionID !== "all" &&
@@ -62,11 +79,12 @@ const GradeTable = (props: gradeTableProps) => {
                   return (
                     <TableCell
                       key={`${index} - ${_index}`}
-                      className={`font-medium whitespace-normal h-3 w-[${
+                      className={`font-medium whitespace-normal p-0 m-0 max-h-[4rem] items-center w-[${
                         100 / props.tableHeaders.length
                       }%] min-w-[15rem]`}
                     >
                       <input
+                        className="h-9 w-[6rem] px-1 ml-[0.9rem] text-center"
                         type="number"
                         min={0}
                         max={10}
@@ -94,7 +112,7 @@ const GradeTable = (props: gradeTableProps) => {
                   return (
                     <TableCell
                       key={`${index} - ${_index}`}
-                      className={`font-medium whitespace-normal h-3 w-[${
+                      className={`font-medium whitespace-normal max-h-[4rem] w-[${
                         100 / props.tableHeaders.length
                       }%] min-w-[15rem]`}
                     >
@@ -121,7 +139,7 @@ const GradeTable = (props: gradeTableProps) => {
                 return (
                   <TableCell
                     key={`${index} - ${_index}`}
-                    className={`font-medium whitespace-normal h-3 w-[${
+                    className={`font-medium whitespace-normal max-h-[4rem] w-[${
                       100 / props.tableHeaders.length
                     }%] min-w-[15rem]`}
                   >
