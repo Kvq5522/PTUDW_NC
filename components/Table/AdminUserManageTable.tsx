@@ -43,20 +43,29 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Label } from "@/components/ui/label";
 import TooltipPro from "../TooltipPro";
 import { useAppSelector } from "@/redux/store";
 import Select from "react-select";
+import { useToast } from "../ui/use-toast";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   type: string;
+  onUpdate: (data: any[]) => void;
+  onDownload: () => void;
+  onUpload: (file: File) => void;
+  loading: boolean;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   type,
+  onUpdate,
+  onDownload,
+  onUpload,
+  loading,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -64,6 +73,7 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState({});
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const toast = useToast();
 
   const dataFromRedux: { [key: string]: TData[] } = {
     manage_user: useAppSelector(
@@ -93,14 +103,41 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
   });
 
-  const updateUsers = async () => {
+  const updateUsers = () => {
     const selectedRows = table
       .getSelectedRowModel()
       .rows.map((row) => row.original);
 
-    if (selectedRows.length === 0) console.log("No row selected");
+    if (selectedRows.length === 0) {
+      toast.toast({
+        title: "Error",
+        description: "Please select at least 1 row to update!",
+        variant: "destructive",
+        className: "top-[-85vh]",
+      });
+      return;
+    }
 
-    console.log(selectedRows);
+    onUpdate(selectedRows);
+  };
+
+  const handleUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    // Update the status property of each item to "public"
+    const file = event.target.files?.[0];
+
+    if (!file) {
+      toast.toast({
+        title: "Error",
+        description: "Please choose a file",
+        variant: "destructive",
+        className: "top-[-80vh]",
+      });
+
+      return;
+    }
+
+    onUpload(file as File);
+    event.target.value = "";
   };
 
   return (
@@ -168,8 +205,7 @@ export function DataTable<TData, TValue>({
             <Button
               variant="outline"
               size="icon"
-              // onClick={handleDownload}
-              // disabled={loading}
+              onClick={onDownload}
               type="button"
             >
               <FileDown />
@@ -180,16 +216,16 @@ export function DataTable<TData, TValue>({
             <Button
               variant="outline"
               size="icon"
-              onClick={() => document.getElementById("studentInput")?.click()}
+              onClick={() => document.getElementById("uploadUser")?.click()}
             >
               <FileUp />
               <Input
-                id="studentInput"
+                id="uploadUser"
                 type="file"
                 accept=".xlsx"
                 style={{ display: "none" }}
-                // onChange={handleUpload}
-                // disabled={loading}
+                onChange={handleUpload}
+                disabled={loading}
                 multiple={false}
               />
             </Button>

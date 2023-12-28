@@ -11,7 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Copy, FileDown, FileUp } from "lucide-react";
+import { Copy } from "lucide-react";
 import {
   ColumnDef,
   flexRender,
@@ -24,7 +24,6 @@ import {
   getSortedRowModel,
   VisibilityState,
   RowSelection,
-  Filters,
 } from "@tanstack/react-table";
 
 import {
@@ -45,18 +44,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
-import TooltipPro from "../TooltipPro";
-import { useAppSelector } from "@/redux/store";
-import Select from "react-select";
+import { useToast } from "../ui/use-toast";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
-  type: string;
+  data: TData[];
+  onUpdate: (data: any[]) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
-  type,
+  data,
+  onUpdate,
+  
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -64,18 +64,10 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState({});
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-
-  const dataFromRedux: { [key: string]: TData[] } = {
-    manage_user: useAppSelector(
-      (state) => state.adminPropReducer.value.users
-    ) as TData[],
-    manage_classroom: useAppSelector(
-      (state) => state.adminPropReducer.value.classrooms
-    ) as TData[],
-  };
+  const toast = useToast();
 
   const table = useReactTable({
-    data: dataFromRedux[type],
+    data,
     columns,
     onSortingChange: setSorting,
     state: {
@@ -93,14 +85,22 @@ export function DataTable<TData, TValue>({
     onRowSelectionChange: setRowSelection,
   });
 
-  const updateUsers = async () => {
+  const updateClassroom = () => {
     const selectedRows = table
       .getSelectedRowModel()
       .rows.map((row) => row.original);
 
-    if (selectedRows.length === 0) console.log("No row selected");
+    if (selectedRows.length === 0) {
+      toast.toast({
+        title: "Error",
+        description: "Please select at least 1 row to update!",
+        variant: "destructive",
+        className: "top-[-85vh]",
+      });
+      return;
+    }
 
-    console.log(selectedRows);
+    onUpdate(selectedRows);
   };
 
   return (
@@ -109,96 +109,19 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center justify-between">
         <div className="flex items-center py-4">
           <Input
-            placeholder="Filter email or name..."
+            placeholder="Filter class name, owner name, owner email"
             onChange={(event) => {
               const filterValue = event.target.value;
-
               table.setGlobalFilter(filterValue);
             }}
             className="max-w-sm"
           />
-
-          {type === "manage_user" && (
-            <div className="pl-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Add Admin</Button>
-                </DialogTrigger>
-                <DialogContent className="w-[50%] md:w-[30%]">
-                  <DialogHeader>
-                    <DialogTitle>Add admin</DialogTitle>
-                    <DialogDescription>
-                      Please input the admin email
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="flex items-center space-x-2">
-                    <div className="grid flex-1 gap-2">
-                      <Label htmlFor="link" className="sr-only">
-                        Admin
-                      </Label>
-                      <Select
-                        options={table.getRowModel().rows.map((row) => {
-                          const data = row.original as any;
-                          return {
-                            value: data.id,
-                            label: data.email,
-                          };
-                        })}
-                        isDisabled={false}
-                        isMulti={true}
-                      ></Select>
-                    </div>
-                  </div>
-                  <DialogFooter className="sm:justify-start">
-                    <DialogClose asChild>
-                      <Button type="button" variant="secondary">
-                        Close
-                      </Button>
-                    </DialogClose>
-                    <Button type="button">Add</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          )}
         </div>
 
         <div className="flex gap-2">
-          <TooltipPro description="Download Student List">
-            <Button
-              variant="outline"
-              size="icon"
-              // onClick={handleDownload}
-              // disabled={loading}
-              type="button"
-            >
-              <FileDown />
-            </Button>
-          </TooltipPro>
-
-          <TooltipPro description="Upload Student List">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => document.getElementById("studentInput")?.click()}
-            >
-              <FileUp />
-              <Input
-                id="studentInput"
-                type="file"
-                accept=".xlsx"
-                style={{ display: "none" }}
-                // onChange={handleUpload}
-                // disabled={loading}
-                multiple={false}
-              />
-            </Button>
-          </TooltipPro>
-
-          <Button type="button" onClick={updateUsers}>
+          <Button type="button" onClick={updateClassroom}>
             Update
           </Button>
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className="ml-auto">
@@ -224,10 +147,9 @@ export function DataTable<TData, TValue>({
                   );
                 })}
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu>{" "}
         </div>
       </div>
-
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -248,7 +170,6 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
-
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
@@ -258,9 +179,10 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
-                      {flexRender(cell.column.columnDef.cell, {
-                        ...cell.getContext(),
-                      })}
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -306,21 +228,3 @@ export function DataTable<TData, TValue>({
     </div>
   );
 }
-
-const useInputPlugin = () => {
-  const [inputs, setInputs] = useState({});
-
-  const handleInputChange = (newData: any, rowId: any) => {
-    setInputs((prevInputs) => ({ ...prevInputs, [rowId]: newData }));
-  };
-
-  return {
-    plugins: {
-      cellEdit: {
-        mode: "click",
-        onCellEditCommit: (newData: any, rowId: any) =>
-          handleInputChange(newData, rowId),
-      },
-    },
-  };
-};

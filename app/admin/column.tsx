@@ -14,17 +14,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { setUserById } from "@/redux/slices/admin-slice";
 
 export type Account = {
-  id: string;
+  id: number;
+  first_name: string;
+  last_name: string;
   name: string;
   email: string;
-  image: string;
-  Mapping: string;
-  status: string;
+  authorization: number;
+  student_id: string;
+  is_banned: boolean;
 };
 
 export const columns: ColumnDef<Account>[] = [
@@ -81,14 +83,30 @@ export const columns: ColumnDef<Account>[] = [
       );
     },
   },
-
   {
-    accessorKey: "mapping",
-    header: "Mapping",
+    accessorKey: "authorization",
+    header: ({ column }) => {
+      return <div>Authorization</div>;
+    },
     cell: ({ row }) => {
       return (
-        <div className="grid w-full max-w-sm items-center gap-1.5">
-          <Input type="email" id="email" placeholder="Student Mapping Email" />
+        <div className="grid w-full max-w-[12rem] items-center gap-1.5">
+          {row.original.authorization < 4 ? "User" : "Admin"}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "student_id",
+    header: "Student ID",
+    cell: ({ row }) => {
+      return (
+        <div className="grid w-full max-w-[12rem] items-center gap-1.5">
+          <MyInput
+            value={row.original.student_id}
+            id={row.original.id}
+            field={"student_id"}
+          />
         </div>
       );
     },
@@ -98,16 +116,62 @@ export const columns: ColumnDef<Account>[] = [
     id: "status",
     cell: ({ row }) => {
       return (
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Unban" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Ban">Ban</SelectItem>
-            <SelectItem value="Unban">Unban</SelectItem>
-          </SelectContent>
-        </Select>
+        <MySelect
+          value={String(row.original.is_banned)}
+          id={row.original.id}
+          field="is_banned"
+        />
       );
     },
   },
 ];
+
+interface Props {
+  value: string;
+  id: number;
+  field: string;
+}
+
+const MyInput: React.FC<Props> = ({ value, id, field }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+
+    dispatch(setUserById({ id, field, data: newValue }));
+  };
+
+  return (
+    <Input
+      type="text"
+      id="student_id"
+      value={value ?? ""}
+      onChange={handleInputChange}
+      minLength={0}
+      maxLength={10}
+      placeholder={value ?? "Not Assigned"}
+    />
+  );
+};
+
+const MySelect: React.FC<Props> = ({ value, id, field }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleSelectChange = (value: string) => {
+    const newValue = value === "true";
+
+    dispatch(setUserById({ id, field, data: newValue }));
+  };
+
+  return (
+    <Select defaultValue={value} onValueChange={handleSelectChange}>
+      <SelectTrigger className="w-[180px]">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="true">Is Banned</SelectItem>
+        <SelectItem value="false">Is Not Banned</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+};

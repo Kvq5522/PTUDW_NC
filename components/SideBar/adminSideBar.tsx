@@ -47,7 +47,7 @@ const AdminSideBar = () => {
         <SmallSidebarItem
           Icon={Users}
           title="teach"
-          url="/admin/classroommanage"
+          url="/admin/classroom-manage"
         ></SmallSidebarItem>
         <div className="border"></div>
 
@@ -80,7 +80,7 @@ const AdminSideBar = () => {
             <LargeSidebarItem
               Icon={Users}
               title="Teaching"
-              url="/admin/classroommanage"
+              url="/admin/classroom-manage"
             />
           </LargeSidebarSection>
           <hr></hr>

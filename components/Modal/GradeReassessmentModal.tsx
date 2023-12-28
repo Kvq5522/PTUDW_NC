@@ -41,6 +41,7 @@ interface GradeReassessmentModalProps {
   studentName: string;
   studentId: string;
   email: string;
+  grade: number;
 }
 
 export const GradeReassessmentModal: React.FC<GradeReassessmentModalProps> = ({
@@ -50,6 +51,7 @@ export const GradeReassessmentModal: React.FC<GradeReassessmentModalProps> = ({
   studentName,
   studentId,
   email,
+  grade,
 }) => {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
@@ -58,7 +60,7 @@ export const GradeReassessmentModal: React.FC<GradeReassessmentModalProps> = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      new_grade: 0,
+      new_grade: grade,
     },
   });
 
@@ -81,15 +83,14 @@ export const GradeReassessmentModal: React.FC<GradeReassessmentModalProps> = ({
         },
       });
 
-      if (res.statusCode === 201) {
+      if (res.statusCode && res.statusCode === 200) {
         toast.toast({
           title: "Success",
-          description: "Create grade review successfully",
+          description: "Reassess Grade Successfully!",
           className: "top-[-85vh] bg-green-500 text-white",
         });
 
         gradeReassessmentModal.onClose();
-        setValue("new_grade", 0);
       } else {
         throw new Error(res.data.message);
       }
@@ -120,7 +121,9 @@ export const GradeReassessmentModal: React.FC<GradeReassessmentModalProps> = ({
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="flex gap-2">
-                  <span className="pt-1">{"What's your new assessed grade?"}</span>
+                  <span className="pt-1">
+                    {"What's your new assessed grade?"}
+                  </span>
                 </FormLabel>
                 <FormControl>
                   <Input {...field} type="number" min={0} max={10} />

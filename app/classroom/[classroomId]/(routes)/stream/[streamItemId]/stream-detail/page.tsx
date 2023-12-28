@@ -233,6 +233,7 @@ const StreamContentDetail = () => {
         studentName={`${detail.created_by_fk.first_name} ${detail.created_by_fk.last_name}`}
         email={detail.student_id_fk.email}
         gradeCategory={detail.grade_category}
+        grade={detail.expected_grade}
       />
     </div>
   );

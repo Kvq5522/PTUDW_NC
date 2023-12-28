@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar/DashboardNavbar";
 import CreateClassModal from "@/components/Modal/CreateClassModal";
 import JoinClassModal from "@/components/Modal/JoinClassModal";
 import AdminSideBar from "../../components/SideBar/adminSideBar";
+import { AdminAuthGuard } from "@/components/Guard/AdminAuthGuard";
 
 export default function AuthLayout({
   children,
@@ -13,7 +14,7 @@ export default function AuthLayout({
 }) {
   return (
     <div className="min-w-screen min-h-screen">
-      <AuthGuard>
+      <AdminAuthGuard>
         <SidebarProvider>
           <div className="flex flex-col">
             <Navbar></Navbar>
@@ -31,7 +32,7 @@ export default function AuthLayout({
             </div>
           </div>
         </SidebarProvider>
-      </AuthGuard>
+      </AdminAuthGuard>
     </div>
   );
 }

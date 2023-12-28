@@ -4,7 +4,7 @@ import ActionButton from "./action-button";
 
 const LandingPageDashboard = () => {
   return (
-    <div className="flex justify-between items-center px-10 border-b">
+    <div className="flex justify-between items-center py-2 px-10 border-b">
       <Logo />
       <ActionButton />
     </div>

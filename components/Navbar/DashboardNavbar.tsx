@@ -29,19 +29,26 @@ import { useJoinClassModal } from "@/hooks/join-class-modal";
 import CreateClassModal from "../Modal/CreateClassModal";
 import JoinClassModal from "../Modal/JoinClassModal";
 import { NotificationButton } from "../Button/NotificationButton";
+import { usePathname } from "next/navigation";
 
 type PageNavbarSectionProps = {
   hidden?: boolean;
 };
 
 const Navbar = () => {
-  const isAdmin = true;
-  const [user, isUser] = useState(false);
   const createClassModal = useCreateClassModal();
   const joinClassModal = useJoinClassModal();
   const avatar = useAppSelector(
     (state: any) => state.userInfoReducer.value?.userInfo?.avatar
   );
+  const pathname = usePathname();
+
+  const userInfo = useAppSelector(
+    (state) => state.userInfoReducer.value?.userInfo
+  );
+
+  const isAdmin = userInfo?.authorization === 4;
+  const isAtAdminRoute = pathname.includes("admin");
 
   return (
     <div className="flex gap-10 lg:gap-20 justify-between items-center pl-3 py-1 pr-9 bg-white">
@@ -50,18 +57,20 @@ const Navbar = () => {
       <FirstNavbarSection />
 
       <div className="flex flex-shrink-0 md:gap-3 justify-end ">
-        {isAdmin ? (
+        {isAdmin && !isAtAdminRoute && (
           <Link
             href="/admin"
-            className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-red-700 rounded flex cursor-default select-none items-center text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
+            className="bg-red-500 hover:bg-red-700 text-white gap-1 py-2 px-4 border border-red-700 rounded flex cursor-default select-none items-center text-sm outline-none data-[state=open]:bg-accent"
           >
             <ShieldCheck />
-            Admin
+            Admin Dashboard
           </Link>
-        ) : (
+        )}
+
+        {isAdmin && isAtAdminRoute && (
           <Link
             href="/dashboard"
-            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 border border-green-700 rounded flex cursor-default select-none items-center text-sm outline-none focus:bg-accent data-[state=open]:bg-accent"
+            className="bg-green-500 hover:bg-green-700 text-white py-2 px-4 border border-green-700 rounded flex cursor-default select-none items-center text-sm outline-none data-[state=open]:bg-accent"
           >
             <LayoutDashboard />
             Dashboard

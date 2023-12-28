@@ -160,6 +160,7 @@ const DragNDropBox = (props: dndProps) => {
         variant: "destructive",
         className: "top-[-80vh]",
       });
+      return;
     }
 
     const uploadData = async () => {
@@ -243,6 +244,7 @@ const DragNDropBox = (props: dndProps) => {
         link.setAttribute("download", "student-list-template.xlsx");
         document.body.appendChild(link);
         link.click();
+        link.parentNode?.removeChild(link);
       } catch (error) {
         console.log(error);
         toast.toast({
