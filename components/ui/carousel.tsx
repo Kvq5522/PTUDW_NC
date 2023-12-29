@@ -18,7 +18,7 @@ const images = [
   {
     url: "/images/logo/Phat.jpg",
     alt: "Logo",
-    text: "Lưu Minh Phát - 20127528",
+    text: "Lưu Minh Phát - 20127061",
   },
 ];
 
