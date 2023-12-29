@@ -29,9 +29,7 @@ import MultiValueInput from "@/components/Input/MultipleValueInput";
 import { useParams } from "next/navigation";
 
 const formSchema = z.object({
-  member_emails: z.array(z.string().email()).refine((val) => val.length > 0, {
-    message: "Please fill in at least 1 email",
-  }),
+  member_emails: z.array(z.string().email()).min(1),
 });
 
 interface InviteTeacherModalProps {
@@ -46,12 +44,16 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
   const [loading, setLoading] = useState(false);
   const params = useParams();
   const toast = useToast();
+  const [openErrorModal, setOpenErrorModal] = useState(false);
+  const [errorModalChildren, setErrorModalChildren] = useState<React.ReactNode>(
+    <></>
+  );
   const inviteTeacherModal = useInviteTeacherModal();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      member_emails: [""],
+      member_emails: [],
     },
   });
 
@@ -79,23 +81,39 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
           description: "Send invitations successfully",
           className: "top-[-85vh] bg-green-500 text-white",
         });
-        inviteTeacherModal.onClose();
+
+        const failedData = res.metadata.failed;
+        if (failedData.length > 0) {
+          setOpenErrorModal(true);
+          setErrorModalChildren(
+            <div className="space-y-2">
+              {failedData.map((item: any, index: number) => (
+                <div key={index} className="flex items-center justify-between">
+                  <p>User Email: {item.email}</p>
+                  <p>Reason: {item.reason}</p>
+                </div>
+              ))}
+            </div>
+          );
+        } else {
+          inviteTeacherModal.onClose();
+          setValue("member_emails", []);
+          clearErrors("member_emails");
+        }
       }
 
       if (res && (res.status >= 400 || res.statusCode >= 400)) {
-        console.log(res);
-        throw new Error(res.message);
+        throw new Error(res.message ?? res.data.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.toast({
         title: "Error",
-        description: "Something went wrong",
+        description: error.message ?? "Something went wrong",
         variant: "destructive",
         className: "top-[-85vh]",
       });
     } finally {
       setLoading(false);
-      setValue("member_emails", [""]);
     }
   };
 
@@ -194,6 +212,16 @@ export const InviteTeacherModal: React.FC<InviteTeacherModalProps> = ({
             </div>
           </form>
         </Form>
+
+        {/* Modal shows error when update */}
+        <Modal
+          title="Fail list"
+          description="The following data is failed to update, please check again"
+          isOpen={openErrorModal}
+          onClose={() => setOpenErrorModal(false)}
+        >
+          {errorModalChildren}
+        </Modal>
       </div>
     </Modal>
   );

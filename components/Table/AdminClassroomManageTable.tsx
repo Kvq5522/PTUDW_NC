@@ -45,18 +45,22 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useToast } from "../ui/use-toast";
+import Loader from "../Loader/Loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   onUpdate: (data: any[]) => void;
+  loading: boolean;
+  loadingMessage?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   onUpdate,
-  
+  loading,
+  loadingMessage = "Loading...",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -104,7 +108,14 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div>
+    <div className="relative">
+      {loading && (
+        <Loader
+          text={loadingMessage}
+          className="absolute z-[1000] w-full h-full opacity-70 bg-white"
+        />
+      )}
+
       {/*table*/}
       <div className="flex items-center justify-between">
         <div className="flex items-center py-4">

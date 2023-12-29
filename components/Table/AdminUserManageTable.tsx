@@ -49,6 +49,7 @@ import TooltipPro from "../TooltipPro";
 import { useAppSelector } from "@/redux/store";
 import Select from "react-select";
 import { useToast } from "../ui/use-toast";
+import Loader from "../Loader/Loader";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -57,6 +58,7 @@ interface DataTableProps<TData, TValue> {
   onDownload: () => void;
   onUpload: (file: File) => void;
   loading: boolean;
+  loadingMessage?: string;
 }
 
 export function DataTable<TData, TValue>({
@@ -66,6 +68,7 @@ export function DataTable<TData, TValue>({
   onDownload,
   onUpload,
   loading,
+  loadingMessage = "Loading...",
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -73,6 +76,8 @@ export function DataTable<TData, TValue>({
   const [rowSelection, setRowSelection] = useState({});
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const [adminInfo, setAdminInfo] = useState<AddAdminInfo[]>([]);
   const toast = useToast();
 
   const dataFromRedux: { [key: string]: TData[] } = {
@@ -141,7 +146,14 @@ export function DataTable<TData, TValue>({
   };
 
   return (
-    <div>
+    <div className="relative">
+      {loading && (
+        <Loader
+          text={loadingMessage}
+          className="absolute z-[1000] w-full h-full opacity-70 bg-white"
+        />
+      )}
+
       {/*table*/}
       <div className="flex items-center justify-between">
         <div className="flex items-center py-4">
@@ -152,52 +164,9 @@ export function DataTable<TData, TValue>({
 
               table.setGlobalFilter(filterValue);
             }}
+            disabled={loading}
             className="max-w-sm"
           />
-
-          {type === "manage_user" && (
-            <div className="pl-2">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline">Add Admin</Button>
-                </DialogTrigger>
-                <DialogContent className="w-[50%] md:w-[30%]">
-                  <DialogHeader>
-                    <DialogTitle>Add admin</DialogTitle>
-                    <DialogDescription>
-                      Please input the admin email
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="flex items-center space-x-2">
-                    <div className="grid flex-1 gap-2">
-                      <Label htmlFor="link" className="sr-only">
-                        Admin
-                      </Label>
-                      <Select
-                        options={table.getRowModel().rows.map((row) => {
-                          const data = row.original as any;
-                          return {
-                            value: data.id,
-                            label: data.email,
-                          };
-                        })}
-                        isDisabled={false}
-                        isMulti={true}
-                      ></Select>
-                    </div>
-                  </div>
-                  <DialogFooter className="sm:justify-start">
-                    <DialogClose asChild>
-                      <Button type="button" variant="secondary">
-                        Close
-                      </Button>
-                    </DialogClose>
-                    <Button type="button">Add</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </div>
-          )}
         </div>
 
         <div className="flex gap-2">
@@ -236,7 +205,7 @@ export function DataTable<TData, TValue>({
           </Button>
 
           <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild disabled={loading}>
               <Button variant="outline" className="ml-auto">
                 Columns
               </Button>
@@ -343,20 +312,7 @@ export function DataTable<TData, TValue>({
   );
 }
 
-const useInputPlugin = () => {
-  const [inputs, setInputs] = useState({});
-
-  const handleInputChange = (newData: any, rowId: any) => {
-    setInputs((prevInputs) => ({ ...prevInputs, [rowId]: newData }));
-  };
-
-  return {
-    plugins: {
-      cellEdit: {
-        mode: "click",
-        onCellEditCommit: (newData: any, rowId: any) =>
-          handleInputChange(newData, rowId),
-      },
-    },
-  };
-};
+interface AddAdminInfo {
+  id: number;
+  email: string;
+}

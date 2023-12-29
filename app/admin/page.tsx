@@ -16,6 +16,7 @@ import { Modal } from "@/components/Modal/Modal";
 
 export default function Accounts() {
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
   const [openModal, setOpenModal] = useState(false);
@@ -31,6 +32,7 @@ export default function Accounts() {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setLoadingMessage("Getting users...");
 
         const res = await AXIOS.GET({
           uri: "/admin/get-user-list",
@@ -61,6 +63,7 @@ export default function Accounts() {
   const updateUsers = async (accounts: Account[]) => {
     try {
       setLoading(true);
+      setLoadingMessage("Updating users...");
 
       const data = accounts.map((account) => {
         return {
@@ -68,6 +71,7 @@ export default function Accounts() {
           student_id: account.student_id ?? "",
           is_banned: account.is_banned,
           email: account.email,
+          authorization: account.authorization,
         };
       });
 
@@ -95,6 +99,7 @@ export default function Accounts() {
               ...user,
               student: isNewData.student_id,
               is_banned: isNewData.is_banned,
+              authorization: isNewData.authorization,
             };
           }
 
@@ -120,6 +125,8 @@ export default function Accounts() {
             </div>
           );
         }
+      } else {
+        throw new Error(res.message ?? res.data.message);
       }
     } catch (error: any) {
       toast.toast({
@@ -136,6 +143,7 @@ export default function Accounts() {
   const downloadExcel = async () => {
     try {
       setLoading(true);
+      setLoadingMessage("Downloading...");
 
       const res = await AXIOS.POST_DOWNLOAD_FILE({
         uri: "/admin/download-user-list",
@@ -166,6 +174,7 @@ export default function Accounts() {
   const uploadExcel = async (file: File) => {
     try {
       setLoading(true);
+      setLoadingMessage("Uploading...");
 
       const res = await AXIOS.POST({
         uri: "/admin/upload-user-list",
@@ -185,11 +194,9 @@ export default function Accounts() {
 
         const newData = res.metadata.success;
 
-        console.log(newData);
-
         const updatedData = users.map((user) => {
           const isNewData = newData.find(
-            (item: any) => item.email === user.email
+            (item: Account) => item.id === user.id
           );
 
           if (isNewData) {
@@ -250,6 +257,7 @@ export default function Accounts() {
           onDownload={downloadExcel}
           onUpload={(file) => uploadExcel(file)}
           loading={loading}
+          loadingMessage={loadingMessage}
         />
       </div>
 

@@ -443,11 +443,11 @@ const DragNDropBox = (props: dndProps) => {
 
   return (
     <div className="dnd-list-container">
-      <div className="dnd-list-wrapper">
+      <div className="dnd-list-wrapper relative">
         {loading && (
           <Loader
             text="Updating"
-            className="w-full h-full z-[1000] opacity-70 bg-transparent"
+            className="absolute w-full h-full z-[1000] opacity-70 bg-white"
           />
         )}
         <div className="dndl-header">

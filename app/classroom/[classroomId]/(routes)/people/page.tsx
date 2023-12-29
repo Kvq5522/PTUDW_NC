@@ -68,15 +68,13 @@ const People = () => {
           token: localStorage.getItem("access-token") ?? "",
         });
 
-        console.log(res, res?.statusCode === 200);
-
         if (res.statusCode && res.statusCode === 200) {
           dispatch(setCurrentClassroom(res.metadata));
           return;
         }
 
         if (res && (res.status >= 400 || res.statusCode >= 400)) {
-          throw new Error(res.message);
+          throw new Error(res.message ?? res.data.message);
         }
       } catch (error) {
         setError(true);
@@ -104,7 +102,7 @@ const People = () => {
     );
 
   return (
-    <div className="overflow-x-auto px-8">
+    <div className="overflow-x-auto px-8 pt-[2rem]">
       <div className="grid gap-4 h-[50%]">
         <Card>
           <CardHeader>

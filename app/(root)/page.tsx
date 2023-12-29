@@ -39,6 +39,7 @@ const page = () => {
               src="/images/logo/google-classroom-2.svg"
               width={500}
               height={500}
+              className="rounded-sm"
               alt="Hero"
             />
           </div>

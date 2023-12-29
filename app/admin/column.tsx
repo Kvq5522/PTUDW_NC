@@ -91,8 +91,12 @@ export const columns: ColumnDef<Account>[] = [
     },
     cell: ({ row }) => {
       return (
-        <div className="grid w-full max-w-[12rem] items-center gap-1.5">
-          {row.original.authorization < 4 ? "User" : "Admin"}
+        <div className="grid w-full max-w-[6rem] items-center gap-1.5">
+          <MyAuthorizationSelect
+            value={String(row.original.authorization)}
+            id={row.original.id}
+            field="authorization"
+          />
         </div>
       );
     },
@@ -102,7 +106,7 @@ export const columns: ColumnDef<Account>[] = [
     header: "Student ID",
     cell: ({ row }) => {
       return (
-        <div className="grid w-full max-w-[12rem] items-center gap-1.5">
+        <div className="grid w-full max-w-[8rem] items-center gap-1.5">
           <MyInput
             value={row.original.student_id}
             id={row.original.id}
@@ -118,11 +122,13 @@ export const columns: ColumnDef<Account>[] = [
     id: "status",
     cell: ({ row }) => {
       return (
-        <MySelect
-          value={String(row.original.is_banned)}
-          id={row.original.id}
-          field="is_banned"
-        />
+        <div className="grid w-full max-w-[12rem] items-center gap-1.5">
+          <MyStatusSelect
+            value={String(row.original.is_banned)}
+            id={row.original.id}
+            field="is_banned"
+          />
+        </div>
       );
     },
   },
@@ -156,7 +162,29 @@ const MyInput: React.FC<Props> = ({ value, id, field }) => {
   );
 };
 
-const MySelect: React.FC<Props> = ({ value, id, field }) => {
+const MyAuthorizationSelect: React.FC<Props> = ({ value, id, field }) => {
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleSelectChange = (value: string) => {
+    const newValue = parseInt(value);
+
+    dispatch(setUserById({ id, field, data: newValue }));
+  };
+
+  return (
+    <Select defaultValue={value} onValueChange={handleSelectChange}>
+      <SelectTrigger className="max-w-[6rem]">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="4">Admin</SelectItem>
+        <SelectItem value="1">User</SelectItem>
+      </SelectContent>
+    </Select>
+  );
+};
+
+const MyStatusSelect: React.FC<Props> = ({ value, id, field }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleSelectChange = (value: string) => {
@@ -167,7 +195,7 @@ const MySelect: React.FC<Props> = ({ value, id, field }) => {
 
   return (
     <Select defaultValue={value} onValueChange={handleSelectChange}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="max-w-[30rem]">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

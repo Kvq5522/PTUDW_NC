@@ -71,7 +71,9 @@ export const NotificationButton: React.FC<ProfileButtonProps> = (
         <div className="relative" onClick={() => setNewNoti(false)}>
           <Bell />
 
-          <div className="absolute z-[10] rounded-lg bg-red-500 w-2 h-2 top-[-3px] right-[-3px]"></div>
+          {newNoti && (
+            <div className="absolute z-[10] rounded-lg bg-red-500 w-2 h-2 top-[-3px] right-[-3px]"></div>
+          )}
         </div>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-[65vw] sm:w-[25vw] md:w-[18vw] overflow-auto">

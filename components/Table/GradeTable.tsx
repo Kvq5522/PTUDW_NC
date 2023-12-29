@@ -14,11 +14,6 @@ import { v4 as uuidv4 } from "uuid";
 
 import { useAppSelector } from "@/redux/store";
 
-type StudentGrade = {
-  studentId: string;
-  studentEmail: string;
-};
-
 interface gradeTableProps {
   compositionID: string;
   tableHeaders: string[];

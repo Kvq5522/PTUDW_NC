@@ -18,7 +18,7 @@ const images = [
   {
     url: "/images/logo/Phat.jpg",
     alt: "Logo",
-    text: "Lưu Minh Phát - 20127528",
+    text: "Lưu Minh Phát - 20127061",
   },
 ];
 
@@ -38,7 +38,7 @@ const Carousel = () => {
   });
 
   return (
-    <div>
+    <div className="py-10">
       <div className="items-center justify-center flex text-3xl font-bold md:pb-10 px-10 bg-gradient-to-r from-green-500 to-yellow-300 bg-clip-text text-transparent">
         Group Members:
       </div>
@@ -51,7 +51,7 @@ const Carousel = () => {
               animate={{
                 opacity: index === currentImageIndex ? 1 : 1,
                 scale: index === currentImageIndex ? 1.2 : 1,
-                transition: { duration: 0.5 },
+                transition: { duration: 0.1 },
               }}
               exit={{ opacity: 0 }}
               className="flex items-center justify-center h-150 w-150 relative m-4" // Added margin m-4
@@ -61,9 +61,9 @@ const Carousel = () => {
                 alt={image.alt}
                 width={500}
                 height={500}
-                className="object-contain h-80 w-80 items-center justify-center flex mx-auto"
+                className="rounded-sm object-contain h-80 w-80 items-center justify-center flex mx-auto"
               ></Image>
-              <div className="absolute bottom-0 text-green-600 font-bold p-2 opacity-75 w-full text-center">
+              <div className="absolute bottom-0 text-green-500 font-bold p-2 opacity-75 w-full text-center">
                 {image.text}
               </div>
             </motion.div>

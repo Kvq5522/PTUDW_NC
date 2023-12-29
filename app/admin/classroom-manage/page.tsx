@@ -13,6 +13,7 @@ import { setClassrooms } from "@/redux/slices/admin-slice";
 
 export default function ClassroomManage() {
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const dispatch = useDispatch<AppDispatch>();
   const toast = useToast();
 
@@ -24,6 +25,7 @@ export default function ClassroomManage() {
     const fetchData = async () => {
       try {
         setLoading(true);
+        setLoadingMessage("Getting classrooms...");
 
         const res = await AXIOS.GET({
           uri: "/admin/get-classroom-list",
@@ -57,6 +59,7 @@ export default function ClassroomManage() {
   const updateClassrooms = async (_classrooms: Classroom[]) => {
     try {
       setLoading(true);
+      setLoadingMessage("Updating classrooms...");
 
       const data = _classrooms.map((item) => {
         return {
@@ -117,11 +120,13 @@ export default function ClassroomManage() {
         <h1 className="text-3xl font-bold">All Classroom</h1>
 
         <Toaster />
-        
+
         <DataTable
           columns={columns}
           data={classrooms}
           onUpdate={(classrooms) => updateClassrooms(classrooms as Classroom[])}
+          loading={loading}
+          loadingMessage={loadingMessage}
         />
       </div>
     </section>
