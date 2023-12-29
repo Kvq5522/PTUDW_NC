@@ -102,7 +102,7 @@ const People = () => {
     );
 
   return (
-    <div className="overflow-x-auto px-8 pt-[2rem]">
+    <div className="overflow-x-auto px-8 pt-6 pt-[2rem]">
       <div className="grid gap-4 h-[50%]">
         <Card>
           <CardHeader>

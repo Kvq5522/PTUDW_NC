@@ -329,6 +329,11 @@ main {
   font-size: 14px;
   color: #32ac71;
 }
+.lbtxtareaa.floating {
+  top: 0.3rem;
+  font-size: 14px;
+  color: #32ac71;
+}
 
 .announce-footer {
   margin-top: 1rem;

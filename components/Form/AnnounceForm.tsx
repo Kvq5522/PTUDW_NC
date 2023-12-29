@@ -35,8 +35,10 @@ const formSchema = z.object({
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import { useState } from "react";
 
 const AnnounceForm = (props: announceProps) => {
+  const [textAreaValue, setTextAreaValue] = useState<string>("");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -57,13 +59,20 @@ const AnnounceForm = (props: announceProps) => {
           render={({ field }) => (
             <FormItem className="m-0 p-0">
               <div className="announce-txtarea">
-                <FormLabel className="truncate text-[16px] lbtxtareaa">
+                <FormLabel
+                  className={`truncate text-[16px] lbtxtareaa ${
+                    textAreaValue  ? "floating" : ""
+                  }`}
+                >
                   Announce something to your class
                 </FormLabel>
                 <FormControl>
                   <Textarea
                     className="resize-none txtareaa"
                     {...field}
+                    onChangeCapture={
+                      (e) => {setTextAreaValue(e.currentTarget.value)}
+                    }
                   />
                 </FormControl>
               </div>
