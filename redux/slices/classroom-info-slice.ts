@@ -15,7 +15,7 @@ const initialState = {
           avatar: "",
         },
       },
-      members: [],
+      members: [] as MemberData[],
       invitations: {
         student_invite_code: "",
         student_invite_uri_code: "",
@@ -89,3 +89,14 @@ export const {
 } = classroomInfo.actions;
 
 export default classroomInfo.reducer;
+
+interface MemberData {
+  member_id: number;
+  member_role: number;
+  member_id_fk: {
+    first_name: string;
+    last_name: string;
+    email: string;
+    avatar: string;
+  };
+}

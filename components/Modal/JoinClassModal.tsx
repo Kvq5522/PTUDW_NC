@@ -69,7 +69,9 @@ export const JoinClassModal = () => {
           className: "top-[-85vh] bg-green-500 text-white",
         });
 
-        dispatch(appendToClasslist(res.metadata?.classroom));
+        console.log(res.metadata);
+
+        dispatch(appendToClasslist(res.metadata));
 
         JoinClassModal.onClose();
       }

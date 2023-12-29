@@ -337,8 +337,8 @@ const ShowGradeDialog = (props: showGradeProps) => {
                       (x: any) => x.grade_category === cmp.grade_category
                     );
 
-                    return `Grade ${cmp.name}:${grade?.grade || 0}:${
-                      grade?.grade_percent || 0
+                    return `Grade ${cmp.name}:${grade?.grade}:${
+                      grade?.grade_percent
                     }`;
                   });
 

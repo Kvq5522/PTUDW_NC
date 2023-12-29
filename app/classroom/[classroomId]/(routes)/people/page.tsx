@@ -7,7 +7,6 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { useAppSelector } from "@/redux/store";
 
-import Link from "next/link";
 import {
   Card,
   CardContent,
@@ -17,11 +16,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { MoreVertical, UserPlus } from "lucide-react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -36,14 +30,24 @@ import { setCurrentClassroom } from "@/redux/slices/classroom-info-slice";
 import Loader from "@/components/Loader/Loader";
 import EmptyState from "@/components/EmptyState";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@radix-ui/react-dropdown-menu";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/toaster";
 
 const People = () => {
   const inviteTeacherModal = useInviteTeacherModal();
   const inviteStudentModal = useInviteStudentModal();
 
   const [loading, setLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("");
   const [error, setError] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const toast = useToast();
   const params = useParams();
 
   const members = useAppSelector(
@@ -61,6 +65,7 @@ const People = () => {
   useEffect(() => {
     const fetchCurrentClassroom = async () => {
       setLoading(true);
+      setLoadingMessage("Loading classroom info...");
 
       try {
         const res = await AXIOS.GET({
@@ -69,7 +74,10 @@ const People = () => {
         });
 
         if (res.statusCode && res.statusCode === 200) {
-          dispatch(setCurrentClassroom(res.metadata));
+          const { user, members, invitations } = res.metadata;
+          members.sort((a: any, b: any) => a.member_role - b.member_role);
+
+          dispatch(setCurrentClassroom({ user, members, invitations }));
           return;
         }
 
@@ -87,8 +95,64 @@ const People = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (loading)
-    return <Loader className="w-[100%] h-[100%]" text="Loading..." />;
+  const deleteUsersFromClass = async (memberId: number) => {
+    const user = members?.find((member: any) => member.member_id === memberId);
+
+    if (!user) return;
+
+    try {
+      setLoading(true);
+      setLoadingMessage("Deleting user from class...");
+
+      const res = await AXIOS.POST({
+        uri: `/classroom/delete-member`,
+        token: localStorage.getItem("access-token") ?? "",
+        params: {
+          classroom_id: params.classroomId,
+          member_emails: [user?.member_id_fk?.email as string],
+        },
+      });
+
+      console.log(res);
+
+      if (res.statusCode && res.statusCode === 200) {
+        toast.toast({
+          title: "Success",
+          description: "Update Successfully!",
+          className: "top-[-80vh] bg-green-500 text-white",
+        });
+        const deleteMember = res.metadata.success;
+        const deletedEmail = deleteMember.map(
+          (member: any) => member.member_email
+        );
+
+        const newMembers = members
+          ?.filter(
+            (member: any) => !deletedEmail.includes(member.member_id_fk.email)
+          )
+          .sort((a: any, b: any) => a.member_role - b.member_role);
+
+        dispatch(
+          setCurrentClassroom({
+            user: userInClass,
+            members: newMembers,
+            invitations: invitations,
+          })
+        );
+
+        return;
+      }
+    } catch (error: any) {
+      toast.toast({
+        title: "Error",
+        description: error.message ?? "Something went wrong",
+        variant: "destructive",
+        className: "top-[-85vh]",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (error)
     return (
@@ -102,7 +166,14 @@ const People = () => {
     );
 
   return (
-    <div className="overflow-x-auto px-8 pt-6 pt-[2rem]">
+    <div className="overflow-x-auto px-8 pt-6 relative">
+      {loading && (
+        <Loader
+          className="absolute w-full h-full z-[1000] bg-white bg-opacity-70"
+          text="Loading..."
+        />
+      )}
+      <Toaster />
       <div className="grid gap-4 h-[50%]">
         <Card>
           <CardHeader>
@@ -152,11 +223,31 @@ const People = () => {
                     </div>
                   </div>
 
-                  {isOwner && (
-                    <div className="pt-[0.35rem]">
-                      <MoreVertical />
-                    </div>
-                  )}
+                  {isOwner &&
+                    member?.member_id_fk.email !==
+                      userInClass?.member_id_fk?.email && (
+                      <div className="pt-[0.35rem]">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            <MoreVertical />
+                          </DropdownMenuTrigger>
+
+                          <DropdownMenuContent>
+                            <DropdownMenuItem>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() =>
+                                  deleteUsersFromClass(member.member_id)
+                                }
+                              >
+                                Delete user from class
+                              </Button>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    )}
                 </div>
               );
             })}
@@ -210,12 +301,31 @@ const People = () => {
                     </div>
                   </div>
 
-                  {(!isStudent ||
-                    member.member_email === userInClass.member_id_fk.email) && (
-                    <div className="pt-[0.35rem]">
-                      <MoreVertical />
-                    </div>
-                  )}
+                  {isOwner &&
+                    member?.member_id_fk.email !==
+                      userInClass?.member_id_fk?.email && (
+                      <div className="pt-[0.35rem]">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger>
+                            <MoreVertical />
+                          </DropdownMenuTrigger>
+
+                          <DropdownMenuContent>
+                            <DropdownMenuItem>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() =>
+                                  deleteUsersFromClass(member.member_id)
+                                }
+                              >
+                                Delete user from class
+                              </Button>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
+                    )}
                 </div>
               );
             })}
