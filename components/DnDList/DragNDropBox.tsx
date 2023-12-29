@@ -451,10 +451,19 @@ const DragNDropBox = (props: dndProps) => {
           />
         )}
         <div className="dndl-header">
-          <div className="absolute left-[10%]">Composition&rsquo;s Name</div>
-          <div className="absolute left-[45%] ">Scale (%)</div>
-          <div className="absolute right-[28%]">Status</div>
-          <div className="absolute right-[5%] ">Actions</div>
+          <div
+            className={`absolute ${isStudent ? `left-[3%]` : `left-[10%]`} `}
+          >
+            Composition&rsquo;s Name
+          </div>
+
+          <div className="absolute left-[45%]">Scale (%)</div>
+          {!isStudent && <div className="absolute right-[28%]">Status</div>}
+          <div
+            className={`absolute ${isStudent ? `right-[2%]` : `right-[5%]`}`}
+          >
+            Actions
+          </div>
         </div>
         <DragDropContext onDragEnd={handleOnDragEnd}>
           <Droppable droppableId="list-container">
