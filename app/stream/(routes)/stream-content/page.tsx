@@ -28,8 +28,9 @@ const StreamContent = () => {
     (state) => state.classroomInfoReducer.value?.currentClassroom?.user
   );
   const isStudent = userInClass?.member_role < 2;
-  const classname = classList.filter((classroom: any) => classroom.classroom_id === currentClassroom)
-  console.log(classname);
+  const classname = classList.filter(
+    (classroom: any) => classroom.classroom_id === currentClassroom
+  )[0].classroom_id_fk.name;
 
   if (!currentClassroom) {
     const fetchCurrentClassroom = async () => {
