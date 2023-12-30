@@ -113,8 +113,6 @@ const People = () => {
         },
       });
 
-      console.log(res);
-
       if (res.statusCode && res.statusCode === 200) {
         toast.toast({
           title: "Success",
@@ -156,7 +154,7 @@ const People = () => {
 
   if (error)
     return (
-      <div className="w-[100%] h-[100%]">
+      <div className="w-full h-full">
         <EmptyState
           title="No result found"
           subTitle="Something's wrong :("
@@ -165,14 +163,15 @@ const People = () => {
       </div>
     );
 
+  if (loading)
+    return (
+      <div className="w-full h-full">
+        <Loader text={loadingMessage} className="w-full h-full" />
+      </div>
+    );
+
   return (
     <div className="overflow-x-auto px-8 pt-6 relative">
-      {loading && (
-        <Loader
-          className="absolute w-full h-full z-[1000] bg-white bg-opacity-70"
-          text="Loading..."
-        />
-      )}
       <Toaster />
       <div className="grid gap-4 h-[50%]">
         <Card>

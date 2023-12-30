@@ -1,4 +1,5 @@
 "use client";
+
 import {
   BookOpenCheck,
   Calendar,
@@ -21,10 +22,14 @@ import { boolean } from "zod";
 import { type } from "os";
 import { useSidebarContext } from "../Contexts/SideBarContext";
 import { FirstNavbarSection } from "../Navbar/DashboardNavbar";
+import { useAppSelector } from "@/redux/store";
 
 const DashBoardSideBar = () => {
   const { isLargeOpen, isSmallOpen, close } = useSidebarContext();
-  const [stateTest, setStateTest] = useState("");
+  const classList = useAppSelector(
+    (state) => state.classroomInfoReducer.value.classroomList
+  );
+
   return (
     <div>
       <aside
@@ -35,11 +40,6 @@ const DashBoardSideBar = () => {
         <SmallSidebarItem
           Icon={Home}
           title="Home"
-          url="/dashboard"
-        ></SmallSidebarItem>
-        <SmallSidebarItem
-          Icon={Calendar}
-          title="Calendar"
           url="/dashboard"
         ></SmallSidebarItem>
         <div className="border"></div>
@@ -63,7 +63,7 @@ const DashBoardSideBar = () => {
         <SmallSidebarItem
           Icon={Settings}
           title="Setting"
-          url="/dashboard"
+          url="/dashboard/user-info"
         ></SmallSidebarItem>
       </aside>
       {isSmallOpen && (
@@ -75,9 +75,7 @@ const DashBoardSideBar = () => {
       <aside
         className={`w-[15rem] h-full lg:sticky absolute top-0 overflow-y-auto scrollbar-hidden pb-4 flex-col gap-2 px-2 border-r-[1px] border-[#e3e6e9] ${
           isLargeOpen ? "lg:flex" : "lg:hidden"
-        } ${
-          isSmallOpen ? "flex z-[999] bg-white max-h-screen" : "hidden"
-        }`}
+        } ${isSmallOpen ? "flex z-[999] bg-white max-h-screen" : "hidden"}`}
       >
         <div className=" lg:hidden pt-2 pb-4 sticky top-0 bg-white">
           <FirstNavbarSection />
@@ -89,16 +87,21 @@ const DashBoardSideBar = () => {
             title="Home"
             url="/dashboard"
           />
-          <LargeSidebarItem Icon={Calendar} title="Calendar" url="/dashboard" />
           <hr></hr>
 
           <LargeSidebarSection visibleItemCount={1}>
             <LargeSidebarItem Icon={Users} title="Teaching" url="/dashboard" />
-            <LargeSidebarItem
-              Icon={FolderOpen}
-              title="Checking"
-              url="/dashboard"
-            />
+            {classList.map((item, index) => {
+              if (item.member_role >= 2 && item.member_role < 4)
+                return (
+                  <LargeSidebarItem
+                    key={index}
+                    Icon={Users}
+                    title={item.classroom_id_fk.name}
+                    url={`/dashboard/classroom/${item.classroom_id}/stream`}
+                  />
+                );
+            })}
           </LargeSidebarSection>
           <hr></hr>
 
@@ -108,20 +111,24 @@ const DashBoardSideBar = () => {
               title="Subscription"
               url="/dashboard"
             />
-            <LargeSidebarItem
-              Icon={BookOpenCheck}
-              title="To Do"
-              url="/dashboard"
-            />
+            {classList.map((item, index) => {
+              if (item.member_role < 2)
+                return (
+                  <LargeSidebarItem
+                    key={index}
+                    Icon={GraduationCap}
+                    title={item.classroom_id_fk.name}
+                    url={`/dashboard/classroom/${item.classroom_id}/stream`}
+                  />
+                );
+            })}
           </LargeSidebarSection>
 
-          <hr></hr>
           <LargeSidebarItem
-            Icon={HardDriveDownload}
-            title="Saved Classes"
-            url="/dashboard"
+            Icon={Settings}
+            title="Setting"
+            url="/dashboard/user-info"
           />
-          <LargeSidebarItem Icon={Settings} title="Setting" url="/dashboard" />
         </LargeSidebarSection>
       </aside>
     </div>
@@ -186,7 +193,7 @@ function LargeSidebarSection({
           className="w-full flex items-center justify-normal rounded-lg gap-4 p-3"
         >
           <ButtonIcon className="w-6 h-6" />
-          <div>{isExpanded ? "show less" : "show more"}</div>
+          <div>{isExpanded ? "Show less" : "Show more"}</div>
         </Button>
       )}
     </div>

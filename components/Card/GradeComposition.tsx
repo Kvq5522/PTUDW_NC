@@ -100,7 +100,7 @@ const GradeComposition = (props: gradeCompositionProps) => {
             {...provided.draggableProps}
           >
             <div className={`dndl-item-wrapper`}>
-              {!isStudent &&  (
+              {!isStudent && (
                 <div
                   ref={provided.innerRef}
                   {...provided.dragHandleProps}
@@ -117,9 +117,17 @@ const GradeComposition = (props: gradeCompositionProps) => {
                   type="number"
                   className="w-12 text-center border-none p-0 rounded-sm"
                   value={props.scale}
-                  onChange={(e) =>
-                    props.onScaleChange(props.id, parseFloat(e.target.value))
-                  }
+                  onChange={(e) => {
+                    const inputValue = e.target.value;
+                    if (inputValue === "") {
+                      props.onScaleChange(props.id, 0); 
+                    } else {
+                      const parsedValue = parseFloat(inputValue);
+                      if (!isNaN(parsedValue)) {
+                        props.onScaleChange(props.id, parsedValue);
+                      }
+                    }
+                  }}
                   max={100}
                   min={0}
                   readOnly={isStudent}

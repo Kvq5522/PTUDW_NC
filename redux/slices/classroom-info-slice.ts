@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const initialState = {
   value: {
-    classroomList: [],
+    classroomList: [] as ClassroomData[],
     currentClassroom: {
       user: {
         member_id: 0,
@@ -98,5 +98,20 @@ interface MemberData {
     last_name: string;
     email: string;
     avatar: string;
+  };
+}
+
+interface ClassroomData {
+  classroom_id: number;
+  member_role: number;
+  classroom_id_fk: {
+    name: string;
+    owner_id: number;
+    owner_fk: {
+      first_name: string;
+      last_name: string;
+      email: string;
+      avatar: string;
+    };
   };
 }

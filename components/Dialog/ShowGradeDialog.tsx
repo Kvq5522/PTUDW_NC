@@ -413,13 +413,11 @@ const ShowGradeDialog = (props: showGradeProps) => {
   );
 
   useEffect(() => {
-    console.log(studentGrades, searchInput);
     const filtered = studentGrades.filter((grade) =>
       grade["Student Name"].toLowerCase().includes(searchInput.toLowerCase()) ||
       grade["Student ID"].toLowerCase().includes(searchInput.toLowerCase()) || 
       grade["Email"].toLowerCase().includes(searchInput.toLowerCase())
     );
-    console.log(filtered);
 
     if (searchInput === "" || filtered === null) {
       setFilteredStudentGrades(studentGrades);

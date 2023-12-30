@@ -47,6 +47,8 @@ export const NotificationButton: React.FC<ProfileButtonProps> = (
 
           if (!checkHasSeen) {
             setNewNoti(true);
+          } else {
+            setNewNoti(false);
           }
 
           return;

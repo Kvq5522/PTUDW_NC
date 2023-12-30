@@ -282,13 +282,13 @@ const DragNDropBox = (props: dndProps) => {
           token: localStorage.getItem("access-token") ?? "",
           params: {
             classroom_id: parseInt(props.classroomId),
-            grade_compositions: itemList.map((item) => {
+            grade_compositions: itemList.map((item, index) => {
               return {
                 id: item.id,
                 name: item.name,
                 grade_percent: item.grade_percent,
                 is_finalized: item.is_finalized,
-                index: item.index,
+                index: index,
               };
             }),
           },
@@ -360,6 +360,7 @@ const DragNDropBox = (props: dndProps) => {
       });
       return;
     }
+
     //check if name is already exist
     if (
       itemList.filter((item) => item.name === values.name).length > 0 &&
@@ -375,6 +376,7 @@ const DragNDropBox = (props: dndProps) => {
     const fetchData = async () => {
       try {
         setLoading(true);
+        console.log(itemList.length)
         const res = await AXIOS.POST({
           uri: `/grade/add-composition`,
           token: localStorage.getItem("access-token") ?? "",

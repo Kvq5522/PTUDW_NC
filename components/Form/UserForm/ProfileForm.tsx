@@ -117,31 +117,25 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
           dispatch(setUserInfo(res.metadata));
           const _userProfile = res.metadata;
 
+          console.log(_userProfile);
+
           setAvatar(_userProfile?.avatar ?? "");
           setValue("first_name", _userProfile?.first_name ?? "");
           setValue("last_name", _userProfile?.last_name ?? "");
           setValue("phone_number", _userProfile?.phone_number ?? "");
           setValue("address", _userProfile?.address ?? "");
           setValue("age", _userProfile?.age ?? 0);
-          setValue("gender", _userProfile?.gender ?? "");
+          setValue("gender", _userProfile?.gender ?? "M");
           setValue("student_id", _userProfile?.student_id ?? "");
           return;
         }
-      } catch (error) {}
+      } catch (error) {
+      } finally {
+        setLoading(false);
+      }
     };
 
-    if (!userProfile) fetchUserData();
-    else {
-      setAvatar(userProfile?.avatar ?? "");
-      setValue("first_name", userProfile?.first_name ?? "");
-      setValue("last_name", userProfile?.last_name ?? "");
-      setValue("phone_number", userProfile?.phone_number ?? "");
-      setValue("address", userProfile?.address ?? "");
-      setValue("age", userProfile?.age ?? 0);
-      setValue("gender", userProfile?.gender ?? "");
-      setValue("student_id", userProfile?.student_id ?? "");
-    }
-
+    fetchUserData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -436,7 +430,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                     <Select
                       disabled={loading}
                       onValueChange={field.onChange}
-                      defaultValue={field.value === "" ? "M" : field.value}
+                      value={field.value}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Gender" />

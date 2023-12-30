@@ -30,8 +30,9 @@ import { cn } from "@/lib/utils";
 
 import Link from "next/link";
 
-import { toast } from "react-hot-toast";
 import { AXIOS } from "@/constants/ApiCall";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
 
 const isAlphanumericWithUppercase = (value: string) => {
   return /[A-Z]/.test(value) && /[0-9]/.test(value);
@@ -74,6 +75,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
 ) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
+  const toast = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -85,7 +87,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
       phone: "",
       address: "",
       age: 0,
-      gender: "",
+      gender: "M",
     },
   });
 
@@ -96,7 +98,16 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
     const res = await AXIOS.POST({ uri: "/auth/sign-up", params: values });
 
     if (res && res.statusCode === 201) {
-      window.location.href = "/sign-in";
+      toast.toast({
+        title: "Account has been created!",
+        description: "Please check your email to verify your account!",
+        className: "top-[-80vh] bg-green-500 text-white",
+      });
+
+      setTimeout(() => {
+        window.location.href = "/sign-in";
+      }, 5000);
+
       return;
     }
 
@@ -110,6 +121,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn("p-3 overflow-auto", props.className)}
       >
+        <Toaster />
         <div className="space-y-4 w-full">
           <div className="flex justify-center">
             <h1 className="text-2xl">Create account for Classroom!</h1>
@@ -287,7 +299,7 @@ export const SignUpForm: React.FC<SignUpFormProps> = (
                     <Select
                       disabled={loading}
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <SelectTrigger className="w-full">
                         <SelectValue placeholder="Gender" />

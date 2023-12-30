@@ -11,12 +11,13 @@ import adminPropReducer from "./slices/admin-slice";
 const reducers = combineReducers({
   userInfoReducer,
   classroomInfoReducer,
-  adminPropReducer
+  adminPropReducer,
 });
 
 const persistConfig = {
   key: "root",
   storage,
+  whitelist: ["userInfoReducer", "classroomInfoReducer"],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -24,7 +25,10 @@ const persistedReducer = persistReducer(persistConfig, reducers);
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: true, serializableCheck: false }),
+    getDefaultMiddleware({
+      thunk: true,
+      serializableCheck: false,
+    }),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
