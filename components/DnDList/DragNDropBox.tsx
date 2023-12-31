@@ -586,7 +586,7 @@ const DragNDropBox = (props: dndProps) => {
                   </Button>
                 </TooltipPro>
 
-                <TooltipPro description="Save Compostions">
+                <TooltipPro description="Save Compositions">
                   <Button
                     variant="outline"
                     size="icon"
