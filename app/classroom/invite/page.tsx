@@ -16,21 +16,17 @@ const InvitePage = () => {
   const toast = useToast();
   const router = useRouter();
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const dispatch = useDispatch<AppDispatch>();
-  const userEmail = useAppSelector(
-    (state) => state.userInfoReducer.value?.userInfo.email
-  );
-
-  console.log(userEmail);
 
   useEffect(() => {
     const joinClassroom = async () => {
       try {
         const uri = decodeURIComponent(query.get("uri") ?? "");
-        const email = decodeURIComponent(query.get("email") ?? "") ?? userEmail;
 
-        if (!uri || !email) {
+        if (!uri) {
           setError(true);
+          setErrorMessage("Invalid invite link");
           return;
         }
 
@@ -39,7 +35,6 @@ const InvitePage = () => {
           token: localStorage.getItem("access-token") ?? "",
           params: {
             invite_uri: uri,
-            email: email,
           },
         });
 
@@ -56,11 +51,15 @@ const InvitePage = () => {
 
         if (res && (res.status >= 400 || res.statusCode >= 400)) {
           console.log(res);
-          throw new Error(res.message);
+          throw new Error(res.message ?? res.data.message);
         }
-      } catch (error) {
+      } catch (error: any) {
         console.log(error);
         setError(true);
+        setErrorMessage(error.message as string);
+      } finally {
+        setError(false);
+        setErrorMessage("");
       }
     };
 
@@ -71,7 +70,7 @@ const InvitePage = () => {
     return (
       <EmptyState
         title="No result found"
-        subTitle="Please try again!"
+        subTitle={errorMessage != "" ? errorMessage : "Please try again!"}
         showReset
       />
     );
