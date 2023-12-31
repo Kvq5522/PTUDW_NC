@@ -6,7 +6,7 @@ import Loader from "@/components/Loader/Loader";
 import { useEffect, useState } from "react";
 import { AXIOS } from "@/constants/ApiCall";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, useAppSelector } from "@/redux/store";
 import { appendToClasslist } from "@/redux/slices/classroom-info-slice";
 import { useToast } from "@/components/ui/use-toast";
 import EmptyState from "@/components/EmptyState";
@@ -17,12 +17,17 @@ const InvitePage = () => {
   const router = useRouter();
   const [error, setError] = useState(false);
   const dispatch = useDispatch<AppDispatch>();
+  const userEmail = useAppSelector(
+    (state) => state.userInfoReducer.value?.userInfo.email
+  );
+
+  console.log(userEmail);
 
   useEffect(() => {
     const joinClassroom = async () => {
       try {
         const uri = decodeURIComponent(query.get("uri") ?? "");
-        const email = decodeURIComponent(query.get("email") ?? "");
+        const email = decodeURIComponent(query.get("email") ?? "") ?? userEmail;
 
         if (!uri || !email) {
           setError(true);
@@ -58,7 +63,7 @@ const InvitePage = () => {
         setError(true);
       }
     };
-    
+
     joinClassroom();
   });
 
