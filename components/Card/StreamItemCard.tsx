@@ -8,8 +8,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -17,6 +15,8 @@ import { RiFileListLine } from "react-icons/ri";
 import { GrScorecard } from "react-icons/gr";
 import { MoreVertical } from "lucide-react";
 import { Button } from "../ui/button";
+import { useCommentModal } from "@/hooks/comment-modal";
+import CommentModal from "../Modal/CommentModal";
 
 interface streamItemCardProps {
   idCard: number;
@@ -25,6 +25,7 @@ interface streamItemCardProps {
   createdAt: string;
   commentCount: number;
   classroomId: number;
+  onOpenComment: (cid:number, iid:number, itype:string) => void;
 }
 
 const StreamItemCard = (props: streamItemCardProps) => {
@@ -35,12 +36,14 @@ const StreamItemCard = (props: streamItemCardProps) => {
       ? `/classroom/${props.classroomId}/grade/transcript`
       : "";
   const [isOpen, setIsOpen] = useState(false);
+  const commentModal = useCommentModal();
   const handleOpenDialog = () => {
     setIsOpen(true);
   };
   const handleCloseDialog = () => {
     setIsOpen(false);
   };
+
   return (
     <div className="announce-box-  hover:bg-[#e6f4ea]">
       <div className="announceCard-content">
@@ -88,9 +91,20 @@ const StreamItemCard = (props: streamItemCardProps) => {
         </DropdownMenu>
       </div>
 
-      <div className="announce-comments hover:underline">
-        <span className="ml-[1.3rem]">{props.commentCount} class comments</span>
-      </div>
+      {props.commentCount === 0 ? (
+        <></>
+      ) : (
+        <>
+          <div
+            className="announce-comments hover:underline"
+            onClick={() => props.onOpenComment(props.classroomId, props.idCard, props.itemType)}
+          >
+            <span className="ml-[1.3rem]">
+              {props.commentCount} class comments
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 };

@@ -17,7 +17,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { Bold, Italic, Underline } from "lucide-react";
 
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
@@ -31,6 +30,7 @@ interface CommentAreaProps {
   loading: boolean;
   data: Comment[];
   userAvatar: string;
+  isChangeFlex?: boolean;
 }
 
 const CommentArea = (props: CommentAreaProps) => {
@@ -47,16 +47,18 @@ const CommentArea = (props: CommentAreaProps) => {
   }
 
   return (
-    <div className="comment-container">
+    <div className="flex flex-col w-[50rem]">
       <div className="comment-count">
         <Users className="h-5 w-5" />
-        {props.data.length === 0 ? <></> : <>{props.data.length}</>}
-        class comment
+        <div>
+          {props.data.length === 0 ? <></> : <span className="mx-1">{props.data.length}</span>}
+          class comment
+        </div>
       </div>
 
       <div className="comment-show">
         {props.data.map((item, index) => (
-          <div key={index} className="flex flex-row items-center mt-3">
+          <div key={index} className="flex flex-row items-center mt-3 overflow-y-auto">
             <Avatar className="h-[2rem] w-[2rem] cmtbavt">
               <AvatarImage
                 className="object-cover"

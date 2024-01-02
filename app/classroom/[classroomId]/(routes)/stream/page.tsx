@@ -16,15 +16,22 @@ import "@/Styles/stream.css";
 import { toast, useToast } from "@/components/ui/use-toast";
 import Loader from "@/components/Loader/Loader";
 import EmptyState from "@/components/EmptyState";
-import { streamDataItems } from "@/constants/mockdata";
 
 import StreamItemCard from "@/components/Card/StreamItemCard";
+import CommentModal from "@/components/Modal/CommentModal";
+import { useCommentModal } from "@/hooks/comment-modal";
+import { number } from "zod";
 
 const StreamContent = () => {
   const isNecessary = false;
   const [streamItems, setStreamItems] = useState<ClassroomAnnouncement[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [cardSpecs, setCardSpecs] = useState<any>({
+    itemId: -1,
+    itemType: "",
+    classId: -1,
+  });
   const dispatch = useDispatch<AppDispatch>();
   const params = useParams();
   const toast = useToast();
@@ -45,6 +52,20 @@ const StreamContent = () => {
   const currclr = classList.find(
     (item) => item.classroom_id.toString() === params.classroomId
   );
+  const currentUser = useAppSelector(
+    (state) => state.userInfoReducer.value?.userInfo
+  );
+
+  const commentModal = useCommentModal();
+  const handleOpenComment = (cid: number, iid: number, itype: string) => {
+    setCardSpecs({
+      itemId: iid,
+      itemType: itype,
+      classId: cid,
+    });
+    commentModal.onOpen();
+  };
+
   useEffect(() => {
     const fetchCurrentClassroom = async () => {
       setLoading(true);
@@ -321,21 +342,30 @@ const StreamContent = () => {
                 </div>
               ) : (
                 streamItems.map((itemS, index) => (
-                  <StreamItemCard
-                    key={index}
-                    title={itemS.title}
-                    idCard={itemS.id}
-                    itemType={itemS.type}
-                    createdAt={itemS.createdAt}
-                    commentCount={itemS?.comment_count}
-                    classroomId={parseInt(params.classroomId as string)}
-                  />
+                  <>
+                    <StreamItemCard
+                      key={index}
+                      title={itemS.title}
+                      idCard={itemS.id}
+                      itemType={itemS.type}
+                      createdAt={itemS.createdAt}
+                      commentCount={itemS?.comment_count}
+                      classroomId={parseInt(params.classroomId as string)}
+                      onOpenComment={handleOpenComment}
+                    />
+                  </>
                 ))
               )}
             </div>
           </section>
         </main>
       </div>
+      <CommentModal
+        idCard={cardSpecs.itemId}
+        idClass={cardSpecs.classId}
+        typeCard={cardSpecs.itemType}
+        currentuser={currentUser}
+      />
     </div>
   );
 };

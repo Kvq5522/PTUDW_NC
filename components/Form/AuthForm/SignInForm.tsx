@@ -74,26 +74,26 @@ export const SignInForm: React.FC<SignInFormProps> = (
 
   return (
     <div className="flex justify-center mx-0 px-0 h-[100%]">
-      <div className="flex space-y-3 justify-center items-center p-2 w-[30%] border-r-4">
+      <div className="flex space-y-3 justify-center items-center p-2 w-[25%] border-r-4">
         <div className="flex flex-wrap space-y-3 pb-[4.6rem] overflow-hidden">
           <Button
-            className="truncate w-[100%] text-center bg-green-600 hover:bg-green-700 hover:opacity-80 gap-1"
+            className="truncate w-[100%] text-center bg-green-600 hover:bg-green-700 hover:opacity-80 gap-1 text-[16px]"
             onClick={() => {
               window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/google`;
             }}
             type="button"
           >
-            Sign in with <FaGoogle className="inline-block mr-2" />
+            Sign in with <FaGoogle className="inline-block h-5 w-6" />
           </Button>
 
           <Button
-            className="truncate w-[100%] text-center bg-blue-600 hover:bg-blue-800 hover:opacity-80 gap-1"
+            className="truncate w-[100%] text-center bg-blue-600 hover:bg-blue-800 hover:opacity-80 gap-1 text-[16px]"
             onClick={() => {
               window.location.href = `${process.env.NEXT_PUBLIC_API}/auth/facebook`;
             }}
             type="button"
           >
-            Sign in with <FaFacebook className="inline-block mr-2" />
+            Sign in with <FaFacebook className="inline-block h-6 w-6" />
           </Button>
         </div>
       </div>
@@ -101,11 +101,11 @@ export const SignInForm: React.FC<SignInFormProps> = (
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className={cn("p-3 overflow-auto w-[70%]", props.className)}
+          className={cn("p-3 overflow-auto w-[75%]", props.className)}
         >
           <div className="space-y-3 w-full">
             <div className="flex justify-center">
-              <h1 className="text-2xl">Sign in to use Classroom!</h1>
+              <h1 className="text-2xl font-semibold">Sign in to use Classroom!</h1>
             </div>
 
             <FormField
@@ -163,7 +163,7 @@ export const SignInForm: React.FC<SignInFormProps> = (
                 href="/sign-up"
                 className={cn(
                   buttonVariants({ variant: "outline" }),
-                  loading ? "pointer-events-none opacity-50" : ""
+                  loading ? "pointer-events-none opacity-50" : "",
                 )}
               >
                 Sign Up Here
@@ -179,7 +179,7 @@ export const SignInForm: React.FC<SignInFormProps> = (
                 href="/recover-password"
                 className={loading ? "pointer-events-none opacity-50" : ""}
               >
-                <h6>
+                <h6 className="text-red-500">
                   <em>Recover password here</em>
                 </h6>
               </Link>

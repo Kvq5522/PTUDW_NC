@@ -7,6 +7,7 @@
   background-color: rgb(255, 255, 255);
   margin: 0 auto;
   z-index: auto;
+  overflow: hidden;
 }
 .stream-header {
   border-radius: 0.5rem;
@@ -18,6 +19,7 @@
   position: relative;
   height: 13rem;
   width: 100%;
+  overflow: hidden;
 }
 
 .stream-header-image {
@@ -29,6 +31,7 @@
   background-image: url("https://gstatic.com/classroom/themes/img_bookclub.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  overflow: hidden;
 }
 
 .stream-header-label {
@@ -96,9 +99,11 @@ aside {
 .stream-body {
   display: flex;
   margin-top: 1.5rem;
+  overflow: hidden;
 }
 .stream-aside {
   flex-shrink: inherit;
+  overflow: hidden;
 }
 
 /* Upcoming card for deco */
@@ -158,6 +163,7 @@ main {
 }
 .streamContent-wrapper {
   display: block;
+  overflow: hidden;
 }
 
 /* Announce Card */
@@ -241,6 +247,7 @@ main {
   display: flex;
   flex-direction: row;
   align-items: center;
+  overflow: hidden;
 }
 .announce-txt {
   height: 100%;

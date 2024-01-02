@@ -54,12 +54,12 @@ export default function AuthLayout({
 
             <hr></hr>
 
-            <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
+            <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-y-auto">
               <div>
                 <DashBoardSideBar  />
               </div>
 
-              <div className="overflow-x-auto min-h-[calc(100vh-56px-1.5rem)] min-w-screen">
+              <div className="min-h-[calc(100vh-56px-1.5rem)] min-w-screen">
                 {!isInviteRoute && (
                   <div
                     className={`sticky top-0 bg-white z-10 px-6 border-b-[1px] ${
