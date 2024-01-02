@@ -78,6 +78,7 @@ const AdminSideBar = () => {
 
           <LargeSidebarSection visibleItemCount={1}>
             <LargeSidebarItem
+              isActive
               Icon={Users}
               title="Teaching"
               url="/admin/classroom-manage"
