@@ -51,8 +51,6 @@ export const CommentModal: React.FC<CommentModalProps> = ({
 
   if (loading) return <Loader text="Loading..." className="w-full h-full" />;
 
-  if (!detail) return <EmptyState title="Error" subTitle="Can't find topic" />;
-
   const sendComment = async (value: string) => {
     const fetchData = async (value: string) => {
       try {
