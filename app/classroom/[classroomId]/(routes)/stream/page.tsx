@@ -342,18 +342,16 @@ const StreamContent = () => {
                 </div>
               ) : (
                 streamItems.map((itemS, index) => (
-                  <>
-                    <StreamItemCard
-                      key={index}
-                      title={itemS.title}
-                      idCard={itemS.id}
-                      itemType={itemS.type}
-                      createdAt={itemS.createdAt}
-                      commentCount={itemS?.comment_count}
-                      classroomId={parseInt(params.classroomId as string)}
-                      onOpenComment={handleOpenComment}
-                    />
-                  </>
+                  <StreamItemCard
+                    key={index}
+                    title={itemS.title}
+                    idCard={itemS.id}
+                    itemType={itemS.type}
+                    createdAt={itemS.createdAt}
+                    commentCount={itemS?.comment_count}
+                    classroomId={parseInt(params.classroomId as string)}
+                    onOpenComment={handleOpenComment}
+                  />
                 ))
               )}
             </div>

@@ -115,7 +115,11 @@ export const GradeReviewModal: React.FC<GradeReviewModalProps> = ({
       title={`Create a grade review for Grade "${gradeCategoryName}"`}
       description="Explain to teacher why you need to review your grade"
       isOpen={gradeReviewModal.isOpen}
-      onClose={gradeReviewModal.onClose}
+      onClose={() => {
+        setValue("description", "");
+        setValue("expected_grade", 0);
+        gradeReviewModal.onClose()
+      }}
     >
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2">

@@ -20,6 +20,7 @@ import { Textarea } from "./ui/textarea";
 
 import { format } from "date-fns";
 import { enUS } from "date-fns/locale";
+import Image from "next/image";
 
 const formSchema = z.object({
   comment: z.string().min(1),
@@ -51,20 +52,34 @@ const CommentArea = (props: CommentAreaProps) => {
       <div className="comment-count">
         <Users className="h-5 w-5" />
         <div>
-          {props.data.length === 0 ? <></> : <span className="mx-1">{props.data.length}</span>}
+          {props.data.length === 0 ? (
+            <></>
+          ) : (
+            <span className="mx-1">{props.data.length}</span>
+          )}
           class comment
         </div>
       </div>
 
       <div className="comment-show">
         {props.data.map((item, index) => (
-          <div key={index} className="flex flex-row items-center mt-3 overflow-y-auto">
+          <div
+            key={index}
+            className="flex flex-row items-center mt-3 overflow-y-auto"
+          >
             <Avatar className="h-[2rem] w-[2rem] cmtbavt">
               <AvatarImage
                 className="object-cover"
                 src={item.user_id_fk.avatar}
               />
-              <AvatarFallback className="bg-[#3e9e3e]"></AvatarFallback>
+              <AvatarFallback>
+                <Image
+                  src="/images/user-default-avatar.png"
+                  fill
+                  className="w-full h-full"
+                  alt="User Avatar"
+                />
+              </AvatarFallback>
             </Avatar>
             <div className="cmtmain">
               <div className="cmtlabel text-[14px]">

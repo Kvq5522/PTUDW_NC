@@ -29,6 +29,8 @@ export const CommentModal: React.FC<CommentModalProps> = ({
   const [comments, setComments] = useState<ReviewDetail["comments"]>([]);
   useEffect(() => {
     const fetchData = async () => {
+      if (idClass == -1 || idCard == -1) return;
+
       try {
         const res = await AXIOS.GET({
           uri: `/announcement/get-announcement/${idClass}/detail/${idCard}`,

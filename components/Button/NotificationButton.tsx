@@ -78,7 +78,7 @@ export const NotificationButton: React.FC<ProfileButtonProps> = (
           )}
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-[65vw] sm:w-[25vw] md:w-[18vw] overflow-auto">
+      <DropdownMenuContent className="w-[65vw] sm:w-[25vw] md:w-[18vw] overflow-auto max-h-[50vh] overflow-y-auto">
         <DropdownMenuLabel>Your notifications...</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {Array.isArray(notifications) &&
