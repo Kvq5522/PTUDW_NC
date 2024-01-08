@@ -107,7 +107,14 @@ const CommentArea = (props: CommentAreaProps) => {
           >
             <Avatar className="h-[2rem] w-[2rem] cmtbavt">
               <AvatarImage className="object-cover" src={props.userAvatar} />
-              <AvatarFallback className="bg-[#3e9e3e]"></AvatarFallback>
+              <AvatarFallback>
+                <Image
+                  src="/images/user-default-avatar.png"
+                  fill
+                  className="w-full h-full"
+                  alt="User Avatar"
+                />
+              </AvatarFallback>
             </Avatar>
 
             <FormField
