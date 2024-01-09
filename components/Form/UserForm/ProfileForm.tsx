@@ -117,8 +117,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
           dispatch(setUserInfo(res.metadata));
           const _userProfile = res.metadata;
 
-          console.log(_userProfile);
-
           setAvatar(_userProfile?.avatar ?? "");
           setValue("first_name", _userProfile?.first_name ?? "");
           setValue("last_name", _userProfile?.last_name ?? "");
@@ -259,9 +257,9 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                                     ? URL.createObjectURL(file)
                                     : avatar
                                     ? avatar
-                                    : "https://firebasestorage.googleapis.com/v0/b/ptudwnc2-20ktpm02-2023.appspot.com/o/images%2Favatar%2Fuser-default-avatar.png?alt=media&token=87041583-59b4-43a6-86eb-a93f06cd8b3e"
+                                    : "/images/user-default-avatar.png"
                                 }
-                                alt="Hero"
+                                alt="User Image"
                                 width={600}
                                 height={600}
                                 placeholder="empty"
