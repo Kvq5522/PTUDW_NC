@@ -29,16 +29,20 @@ import { useGradeReassessmentModal } from "@/hooks/grade-reassessment-modal";
 import GradeReassessmentModal from "@/components/Modal/GradeReassessmentModal";
 
 const StreamContentDetail = () => {
-  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingComment, setLoadingComment] = useState(false);
   const [detail, setDetail] = useState<ReviewDetail["detail"]>();
   const [comments, setComments] = useState<ReviewDetail["comments"]>([]);
+  const [role, setRole] = useState(1);
   const gradeReassessmentModal = useGradeReassessmentModal();
   const params = useParams();
 
   const currentUser = useAppSelector(
     (state) => state.userInfoReducer.value?.userInfo
+  );
+
+  const classrooms = useAppSelector(
+    (state) => state.classroomInfoReducer?.value?.classroomList
   );
 
   useEffect(() => {
@@ -53,7 +57,8 @@ const StreamContentDetail = () => {
 
         if (res.statusCode && res.statusCode === 200) {
           setDetail(res.metadata.detail);
-          setComments(res.metadata.comments);
+          setComments(res.metadata.comments ?? []);
+          setRole(res.metadata.role ?? 1);
         }
       } catch (error) {
         console.log(error);
@@ -132,27 +137,29 @@ const StreamContentDetail = () => {
           <div className="stream-detail-header">
             <div className="stream-detail-label">
               <span>{detail?.title}</span>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="detail-actions">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full"
-                      type="button"
-                    >
-                      <MoreVertical />
-                    </Button>
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-30">
-                  <DropdownMenuItem>
-                    <div onClick={() => gradeReassessmentModal.onOpen()}>
-                      Reassess Student Grade
+              {role >= 2 && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <div className="detail-actions">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="rounded-full"
+                        type="button"
+                      >
+                        <MoreVertical />
+                      </Button>
                     </div>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-30">
+                    <DropdownMenuItem>
+                      <div onClick={() => gradeReassessmentModal.onOpen()}>
+                        Reassess Student Grade
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
             <div className="stream-detail-sublabel">
               <div className="detail-creator">
