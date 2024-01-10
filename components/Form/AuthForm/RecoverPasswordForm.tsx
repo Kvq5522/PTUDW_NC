@@ -22,7 +22,8 @@ import { cn } from "@/lib/utils";
 
 import Link from "next/link";
 import { AXIOS } from "@/constants/ApiCall";
-import toast from "react-hot-toast";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
 
 const isAlphanumericWithUppercase = (value: string) => {
   return /[A-Z]/.test(value) && /[0-9]/.test(value);
@@ -54,6 +55,7 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [timeReload, setTimeReload] = useState<Date>();
+  const toast = useToast();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -93,7 +95,11 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
     }
 
     setLoading(false);
-    toast.success("Email sent, please check your email");
+    toast.toast({
+      title: "Success",
+      description: "Email is sent!",
+      className: "top-[-80vh] bg-green-500 text-white",
+    });
     setTimeReload(new Date(Date.now() + 1000 * 30));
     setError("");
   };
@@ -116,13 +122,19 @@ export const RecoverPasswordForm: React.FC<RecoverPasswordFormProps> = (
     setLoading(false);
     setError("");
 
-    toast.success("Password updated");
+    toast.toast({
+      title: "Success",
+      description: "Password updated!",
+      className: "top-[-80vh] bg-green-500 text-white",
+    });
     window.location.href = "/sign-in";
     return;
   };
 
   return (
     <Form {...form}>
+      <Toaster />
+
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className={cn("p-3 overflow-auto", props.className)}

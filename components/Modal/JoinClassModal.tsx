@@ -77,12 +77,12 @@ export const JoinClassModal = () => {
       }
 
       if (res && (res.status >= 400 || res.statusCode >= 400)) {
-        throw new Error(res.message);
+        throw new Error(res.message || res.data.message);
       }
-    } catch (error) {
+    } catch (error: any) {
       toast.toast({
         title: "Error",
-        description: "Something went wrong",
+        description: error.message || "Something went wrong",
         variant: "destructive",
         className: "top-[-85vh]",
       });
