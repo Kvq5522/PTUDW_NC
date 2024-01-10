@@ -50,16 +50,11 @@ const InvitePage = () => {
         }
 
         if (res && (res.status >= 400 || res.statusCode >= 400)) {
-          console.log(res);
           throw new Error(res.message ?? res.data.message);
         }
       } catch (error: any) {
-        console.log(error);
         setError(true);
         setErrorMessage(error.message as string);
-      } finally {
-        setError(false);
-        setErrorMessage("");
       }
     };
 
