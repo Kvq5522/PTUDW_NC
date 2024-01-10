@@ -98,7 +98,7 @@ const DashBoardSideBar = () => {
                     key={index}
                     Icon={Users}
                     title={item.classroom_id_fk.name}
-                    url={`/dashboard/classroom/${item.classroom_id}/stream`}
+                    url={`/classroom/${item.classroom_id}/stream`}
                   />
                 );
             })}
@@ -118,7 +118,7 @@ const DashBoardSideBar = () => {
                     key={index}
                     Icon={GraduationCap}
                     title={item.classroom_id_fk.name}
-                    url={`/dashboard/classroom/${item.classroom_id}/stream`}
+                    url={`/classroom/${item.classroom_id}/stream`}
                   />
                 );
             })}
