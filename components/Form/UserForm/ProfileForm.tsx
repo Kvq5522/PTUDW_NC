@@ -66,7 +66,7 @@ const formSchema = z.object({
     })
   ),
   gender: z.string().optional(),
-  student_id: z.string().min(1).max(10).optional(),
+  student_id: z.string().min(0).max(10).optional(),
   avatar: z
     .any()
     .optional()
@@ -190,18 +190,18 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
       setValue("gender", _userProfile?.gender ?? "");
       setValue("student_id", _userProfile?.student_id ?? "");
 
-      toast.toast({
-        title: "Success",
-        description: "Update profile successfully!",
-        className: "top-[-85vh] bg-green-500 text-white",
-      });
-
       if (!res.metadata.isUpdateStudentId) {
         toast.toast({
           title: "Error",
           description: "Student Id is already existed!",
           variant: "destructive",
-          className: "top-[-65vh]",
+          className: "top-[-85vh]",
+        });
+      } else {
+        toast.toast({
+          title: "Success",
+          description: "Update profile successfully!",
+          className: "top-[-85vh] bg-green-500 text-white",
         });
       }
 
@@ -214,7 +214,8 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
     setLoading(false);
   };
 
-  const handleImageClick = () => {
+  const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     fileInputRef.current?.click();
   };
 
@@ -247,7 +248,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <div onClick={handleImageClick}>
+                      <div>
                         <TooltipProvider>
                           <Tooltip>
                             <TooltipTrigger>
@@ -265,6 +266,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = (
                                 placeholder="empty"
                                 loading="lazy"
                                 priority={false}
+                                onClick={handleImageClick}
                                 className="object-cover rounded-full hover:opacity-75 w-[300px] h-[300px] transition-opacity duration-200 ease-in-out"
                               />
                             </TooltipTrigger>

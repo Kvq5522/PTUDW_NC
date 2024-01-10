@@ -99,8 +99,6 @@ export function DataTable<TData, TValue>({
       .rows.map((row) => row.original);
 
     if (selectedRows.length === 0) console.log("No row selected");
-
-    console.log(selectedRows);
   };
 
   return (

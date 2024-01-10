@@ -376,7 +376,6 @@ const DragNDropBox = (props: dndProps) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log(itemList.length)
         const res = await AXIOS.POST({
           uri: `/grade/add-composition`,
           token: localStorage.getItem("access-token") ?? "",

@@ -33,7 +33,6 @@ export function SelectAccountForm() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("Form data:", data);
     const action = data.banUnban;
   }
 
