@@ -43,6 +43,9 @@ const StreamItemCard = (props: streamItemCardProps) => {
   const handleCloseDialog = () => {
     setIsOpen(false);
   };
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(process.env.NEXT_PUBLIC_FE_ENDPOINT + linkTo);
+  };
 
   return (
     <div className="announce-box-  hover:bg-[#e6f4ea]">
@@ -84,7 +87,7 @@ const StreamItemCard = (props: streamItemCardProps) => {
             </div>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-30">
-            <DropdownMenuItem onClick={handleOpenDialog}>
+            <DropdownMenuItem onClick={handleCopyLink}>
               Copy Link
             </DropdownMenuItem>
           </DropdownMenuContent>
